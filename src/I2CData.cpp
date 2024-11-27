@@ -261,20 +261,38 @@ const char* getRegisterName(uint8_t reg)
     }
 }
 
-void onReceive(int len) 
-{
-    if (len < 2) return;
+// At the top of the file with other defines
+#define I2C_BUFFER_SIZE 512
+#define MIN_MESSAGE_LENGTH 2  // Register + Length bytes
+
+// Modified onReceive function
+void onReceive(int len) {
+    if (len < MIN_MESSAGE_LENGTH) return;
     
-    uint8_t buffer[MAX_URL_LENGTH] = {0};  // Use largest possible buffer
+    // Use static buffer to avoid stack issues
+    static uint8_t buffer[I2C_BUFFER_SIZE] = {0};
     int bytesRead = 0;
     
-    while (Wire2.available() && bytesRead < sizeof(buffer)) 
-    {
+    // Read with bounds checking
+    while (Wire2.available() && bytesRead < I2C_BUFFER_SIZE) {
         buffer[bytesRead] = Wire2.read();
         bytesRead++;
     }
 
+    // Flush any remaining bytes
+    while (Wire2.available()) {
+        Wire2.read();
+    }
+
+    // Verify we have enough data for the claimed length
     uint8_t reg = buffer[0];
+    uint8_t dataLen = buffer[1];
+    if (bytesRead < (dataLen + 2)) {
+        Serial.printf("Error: Incomplete message received. Expected %d bytes, got %d\n", 
+                     dataLen + 2, bytesRead);
+        return;
+    }
+
     Serial.printf("onReceive[%d] Register: %s (0x%02X): ", len, getRegisterName(reg), reg);
     
     for (int i = 0; i < bytesRead; i++) 

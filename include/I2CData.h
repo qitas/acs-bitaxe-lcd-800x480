@@ -27,19 +27,25 @@
 #define LVGL_REG_SHARES          0x35
 
 // Monitoring data registers (5 second updates)
-#define LVGL_REG_TEMPS           0x40
-#define LVGL_REG_ASIC_FREQ      0x41
-#define LVGL_REG_FAN            0x42
-#define LVGL_REG_POWER_STATS    0x43
-#define LVGL_REG_ASIC_INFO      0x44
-#define LVGL_REG_UPTIME         0x45
+#define LVGL_REG_TEMPS           0x40 // 8 * float
+#define LVGL_REG_ASIC_FREQ      0x41 // float
+#define LVGL_REG_FAN            0x42 // 2 * float
+#define LVGL_REG_POWER_STATS    0x43 // 4 * float
+#define LVGL_REG_ASIC_INFO      0x44 // uint16
+#define LVGL_REG_UPTIME         0x45 // uint32 Look into moving to 64 bit to increase time 
 
 // Device status registers (on change only)
-#define LVGL_REG_FLAGS          0x50
+#define LVGL_REG_FLAGS          0x50 // 4 bytes
 
-#define LVGL_REG_DEVICE_INFO   0x52
-#define LVGL_REG_BOARD_INFO    0x53
-#define LVGL_REG_CLOCK_SYNC    0x54
+#define LVGL_REG_DEVICE_INFO   0x52 // not used
+#define LVGL_REG_BOARD_INFO    0x53 // variable length
+#define LVGL_REG_CLOCK_SYNC    0x54 // uint32
+
+// API Data Registers
+#define LVGL_REG_API_BTC_PRICE   0x60 // uint32
+#define LVGL_REG_API_NETWORK_HASHRATE 0x61 // double
+#define LVGL_REG_API_NETWORK_DIFFICULTY 0x62 // double
+#define LVGL_REG_API_BLOCK_HEIGHT 0x63 // uint32
 
 // Maximum lengths for strings
 #define MAX_SSID_LENGTH       32
