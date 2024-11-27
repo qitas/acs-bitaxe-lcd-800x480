@@ -285,8 +285,8 @@ void activityScreen()
     lv_obj_set_style_bg_opa(networkContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(networkContainer, 0, LV_PART_MAIN);
     lv_obj_clear_flag(networkContainer, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_style_border_width(networkContainer, 1, LV_PART_MAIN);
-    lv_obj_set_style_border_color(networkContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    //lv_obj_set_style_border_width(networkContainer, 1, LV_PART_MAIN);
+    //lv_obj_set_style_border_color(networkContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     Serial.println("Network Container Created");
 
     //Network Container Label
@@ -294,7 +294,7 @@ void activityScreen()
     lv_label_set_text(networkContainerLabel, "Network");
     lv_obj_set_style_text_font(networkContainerLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(networkContainerLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(networkContainerLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_align(networkContainerLabel, LV_ALIGN_TOP_LEFT, 0, -24);
     Serial.println("Network Container Label Created");
     // SSID Label
     lv_obj_t* ssidLabel = lv_label_create(networkContainer);
@@ -333,8 +333,8 @@ void activityScreen()
     lv_obj_align(miningContainer, LV_ALIGN_TOP_RIGHT, 16, 0);
     lv_obj_set_style_bg_opa(miningContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(miningContainer, 0, LV_PART_MAIN);
-    lv_obj_set_style_border_width(miningContainer, 1, LV_PART_MAIN);
-    lv_obj_set_style_border_color(miningContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    //lv_obj_set_style_border_width(miningContainer, 1, LV_PART_MAIN);
+    //lv_obj_set_style_border_color(miningContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_clear_flag(miningContainer, LV_OBJ_FLAG_SCROLLABLE);
     Serial.println("Mining Container Created");
 
@@ -343,7 +343,7 @@ void activityScreen()
     lv_label_set_text(miningContainerLabel, "Mining");
     lv_obj_set_style_text_font(miningContainerLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(miningContainerLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(miningContainerLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_align(miningContainerLabel, LV_ALIGN_TOP_LEFT, 0, -24);
     Serial.println("Mining Container Label Created");
     // Hashrate Label
     lv_obj_t* hashrateLabel = lv_label_create(miningContainer);
@@ -412,15 +412,15 @@ void activityScreen()
     lv_obj_align(monitoringContainer, LV_ALIGN_BOTTOM_RIGHT, 16, 0);
     Serial.println("Monitoring Container Created");
     lv_obj_set_style_bg_opa(monitoringContainer, LV_OPA_0, LV_PART_MAIN);
-    lv_obj_set_style_border_width(monitoringContainer, 1, LV_PART_MAIN);
-    lv_obj_set_style_border_color(monitoringContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_border_width(monitoringContainer, 0, LV_PART_MAIN);
+    //lv_obj_set_style_border_color(monitoringContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
 
     // Monitoring Container Label
     lv_obj_t* monitoringContainerLabel = lv_label_create(monitoringContainer);
     lv_label_set_text(monitoringContainerLabel, "Monitoring");
     lv_obj_set_style_text_font(monitoringContainerLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(monitoringContainerLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(monitoringContainerLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_align(monitoringContainerLabel, LV_ALIGN_TOP_LEFT, 0, -24);
     Serial.println("Monitoring Container Label Created");
     // Temperature Label
     lv_obj_t* tempLabel = lv_label_create(monitoringContainer);
@@ -457,15 +457,15 @@ void activityScreen()
     lv_obj_set_size(powerContainer, 360, 152);
     lv_obj_align(powerContainer, LV_ALIGN_BOTTOM_LEFT, -24, 0);
     lv_obj_set_style_bg_opa(powerContainer, LV_OPA_0, LV_PART_MAIN);
-    lv_obj_set_style_border_width(powerContainer, 1, LV_PART_MAIN);
-    lv_obj_set_style_border_color(powerContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);    
+    lv_obj_set_style_border_width(powerContainer, 0, LV_PART_MAIN);
+    //lv_obj_set_style_border_color(powerContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);    
     Serial.println("Power Container Created");
     // Power Container Label
     lv_obj_t* powerContainerLabel = lv_label_create(powerContainer);
     lv_label_set_text(powerContainerLabel, "Power");
     lv_obj_set_style_text_font(powerContainerLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(powerContainerLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(powerContainerLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_align(powerContainerLabel, LV_ALIGN_TOP_LEFT, 0, -24);
     Serial.println("Power Container Label Created");
     // voltage label
     lv_obj_t* voltageLabel = lv_label_create(powerContainer);
