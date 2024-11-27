@@ -9,7 +9,7 @@ lv_timer_t* statusBarTimer = NULL;
 lv_obj_t* statusBarTempLabel = NULL;
 lv_obj_t* statusBarHashrateLabel = NULL;
 lv_obj_t* statusBarPowerLabel = NULL;
-
+lv_obj_t* statusBarBtcPriceLabel = NULL;
 
 void lvglTabIcons(lv_obj_t*parent)
 {
@@ -152,17 +152,17 @@ void statusBar(lv_obj_t* parent)
     //lv_img_set_zoom(btcPrice, 512);
     lv_obj_align(btcPrice, LV_ALIGN_TOP_LEFT, 16, 0);
 
-    lv_obj_t* btcPriceLabel = lv_label_create(statusBar);
-    lv_label_set_text(btcPriceLabel, "$98,395.25");
-    lv_obj_set_style_text_align(btcPriceLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
-    lv_obj_set_width(btcPriceLabel, 144);
-    lv_label_set_long_mode(btcPriceLabel, LV_LABEL_LONG_CLIP);
-    lv_obj_set_style_text_font(btcPriceLabel, &interMedium16_19px, LV_PART_MAIN);
-    lv_obj_set_style_text_color(btcPriceLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    statusBarBtcPriceLabel = lv_label_create(statusBar);
+    lv_label_set_text(statusBarBtcPriceLabel, "$ syncing...");
+    lv_obj_set_style_text_align(statusBarBtcPriceLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_set_width(statusBarBtcPriceLabel, 144);
+    lv_label_set_long_mode(statusBarBtcPriceLabel, LV_LABEL_LONG_CLIP);
+    lv_obj_set_style_text_font(statusBarBtcPriceLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(statusBarBtcPriceLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     //lv_obj_set_style_border_width(btcPriceLabel, 1, LV_PART_MAIN);
     //lv_obj_set_style_border_color(btcPriceLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     //lv_obj_set_style_text_opa(btcPriceLabel, 224, LV_PART_MAIN);
-    lv_obj_align(btcPriceLabel, LV_ALIGN_TOP_LEFT, 56, 0);
+    lv_obj_align(statusBarBtcPriceLabel, LV_ALIGN_TOP_LEFT, 56, 0);
 
     
 
@@ -176,6 +176,10 @@ void statusBar(lv_obj_t* parent)
 
         if (lvgl_port_lock(10))
         {
+            if (i2cData.api.btcPriceUSD > 0)
+                lv_label_set_text_fmt(statusBarBtcPriceLabel, "$%d,%03d", (int)(i2cData.api.btcPriceUSD/1000), (int)(i2cData.api.btcPriceUSD) % 1000);
+            else
+                lv_label_set_text(statusBarBtcPriceLabel, "$ syncing...");
             lv_label_set_text_fmt(statusBarTempLabel, "%d°C", temp);
             lv_label_set_text_fmt(statusBarHashrateLabel, "%d GH/s\n%d W/TH", hashrate, efficiency);
             lv_label_set_text_fmt(statusBarPowerLabel, "%d.%03d V\n%d.%02d W", 

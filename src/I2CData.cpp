@@ -223,6 +223,37 @@ void handleDeviceStatus(uint8_t* buffer, uint8_t len)
     }
 }
 
+void handleAPIData(uint8_t* buffer, uint8_t len) 
+{
+        if (len < 2) return;
+    
+    uint8_t reg = buffer[0];
+    uint8_t dataLen = buffer[1];
+
+    switch(reg)
+    {
+        case LVGL_REG_API_BTC_PRICE:
+            memcpy(&i2cData.api.btcPriceUSD, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("BTC Price received: %d", i2cData.api.btcPriceUSD);
+            break;
+        case LVGL_REG_API_NETWORK_HASHRATE:
+            memcpy(&i2cData.api.networkHashrate, &buffer[2], __min(dataLen, sizeof(double)));
+            Serial.printf("Network Hashrate received: %f", i2cData.api.networkHashrate);
+            break;
+        case LVGL_REG_API_NETWORK_DIFFICULTY:
+            memcpy(&i2cData.api.networkDifficulty, &buffer[2], __min(dataLen, sizeof(double)));
+            Serial.printf("Network Difficulty received: %f", i2cData.api.networkDifficulty);
+            break;
+        case LVGL_REG_API_BLOCK_HEIGHT:
+            memcpy(&i2cData.api.blockHeight, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("Block Height received: %d", i2cData.api.blockHeight);
+            break;
+        default:
+            Serial.printf("Warning: Unknown API register 0x%02X with length %d\n", reg, dataLen);
+            break;
+    }
+}
+
 const char* getRegisterName(uint8_t reg) 
 {
     switch(reg) 
@@ -256,6 +287,12 @@ const char* getRegisterName(uint8_t reg)
         case LVGL_REG_DEVICE_INFO: return "DEVICE_INFO";
         case LVGL_REG_BOARD_INFO: return "BOARD_INFO";
         case LVGL_REG_CLOCK_SYNC: return "CLOCK_SYNC";
+        
+        // API registers
+        case LVGL_REG_API_BTC_PRICE: return "API_BTC_PRICE";
+        case LVGL_REG_API_NETWORK_HASHRATE: return "API_NETWORK_HASHRATE";
+        case LVGL_REG_API_NETWORK_DIFFICULTY: return "API_NETWORK_DIFFICULTY";
+        case LVGL_REG_API_BLOCK_HEIGHT: return "API_BLOCK_HEIGHT";
         
         default: return "UNKNOWN";
     }
@@ -305,6 +342,7 @@ void onReceive(int len) {
     else if (reg >= 0x30 && reg <= 0x35) handleMiningData(buffer, bytesRead);
     else if (reg >= 0x40 && reg <= 0x45) handleMonitoringData(buffer, bytesRead);
     else if (reg >= 0x50 && reg <= 0x54) handleDeviceStatus(buffer, bytesRead);
+    else if (reg >= 0x60 && reg <= 0x63) handleAPIData(buffer, bytesRead);
     else 
     {
         Serial.printf("Error: Register 0x%02X outside of valid ranges\n", reg);

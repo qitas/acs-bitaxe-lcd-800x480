@@ -117,6 +117,15 @@ struct DeviceStatus
     uint32_t clockSync;
 };
 
+// API Data Structure
+struct APIData
+{
+    uint32_t btcPriceUSD;
+    double networkHashrate;
+    double networkDifficulty;
+    uint32_t blockHeight;
+};
+
 // Global data container
 struct I2CDataContainer 
 {
@@ -124,6 +133,7 @@ struct I2CDataContainer
     MiningData mining;
     MonitoringData monitoring;
     DeviceStatus status;
+    APIData api;
 };
 
 // External declarations
