@@ -119,10 +119,10 @@ static void updateLabels(lv_timer_t* timer)
         lv_label_set_text_fmt(labels[13], "Fan: %d RPM", fanSpeed);
         lv_label_set_text_fmt(labels[14], "ASIC: %d MHz", asicFreq);
         lv_label_set_text_fmt(labels[15], "Uptime: %d", uptime);
-        lv_label_set_text_fmt(labels[16], "Voltage: %d.%02d V", (int)voltage, (int)(voltage * 100) % 100);
-        lv_label_set_text_fmt(labels[17], "Current: %d.%02d A", (int)current, (int)(current * 100) % 100);
+        lv_label_set_text_fmt(labels[16], "Voltage: %d.%02d V", (int)(voltage / 1000), (int)(voltage / 10) % 100);
+        lv_label_set_text_fmt(labels[17], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100);
         lv_label_set_text_fmt(labels[18], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
-        lv_label_set_text_fmt(labels[19], "Domain: %d.%02d V", (int)domainVoltage, (int)(domainVoltage * 100) % 100);
+        lv_label_set_text_fmt(labels[19], "Domain: %d mV", (int)domainVoltage);
         
         lvgl_port_unlock();
     }
