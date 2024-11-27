@@ -111,18 +111,16 @@ static void updateLabels(lv_timer_t* timer)
         lv_label_set_text_fmt(labels[5], "Efficiency: %d.%02d W/TH", (int)efficiency, (int)(efficiency * 100) % 100);
         lv_label_set_text_fmt(labels[6], "Best Diff: %llu k", bestDiff / 1000);
         lv_label_set_text_fmt(labels[7], "Session Diff: %llu k", sessionDiff / 1000);
-        lv_label_set_text_fmt(labels[8], "Shares: %u", shares);
-        lv_label_set_text_fmt(labels[9], "Accepted: %u", acceptedShares);
-        lv_label_set_text_fmt(labels[10], "Rejected: %u", rejectedShares);
-        lv_label_set_text_fmt(labels[11], "Reject Rate: %d.%02d%%", (int)rejectRatePercent, (int)(rejectRatePercent * 100) % 100);
-        lv_label_set_text_fmt(labels[12], "Temp: %d.%02d C", (int)temp, (int)(temp * 100) % 100);
-        lv_label_set_text_fmt(labels[13], "Fan: %d RPM", fanSpeed);
-        lv_label_set_text_fmt(labels[14], "ASIC: %d MHz", asicFreq);
-        lv_label_set_text_fmt(labels[15], "Uptime: %d", uptime);
-        lv_label_set_text_fmt(labels[16], "Voltage: %d.%02d V", (int)(voltage / 1000), (int)(voltage / 10) % 100);
-        lv_label_set_text_fmt(labels[17], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100);
-        lv_label_set_text_fmt(labels[18], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
-        lv_label_set_text_fmt(labels[19], "Domain: %d mV", (int)domainVoltage);
+        lv_label_set_text_fmt(labels[8], "Accepted: %u", acceptedShares);
+        lv_label_set_text_fmt(labels[9], "Rejected: %u", rejectedShares);
+        lv_label_set_text_fmt(labels[10], "Temp: %d.%02d C", (int)temp, (int)(temp * 100) % 100);
+        lv_label_set_text_fmt(labels[11], "Fan: %d RPM", fanSpeed);
+        lv_label_set_text_fmt(labels[12], "ASIC: %d MHz", asicFreq);
+        lv_label_set_text_fmt(labels[13], "Uptime: %u", uptime);
+        lv_label_set_text_fmt(labels[14], "Voltage: %d.%02d V", (int)(voltage / 1000), (int)(voltage / 10) % 100);
+        lv_label_set_text_fmt(labels[15], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100);
+        lv_label_set_text_fmt(labels[16], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
+        lv_label_set_text_fmt(labels[17], "Domain: %d mV", (int)domainVoltage);
         
         lvgl_port_unlock();
     }
@@ -282,7 +280,7 @@ void activityScreen()
 
     // Create container for network info
     lv_obj_t* networkContainer = lv_obj_create(screenObjs.activityMainContainer);
-    lv_obj_set_size(networkContainer, 360, 200);
+    lv_obj_set_size(networkContainer, 360, 184);
     lv_obj_align(networkContainer, LV_ALIGN_TOP_LEFT, -24, 0);
     lv_obj_set_style_bg_opa(networkContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(networkContainer, 0, LV_PART_MAIN);
@@ -331,12 +329,13 @@ void activityScreen()
 
     // Create container for mining info
     lv_obj_t* miningContainer = lv_obj_create(screenObjs.activityMainContainer);
-    lv_obj_set_size(miningContainer, 304, 200);
+    lv_obj_set_size(miningContainer, 304, 184);
     lv_obj_align(miningContainer, LV_ALIGN_TOP_RIGHT, 16, 0);
     lv_obj_set_style_bg_opa(miningContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(miningContainer, 0, LV_PART_MAIN);
     lv_obj_set_style_border_width(miningContainer, 1, LV_PART_MAIN);
     lv_obj_set_style_border_color(miningContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_clear_flag(miningContainer, LV_OBJ_FLAG_SCROLLABLE);
     Serial.println("Mining Container Created");
 
     // Mining Container Label
@@ -374,37 +373,42 @@ void activityScreen()
     lv_label_set_text_fmt(sessionDiffLabel, "Session Diff: %llu k", i2cData.mining.sessionDiff / 1000);
     lv_obj_align(sessionDiffLabel, LV_ALIGN_TOP_LEFT, 16, 80);
     Serial.println("Session Difficulty Label Created");
-    // Shares Label
+
+    /*// Shares Label
     lv_obj_t* sharesLabel = lv_label_create(miningContainer);
     lv_obj_set_style_text_font(sharesLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(sharesLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_label_set_text_fmt(sharesLabel, "Shares: %u", i2cData.mining.shares);
     lv_obj_align(sharesLabel, LV_ALIGN_TOP_LEFT, 16, 104);
-    Serial.println("Shares Label Created");
+    Serial.println("Shares Label Created");*/
+   
     //accepted shares label
     lv_obj_t* acceptedSharesLabel = lv_label_create(miningContainer);
     lv_obj_set_style_text_font(acceptedSharesLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(acceptedSharesLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(acceptedSharesLabel, "Accepted: %u", i2cData.mining.acceptedShares);
-    lv_obj_align(acceptedSharesLabel, LV_ALIGN_TOP_LEFT, 16, 128);
+    lv_label_set_text_fmt(acceptedSharesLabel, "Accepted Shares: %u", i2cData.mining.acceptedShares);
+    lv_obj_align(acceptedSharesLabel, LV_ALIGN_TOP_LEFT, 16, 104);
     Serial.println("Accepted Shares Label Created");
     //rejected shares label
     lv_obj_t* rejectedSharesLabel = lv_label_create(miningContainer);
     lv_obj_set_style_text_font(rejectedSharesLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(rejectedSharesLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(rejectedSharesLabel, "Rejected: %u", i2cData.mining.rejectedShares);
-    lv_obj_align(rejectedSharesLabel, LV_ALIGN_TOP_LEFT, 16, 152);
+    lv_label_set_text_fmt(rejectedSharesLabel, "Rejected Shares: %u", i2cData.mining.rejectedShares);
+    lv_obj_align(rejectedSharesLabel, LV_ALIGN_TOP_LEFT, 16, 128);
     Serial.println("Rejected Shares Label Created");
-    // rejected shares percent label
+
+    /*// rejected shares percent label
     lv_obj_t* rejectedSharesPercentLabel = lv_label_create(miningContainer);
     lv_obj_set_style_text_font(rejectedSharesPercentLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(rejectedSharesPercentLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_label_set_text_fmt(rejectedSharesPercentLabel, "Reject Rate: %d.%02d%%", (int)i2cData.mining.rejectRatePercent, (int)(i2cData.mining.rejectRatePercent * 100) % 100);
     lv_obj_align(rejectedSharesPercentLabel, LV_ALIGN_TOP_LEFT, 16, 176);
-    Serial.println("Rejected Shares Percent Label Created");
+    Serial.println("Rejected Shares Percent Label Created");*/
+
+
     // Monitoring Container 
     lv_obj_t* monitoringContainer = lv_obj_create(screenObjs.activityMainContainer);
-    lv_obj_set_size(monitoringContainer, 304, 200);
+    lv_obj_set_size(monitoringContainer, 304, 152);
     lv_obj_align(monitoringContainer, LV_ALIGN_BOTTOM_RIGHT, 16, 0);
     Serial.println("Monitoring Container Created");
     lv_obj_set_style_bg_opa(monitoringContainer, LV_OPA_0, LV_PART_MAIN);
@@ -443,13 +447,15 @@ void activityScreen()
     lv_obj_t* uptimeLabel = lv_label_create(monitoringContainer);
     lv_obj_set_style_text_font(uptimeLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(uptimeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(uptimeLabel, "Uptime: %d", i2cData.monitoring.uptime);
+    lv_label_set_text_fmt(uptimeLabel, "Uptime: %u", i2cData.monitoring.uptime);
     lv_obj_align(uptimeLabel, LV_ALIGN_TOP_LEFT, 16, 80);
     Serial.println("Uptime Label Created");
+
+
     // Power Container
     lv_obj_t* powerContainer = lv_obj_create(screenObjs.activityMainContainer);
-    lv_obj_set_size(powerContainer, 304, 200);
-    lv_obj_align(powerContainer, LV_ALIGN_BOTTOM_LEFT, 16, 0);
+    lv_obj_set_size(powerContainer, 360, 152);
+    lv_obj_align(powerContainer, LV_ALIGN_BOTTOM_LEFT, -24, 0);
     lv_obj_set_style_bg_opa(powerContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(powerContainer, 1, LV_PART_MAIN);
     lv_obj_set_style_border_color(powerContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);    
@@ -465,14 +471,14 @@ void activityScreen()
     lv_obj_t* voltageLabel = lv_label_create(powerContainer);
     lv_obj_set_style_text_font(voltageLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(voltageLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(voltageLabel, "Voltage: %d.%02d V", (int)(i2cData.monitoring.powerStats.voltage / 1000), (int)(i2cData.monitoring.powerStats.voltage / 100) % 100);
+    lv_label_set_text_fmt(voltageLabel, "Voltage: %d.%02d V", (int)(i2cData.monitoring.powerStats.voltage / 1000), (int)(i2cData.monitoring.powerStats.voltage / 10) % 100);
     lv_obj_align(voltageLabel, LV_ALIGN_TOP_LEFT, 16, 8);
     Serial.println("Voltage Label Created");
     // current label
     lv_obj_t* currentLabel = lv_label_create(powerContainer);
     lv_obj_set_style_text_font(currentLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(currentLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(currentLabel, "Current: %d.%02d A", (int)(i2cData.monitoring.powerStats.current / 1000), (int)(i2cData.monitoring.powerStats.current / 100) % 100);
+    lv_label_set_text_fmt(currentLabel, "Current: %d.%02d A", (int)(i2cData.monitoring.powerStats.current / 1000), (int)(i2cData.monitoring.powerStats.current / 10) % 100);
     lv_obj_align(currentLabel, LV_ALIGN_TOP_LEFT, 16, 32);
     Serial.println("Current Label Created");
     // Power Label
@@ -493,13 +499,13 @@ void activityScreen()
 
 
 
-     static lv_obj_t* allLabels[20] = {
+     static lv_obj_t* allLabels[18] = {
         ssidLabel, ipLabel, wifiStatusLabel, poolUrlLabel,
         hashrateLabel, efficiencyLabel, 
-        bestDiffLabel, sessionDiffLabel, sharesLabel, acceptedSharesLabel, rejectedSharesLabel, rejectedSharesPercentLabel,
+        bestDiffLabel, sessionDiffLabel, acceptedSharesLabel, rejectedSharesLabel,
         tempLabel, fanSpeedLabel, asicFreqLabel, uptimeLabel, voltageLabel, currentLabel, powerLabel, domainVoltageLabel
     };
-    screenObjs.labelUpdateTimer = lv_timer_create(updateLabels, 1000, allLabels);
+    screenObjs.labelUpdateTimer = lv_timer_create(updateLabels, 2000, allLabels);
 
     //lv_obj_align(mainContainerLabel, LV_ALIGN_CENTER, 0, 0);  // Initial alignment 
     //lv_obj_add_style(mainContainerLabel, &mainContainerBorder, 0);
