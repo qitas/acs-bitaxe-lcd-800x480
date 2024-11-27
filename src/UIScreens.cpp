@@ -28,7 +28,8 @@ lv_timer_t* clockUpdateTimer = NULL;
 
 // Labels
 lv_obj_t* miningGraphFooterPoolLabel;
-lv_obj_t* miningGraphFooterHashrateLabel;
+lv_obj_t* miningGraphFooterDiffLabel;
+lv_obj_t* miningGraphHashrateLabel;
 lv_obj_t* miningGraphFooterRejectRatePercentLabel;
 lv_obj_t* clockLabel;
 lv_obj_t* dateLabel;
@@ -607,18 +608,33 @@ float calculateMovingAverage(float newValue)
 
 void hashrateGraph(lv_obj_t* parent)
 {
+    // Pool Footer Label
     miningGraphFooterPoolLabel = lv_label_create(parent);
     lv_label_set_text_fmt(miningGraphFooterPoolLabel, "Pool: %s", i2cData.network.poolUrl);
     lv_obj_set_style_text_font(miningGraphFooterPoolLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_align(miningGraphFooterPoolLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
-    lv_obj_set_width(miningGraphFooterPoolLabel, 280);
+    lv_obj_set_width(miningGraphFooterPoolLabel, 320);
     lv_label_set_long_mode(miningGraphFooterPoolLabel, LV_LABEL_LONG_CLIP);
     lv_obj_set_style_text_color(miningGraphFooterPoolLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_set_style_text_opa(miningGraphFooterPoolLabel, LV_OPA_100, LV_PART_MAIN);
-   // lv_obj_set_style_border_width(miningGraphFooterPoolLabel, 1, LV_PART_MAIN);
+    //lv_obj_set_style_border_width(miningGraphFooterPoolLabel, 1, LV_PART_MAIN);
    // lv_obj_set_style_border_color(miningGraphFooterPoolLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
-    lv_obj_align(miningGraphFooterPoolLabel, LV_ALIGN_BOTTOM_MID,-184, 0);
+    lv_obj_align(miningGraphFooterPoolLabel, LV_ALIGN_BOTTOM_LEFT,-16, 0);
 
+    // Diff Footer Label
+    miningGraphFooterDiffLabel = lv_label_create(parent);
+    lv_label_set_text_fmt(miningGraphFooterDiffLabel, "Difficulty: %s", i2cData.mining.sessionDiff);
+    lv_obj_set_style_text_font(miningGraphFooterDiffLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_align(miningGraphFooterDiffLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_set_width(miningGraphFooterDiffLabel, 152);
+    lv_label_set_long_mode(miningGraphFooterDiffLabel, LV_LABEL_LONG_CLIP);
+    lv_obj_set_style_text_color(miningGraphFooterDiffLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_text_opa(miningGraphFooterDiffLabel, LV_OPA_100, LV_PART_MAIN);
+    //lv_obj_set_style_border_width(miningGraphFooterDiffLabel, 1, LV_PART_MAIN);
+    //lv_obj_set_style_border_color(miningGraphFooterDiffLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
+    lv_obj_align(miningGraphFooterDiffLabel, LV_ALIGN_BOTTOM_MID, 72, 0);
+
+    // Reject Rate Footer Label
     miningGraphFooterRejectRatePercentLabel = lv_label_create(parent);
     lv_label_set_text_fmt(miningGraphFooterRejectRatePercentLabel, "Reject Rate: %d.%02d%%", (int)i2cData.mining.rejectRatePercent, (int)(i2cData.mining.rejectRatePercent * 100) % 100);
     lv_obj_set_style_text_font(miningGraphFooterRejectRatePercentLabel, &interMedium16_19px, LV_PART_MAIN);
@@ -631,23 +647,25 @@ void hashrateGraph(lv_obj_t* parent)
    // lv_obj_set_style_border_color(miningGraphFooterRejectRatePercentLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
     lv_obj_align(miningGraphFooterRejectRatePercentLabel, LV_ALIGN_BOTTOM_MID, 296, 0);
 
-    miningGraphFooterHashrateLabel = lv_label_create(parent);
-    lv_label_set_text_fmt(miningGraphFooterHashrateLabel, "Hashrate: %d GH/s", (int)i2cData.mining.hashrate);
-    lv_obj_set_style_text_font(miningGraphFooterHashrateLabel, &interMedium16_19px, LV_PART_MAIN);
-    lv_obj_set_style_text_align(miningGraphFooterHashrateLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
-    lv_obj_set_width(miningGraphFooterHashrateLabel, 184);
-    lv_label_set_long_mode(miningGraphFooterHashrateLabel, LV_LABEL_LONG_CLIP);
-    lv_obj_set_style_text_color(miningGraphFooterHashrateLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_set_style_text_opa(miningGraphFooterHashrateLabel, LV_OPA_100, LV_PART_MAIN);
-   // lv_obj_set_style_border_width(miningGraphFooterHashrateLabel, 1, LV_PART_MAIN);
-   // lv_obj_set_style_border_color(miningGraphFooterHashrateLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
-    lv_obj_align(miningGraphFooterHashrateLabel, LV_ALIGN_BOTTOM_MID, 56, 0);
-
+    // Hashrate Chart Label
     lv_obj_t* hashrateChartLabel = lv_label_create(parent);
     lv_label_set_text(hashrateChartLabel, "Hashrate");
     lv_obj_set_style_text_font(hashrateChartLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(hashrateChartLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_align(hashrateChartLabel, LV_ALIGN_TOP_LEFT, 24, -16);
+
+     // Hashrate Label
+    miningGraphHashrateLabel = lv_label_create(parent);
+    lv_label_set_text_fmt(miningGraphHashrateLabel, "%d.%02d GH/s", (int)i2cData.mining.hashrate, (int)(i2cData.mining.hashrate * 100) % 100);
+    lv_obj_set_style_text_font(miningGraphHashrateLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_align(miningGraphHashrateLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_set_width(miningGraphHashrateLabel, 296);
+    lv_label_set_long_mode(miningGraphHashrateLabel, LV_LABEL_LONG_CLIP);
+    lv_obj_set_style_text_color(miningGraphHashrateLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_text_opa(miningGraphHashrateLabel, LV_OPA_100, LV_PART_MAIN);
+    //lv_obj_set_style_border_width(miningGraphFooterHashrateLabel, 1, LV_PART_MAIN);
+    //lv_obj_set_style_border_color(miningGraphFooterHashrateLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
+    lv_obj_align(miningGraphHashrateLabel, LV_ALIGN_TOP_LEFT, 136, -16);
 
     lv_obj_t* miningStatusHashRateChart = lv_chart_create(parent);
     lv_obj_set_size(miningStatusHashRateChart, 648, 280);
@@ -715,8 +733,9 @@ void hashrateGraph(lv_obj_t* parent)
             
             // Batch all LVGL operations together
             lv_label_set_text_fmt(miningGraphFooterPoolLabel, "Pool: %s:%d", poolUrl, poolPort);
-            lv_label_set_text_fmt(miningGraphFooterHashrateLabel, "Hashrate: %d GH/s", (int)smoothedHashrate);
+            lv_label_set_text_fmt(miningGraphHashrateLabel, "%d.%02d GH/s", (int)currentHashrate, (int)(currentHashrate * 100) % 100);
             lv_label_set_text_fmt(miningGraphFooterRejectRatePercentLabel, "Reject Rate: %d.%02d%%", (int)rejectRatePercent, (int)(rejectRatePercent * 100) % 100);
+            lv_label_set_text_fmt(miningGraphFooterDiffLabel, "Difficulty: %s", i2cData.mining.sessionDiff);
             
             if (smoothedHashrate < minHashrateSeen || smoothedHashrate > maxHashrateSeen) {
                 if (smoothedHashrate < minHashrateSeen) minHashrateSeen = smoothedHashrate;
