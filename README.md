@@ -10,10 +10,24 @@ In Progress
 In Progress
 
 ## Requirements
-In Progress
 
-## Other Projects 
-In progress
+### VSCode
+### [PlatformIO](https://platformio.org/)
+### [LVGLv8.3](https://lvgl.io/)
+### [ESP32_Display_Panel](https://github.com/espressif/esp-display-panel)
+### [ESP32_IO_Expander](https://github.com/espressif/esp-io-expander)
+### [ESP32 Arduino](https://github.com/espressif/arduino-esp32)
+### [TimeLib](https://github.com/PaulStoffregen/Time)
+
+## PlatformIO Configuration
+### See platformio.ini for more information
+
+## Library Configuration
+
+PlatformIO will automatically install the required libraries when the project is opened. However, ESP32_Display_Panel needs to be configured. 
+
+In /backuplvgldrivers `ESP_Panel_conf.h` and `ESP_Panel_conf.c` need to replace the files in `/pio/libdeps/ESP-LCD/ESP_Display_Panel/src/`
+
 
 # Related Projects:
 ### [ACS Bitaxe Hardware](https://github.com/Advanced-Crypto-Services/acs-bitaxe)
