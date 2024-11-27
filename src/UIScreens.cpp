@@ -118,7 +118,7 @@ static void updateLabels(lv_timer_t* timer)
         lv_label_set_text_fmt(labels[12], "Temp: %d.%02d C", (int)temp, (int)(temp * 100) % 100);
         lv_label_set_text_fmt(labels[13], "Fan: %d RPM", fanSpeed);
         lv_label_set_text_fmt(labels[14], "ASIC: %d MHz", asicFreq);
-        lv_label_set_text_fmt(labels[15], "Uptime: %s", uptime);
+        lv_label_set_text_fmt(labels[15], "Uptime: %d", uptime);
         lv_label_set_text_fmt(labels[16], "Voltage: %d.%02d V", (int)voltage, (int)(voltage * 100) % 100);
         lv_label_set_text_fmt(labels[17], "Current: %d.%02d A", (int)current, (int)(current * 100) % 100);
         lv_label_set_text_fmt(labels[18], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
@@ -443,7 +443,7 @@ void activityScreen()
     lv_obj_t* uptimeLabel = lv_label_create(monitoringContainer);
     lv_obj_set_style_text_font(uptimeLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(uptimeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(uptimeLabel, "Uptime: %s", i2cData.monitoring.uptime);
+    lv_label_set_text_fmt(uptimeLabel, "Uptime: %d", i2cData.monitoring.uptime);
     lv_obj_align(uptimeLabel, LV_ALIGN_TOP_LEFT, 16, 80);
     Serial.println("Uptime Label Created");
     // Power Container
@@ -465,14 +465,14 @@ void activityScreen()
     lv_obj_t* voltageLabel = lv_label_create(powerContainer);
     lv_obj_set_style_text_font(voltageLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(voltageLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(voltageLabel, "Voltage: %d.%02d V", (int)i2cData.monitoring.powerStats.voltage, (int)(i2cData.monitoring.powerStats.voltage * 100) % 100);
+    lv_label_set_text_fmt(voltageLabel, "Voltage: %d.%02d V", (int)(i2cData.monitoring.powerStats.voltage / 1000), (int)(i2cData.monitoring.powerStats.voltage / 100) % 100);
     lv_obj_align(voltageLabel, LV_ALIGN_TOP_LEFT, 16, 8);
     Serial.println("Voltage Label Created");
     // current label
     lv_obj_t* currentLabel = lv_label_create(powerContainer);
     lv_obj_set_style_text_font(currentLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(currentLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(currentLabel, "Current: %d.%02d A", (int)i2cData.monitoring.powerStats.current, (int)(i2cData.monitoring.powerStats.current * 100) % 100);
+    lv_label_set_text_fmt(currentLabel, "Current: %d.%02d A", (int)(i2cData.monitoring.powerStats.current / 1000), (int)(i2cData.monitoring.powerStats.current / 100) % 100);
     lv_obj_align(currentLabel, LV_ALIGN_TOP_LEFT, 16, 32);
     Serial.println("Current Label Created");
     // Power Label
@@ -486,7 +486,7 @@ void activityScreen()
     lv_obj_t* domainVoltageLabel = lv_label_create(powerContainer);
     lv_obj_set_style_text_font(domainVoltageLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(domainVoltageLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(domainVoltageLabel, "Domain: %d.%02d V", (int)i2cData.monitoring.powerStats.domainVoltage, (int)(i2cData.monitoring.powerStats.domainVoltage * 100) % 100);
+    lv_label_set_text_fmt(domainVoltageLabel, "Asic Voltage: %d mV", (int)i2cData.monitoring.powerStats.domainVoltage);
     lv_obj_align(domainVoltageLabel, LV_ALIGN_TOP_LEFT, 16, 80);
     Serial.println("Domain Voltage Label Created");
     
