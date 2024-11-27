@@ -83,8 +83,6 @@ static void updateLabels(lv_timer_t* timer)
     char ssid[32], ip[32], status[32], pool[64];
     float hashrate = i2cData.mining.hashrate;
     float efficiency = i2cData.mining.efficiency;
-    uint64_t bestDiff = i2cData.mining.bestDiff;
-    uint64_t sessionDiff = i2cData.mining.sessionDiff;
     uint32_t shares = i2cData.mining.shares;
     float temp = i2cData.monitoring.temperatures[0];
     uint32_t acceptedShares = i2cData.mining.acceptedShares;
@@ -109,8 +107,8 @@ static void updateLabels(lv_timer_t* timer)
         lv_label_set_text_fmt(labels[3], "Pool 1: %s:%d\nPool 2: %s:%d", i2cData.network.poolUrl, i2cData.network.poolPort, i2cData.network.fallbackUrl, i2cData.network.fallbackPort);
         lv_label_set_text_fmt(labels[4], "Hashrate: %d.%02d GH/s", (int)hashrate, (int)(hashrate * 100) % 100);
         lv_label_set_text_fmt(labels[5], "Efficiency: %d.%02d W/TH", (int)efficiency, (int)(efficiency * 100) % 100);
-        lv_label_set_text_fmt(labels[6], "Best Diff: %llu k", bestDiff / 1000);
-        lv_label_set_text_fmt(labels[7], "Session Diff: %llu k", sessionDiff / 1000);
+        lv_label_set_text_fmt(labels[6], "Best Diff: %s", i2cData.mining.bestDiff);
+        lv_label_set_text_fmt(labels[7], "Session Diff: %s", i2cData.mining.sessionDiff);
         lv_label_set_text_fmt(labels[8], "Accepted: %u", acceptedShares);
         lv_label_set_text_fmt(labels[9], "Rejected: %u", rejectedShares);
         lv_label_set_text_fmt(labels[10], "Temp: %d°C", (int)temp);
@@ -363,14 +361,14 @@ void activityScreen()
     lv_obj_t* bestDiffLabel = lv_label_create(miningContainer);
     lv_obj_set_style_text_font(bestDiffLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(bestDiffLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(bestDiffLabel, "Best Diff: %llu k", i2cData.mining.bestDiff / 1000);
+    lv_label_set_text_fmt(bestDiffLabel, "Best Diff: %s", i2cData.mining.bestDiff);
     lv_obj_align(bestDiffLabel, LV_ALIGN_TOP_LEFT, 16, 56);
     Serial.println("Best Difficulty Label Created");
     // Session Difficulty Label
     lv_obj_t* sessionDiffLabel = lv_label_create(miningContainer);
     lv_obj_set_style_text_font(sessionDiffLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(sessionDiffLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_label_set_text_fmt(sessionDiffLabel, "Session Diff: %llu k", i2cData.mining.sessionDiff / 1000);
+    lv_label_set_text_fmt(sessionDiffLabel, "Session Diff: %s", i2cData.mining.sessionDiff);
     lv_obj_align(sessionDiffLabel, LV_ALIGN_TOP_LEFT, 16, 80);
     Serial.println("Session Difficulty Label Created");
 

@@ -90,10 +90,16 @@ void handleMiningData(uint8_t* buffer, uint8_t len)
             break;
         }
         case LVGL_REG_BEST_DIFF:
-            memcpy(&i2cData.mining.bestDiff, &buffer[2], __min(dataLen, MAX_UINT64_SIZE));
+            memcpy(i2cData.mining.bestDiff, &buffer[2], __min(dataLen, MAX_DIFF_LENGTH - 1));
+            i2cData.mining.bestDiff[dataLen] = '\0';  // Null terminate the string
+            Serial.print("Best Diff received: ");
+            Serial.println(i2cData.mining.bestDiff);
             break;
         case LVGL_REG_SESSION_DIFF:
-            memcpy(&i2cData.mining.sessionDiff, &buffer[2], __min(dataLen, MAX_UINT64_SIZE));
+            memcpy(i2cData.mining.sessionDiff, &buffer[2], __min(dataLen, MAX_DIFF_LENGTH - 1));
+            i2cData.mining.sessionDiff[dataLen] = '\0';  // Null terminate the string
+            Serial.print("Session Diff received: ");
+            Serial.println(i2cData.mining.sessionDiff);
             break;
         case LVGL_REG_SHARES:
         // Each share is 4 bytes, sent in the same I2C sequence. Accepted Shares first, then Rejected Shares

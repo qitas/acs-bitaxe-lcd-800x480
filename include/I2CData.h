@@ -57,6 +57,8 @@
 
 #define PSRAM_ATTR __attribute__((section(".psram")))
 
+#define MAX_DIFF_LENGTH 16
+
 // Network data structure
 struct NetworkData 
 {
@@ -75,8 +77,8 @@ struct MiningData
     float hashrate;
     float historicalHashrate;
     float efficiency;
-    uint64_t bestDiff;
-    uint64_t sessionDiff;
+    char bestDiff[MAX_DIFF_LENGTH];
+    char sessionDiff[MAX_DIFF_LENGTH];
     uint32_t shares;
     int acceptedShares;
     int rejectedShares;
