@@ -145,7 +145,11 @@ void handleMonitoringData(uint8_t* buffer, uint8_t len)
             break;
         }
         case LVGL_REG_ASIC_FREQ:
-            memcpy(&i2cData.monitoring.asicFrequency, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            float asicFreq;
+            memcpy(&asicFreq, &buffer[2], sizeof(float));
+            i2cData.monitoring.asicFrequency = asicFreq;
+            Serial.print("ASIC Frequency received: ");
+            Serial.println(i2cData.monitoring.asicFrequency);
             break;
         case LVGL_REG_FAN:
             memcpy(&i2cData.monitoring.fanSpeed, &buffer[2], __min(dataLen, MAX_UINT16_SIZE));
