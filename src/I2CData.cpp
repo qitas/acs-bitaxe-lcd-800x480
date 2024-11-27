@@ -130,9 +130,15 @@ void handleMonitoringData(uint8_t* buffer, uint8_t len)
     switch(reg) {
         case LVGL_REG_TEMPS: 
         {
-            // Only take the first temperature for now TODO: add all Temps
+            // Take the last 4 bytes from the buffer for Temp 1
             float temperature;
-            memcpy(&temperature, &buffer[2], sizeof(float));
+            uint8_t tempBytes[4] = {
+                buffer[len-4],
+                buffer[len-3],
+                buffer[len-2],
+                buffer[len-1]
+            };
+            memcpy(&temperature, tempBytes, sizeof(float));
             i2cData.monitoring.temperatures[0] = temperature;
             Serial.print("Temperature received: ");
             Serial.println(i2cData.monitoring.temperatures[0]);
