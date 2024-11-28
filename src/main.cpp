@@ -179,8 +179,9 @@ void loop() {
     // Monitor heap every second
     if (millis() - lastHeapCheck > 1000) {
         //monitorHeapAllocation();
-       // printMemoryInfo();
+        printMemoryInfo();
        // lastHeapCheck = millis();
+       lastHeapCheck = millis();
     }
 
     if (millis() - lastClockSync > 1000) {
