@@ -21,6 +21,7 @@ extern const lv_img_dsc_t wifi20by20;
 extern lv_obj_t* tabHome;
 extern lv_obj_t* tabMining;
 extern lv_obj_t* tabActivity;
+extern lv_obj_t* tabBitcoinNews;
 extern lv_obj_t* tabSettings;
 
 enum ScreenType 
@@ -29,6 +30,7 @@ enum ScreenType
     activeScreenHome,
     activeScreenMining,
     activeScreenActivity,
+    activeScreenBitcoinNews,
     activeScreenSettings
 };
 
@@ -65,4 +67,5 @@ extern void splashScreen();
 extern void homeScreen();
 extern void miningStatusScreen();
 extern void initalizeOneScreen();
-
+extern void bitcoinNewsScreen();
+extern void activityScreen();

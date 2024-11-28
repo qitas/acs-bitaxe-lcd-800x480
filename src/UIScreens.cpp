@@ -16,6 +16,7 @@
 lv_obj_t* tabHome = NULL;
 lv_obj_t* tabMining = NULL;
 lv_obj_t* tabActivity = NULL;
+lv_obj_t* tabBitcoinNews = NULL;
 lv_obj_t* tabSettings = NULL;
 
 // Screen objects
@@ -572,7 +573,7 @@ void initalizeOneScreen()
     activityScreen();
     homeScreen();
     hashrateGraph(screenObjs.miningMainContainer);
-    
+    bitcoinNewsScreen();
     
     // Now show the initial screen and start its timer
     lv_obj_clear_flag(screenObjs.homeMainContainer, LV_OBJ_FLAG_HIDDEN);
@@ -758,4 +759,29 @@ void hashrateGraph(lv_obj_t* parent)
 
 }
 
+void bitcoinNewsScreen()
+{
+    activeScreen = activeScreenBitcoinNews;
+
+    lv_obj_t* btcPriceContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
+    lv_obj_set_size(btcPriceContainer, 320, 240);
+    lv_obj_align(btcPriceContainer, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_obj_set_style_bg_opa(btcPriceContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_width(btcPriceContainer, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(btcPriceContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+
+    // BTC Price Label
+    lv_obj_t* btcPriceLabel = lv_label_create(btcPriceContainer);
+    lv_label_set_text(btcPriceLabel, "BTC PRICE USD");
+    lv_obj_set_style_text_font(btcPriceLabel, &interExtraBold56, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcPriceLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcPriceLabel, LV_ALIGN_TOP_LEFT, 0, 0);
+
+    // BTC Price Value Label
+    lv_obj_t* btcPriceValueLabel = lv_label_create(btcPriceContainer);
+    lv_label_set_text_fmt(btcPriceValueLabel, "$%d,%03d", (int)(i2cData.api.btcPriceUSD/1000), (int)(i2cData.api.btcPriceUSD) % 1000);
+    lv_obj_set_style_text_font(btcPriceValueLabel, &interExtraBold32, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcPriceValueLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcPriceValueLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
+}
 

@@ -10,6 +10,7 @@
 extern lv_obj_t* tabHome;
 extern lv_obj_t* tabMining;
 extern lv_obj_t* tabActivity;
+extern lv_obj_t* tabBitcoinNews;
 extern lv_obj_t* tabSettings;
 
 // Current active screen

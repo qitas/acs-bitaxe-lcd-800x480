@@ -45,6 +45,9 @@ void switchToScreen(ScreenType newScreen)
             lv_obj_clear_flag(screenObjs.activityMainContainer, LV_OBJ_FLAG_HIDDEN);
             lv_timer_resume(screenObjs.labelUpdateTimer);
             break;
+        case activeScreenBitcoinNews:
+            lv_obj_clear_flag(screenObjs.bitcoinNewsMainContainer, LV_OBJ_FLAG_HIDDEN);
+            break;
     }
     // Update the active screen to new screen
     activeScreen = newScreen;
@@ -64,8 +67,8 @@ void tabIconEventHandler(lv_event_t* tabEvent)
             switchToScreen(activeScreenMining);
         } else if (clickedTab == tabActivity) {
             switchToScreen(activeScreenActivity);
-        } else if (clickedTab == tabSettings) {
-            switchToScreen(activeScreenSettings);
+        } else if (clickedTab == tabBitcoinNews) {
+            switchToScreen(activeScreenBitcoinNews);
         }
     }
 }

@@ -58,17 +58,17 @@ void lvglTabIcons(lv_obj_t*parent)
     lv_obj_add_event_cb(tabActivity, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
 
     
-    tabSettings = lv_img_create(tab);
-    lv_img_set_src(tabSettings, "S:/bitcoin.png");
-   // lv_img_set_zoom(tabSettings, 597);
-    lv_obj_align(tabSettings, LV_ALIGN_CENTER, 0, 164);
-    lv_obj_add_flag(tabSettings, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_set_ext_click_area(tabSettings, 24);
+    tabBitcoinNews = lv_img_create(tab);
+    lv_img_set_src(tabBitcoinNews, "S:/bitcoin.png");
+   // lv_img_set_zoom(tabBitcoinNews, 597);
+    lv_obj_align(tabBitcoinNews, LV_ALIGN_CENTER, 0, 164);
+    lv_obj_add_flag(tabBitcoinNews, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_ext_click_area(tabBitcoinNews, 24);
     // Add these lines for debug border
    // lv_obj_set_style_border_width(tabSettings, 2, LV_PART_MAIN);
    // lv_obj_set_style_border_color(tabSettings, lv_color_hex(0xFF0000), LV_PART_MAIN);
    // lv_obj_set_style_border_opa(tabSettings, LV_OPA_50, LV_PART_MAIN);
-    lv_obj_add_event_cb(tabSettings, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(tabBitcoinNews, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
 }
 
 void backgroundImage(lv_obj_t* parent)
