@@ -45,6 +45,10 @@
 #define LVGL_REG_API_NETWORK_HASHRATE 0x61 // double
 #define LVGL_REG_API_NETWORK_DIFFICULTY 0x62 // double
 #define LVGL_REG_API_BLOCK_HEIGHT 0x63 // uint32
+#define LVGL_REG_API_DIFFICULTY_PROGRESS 0x64 // double
+#define LVGL_REG_API_DIFFICULTY_CHANGE 0x65 // double
+#define LVGL_REG_API_REMAINING_BLOCKS 0x66 // uint32
+#define LVGL_REG_API_REMAINING_TIME 0x67 // uint32
 
 // Maximum lengths for strings
 #define MAX_SSID_LENGTH       32
@@ -124,6 +128,11 @@ struct APIData
     double networkHashrate;
     double networkDifficulty;
     uint32_t blockHeight;
+    double difficultyProgressPercent;
+    double difficultyChangePercent;
+    uint32_t remainingBlocksToDifficultyAdjustment;
+    uint32_t remainingTimeToDifficultyAdjustment;
+
 };
 
 // Global data container
