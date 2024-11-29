@@ -764,8 +764,8 @@ void bitcoinNewsScreen()
     activeScreen = activeScreenBitcoinNews;
 
     lv_obj_t* btcPriceContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
-    lv_obj_set_size(btcPriceContainer, 320, 240);
-    lv_obj_align(btcPriceContainer, LV_ALIGN_TOP_LEFT, -16, 0);
+    lv_obj_set_size(btcPriceContainer, 320, 192 );
+    lv_obj_align(btcPriceContainer, LV_ALIGN_TOP_LEFT, -16, -16);
     lv_obj_set_style_bg_opa(btcPriceContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(btcPriceContainer, 2, LV_PART_MAIN);
     lv_obj_set_style_border_color(btcPriceContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
@@ -773,22 +773,22 @@ void bitcoinNewsScreen()
     // BTC Price Label
     lv_obj_t* btcPriceLabel = lv_label_create(btcPriceContainer);
     lv_label_set_text(btcPriceLabel, "BTC PRICE");
-    lv_obj_set_style_text_font(btcPriceLabel, &interExtraBold32, LV_PART_MAIN);
+    lv_obj_set_style_text_font(btcPriceLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcPriceLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcPriceLabel, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_obj_align(btcPriceLabel, LV_ALIGN_TOP_LEFT, 0, -16);
     lv_obj_clear_flag(btcPriceContainer, LV_OBJ_FLAG_SCROLLABLE);
 
     // BTC Price Value Label
     lv_obj_t* btcPriceValueLabel = lv_label_create(btcPriceContainer);
     lv_label_set_text_fmt(btcPriceValueLabel, "$%d,%03d", (int)(i2cData.api.btcPriceUSD/1000), (int)(i2cData.api.btcPriceUSD) % 1000);
-    lv_obj_set_style_text_font(btcPriceValueLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_font(btcPriceValueLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcPriceValueLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_align(btcPriceValueLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
 
     // BTC Hashrate and Difficulty Container
     lv_obj_t* btcHashrateDiffContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
-    lv_obj_set_size(btcHashrateDiffContainer, 320, 240);
-    lv_obj_align(btcHashrateDiffContainer, LV_ALIGN_TOP_RIGHT, 16, 0);
+    lv_obj_set_size(btcHashrateDiffContainer, 320, 192);
+    lv_obj_align(btcHashrateDiffContainer, LV_ALIGN_TOP_RIGHT, 16, -16);
     lv_obj_set_style_bg_opa(btcHashrateDiffContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(btcHashrateDiffContainer, 2, LV_PART_MAIN);
     lv_obj_set_style_border_color(btcHashrateDiffContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
@@ -798,21 +798,38 @@ void bitcoinNewsScreen()
     lv_label_set_text(btcNetworkMiningContainerLabel, "BTC NETWORK");
     lv_obj_set_style_text_font(btcNetworkMiningContainerLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcNetworkMiningContainerLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcNetworkMiningContainerLabel, LV_ALIGN_TOP_LEFT, 0, 0);
+    lv_obj_align(btcNetworkMiningContainerLabel, LV_ALIGN_TOP_LEFT, 0, -16);
     lv_obj_clear_flag(btcNetworkMiningContainerLabel, LV_OBJ_FLAG_SCROLLABLE);
 
     // BTC Network Hashrate Label
     lv_obj_t* btcNetworkHashrateLabel = lv_label_create(btcHashrateDiffContainer);
     lv_label_set_text_fmt(btcNetworkHashrateLabel, "%d.%02d EH/s", (int)(i2cData.api.networkHashrate / 1e18), (int)(i2cData.api.networkHashrate / 1e18) % 100);
-    lv_obj_set_style_text_font(btcNetworkHashrateLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_font(btcNetworkHashrateLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcNetworkHashrateLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_align(btcNetworkHashrateLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
 
-    // BTC Network Difficulty Label
-    lv_obj_t* btcNetworkDifficultyLabel = lv_label_create(btcHashrateDiffContainer);
-    lv_label_set_text_fmt(btcNetworkDifficultyLabel, "Difficulty: %d", i2cData.api.networkDifficulty);
-    lv_obj_set_style_text_font(btcNetworkDifficultyLabel, &interMedium24, LV_PART_MAIN);
-    lv_obj_set_style_text_color(btcNetworkDifficultyLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcNetworkDifficultyLabel, LV_ALIGN_TOP_RIGHT, 0, 96);
+    // BTC Network Fee Label
+    lv_obj_t* btcNetworkFeeLabel = lv_label_create(btcHashrateDiffContainer);
+    lv_label_set_text_fmt(btcNetworkFeeLabel, "Network Fee:"); // TODO: Add Network Fee
+    lv_obj_set_style_text_font(btcNetworkFeeLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcNetworkFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcNetworkFeeLabel, LV_ALIGN_TOP_RIGHT, 0, 96);
+
+    // BTC Difficulty Stats Container
+    lv_obj_t* btcDifficultyStatsContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
+    lv_obj_set_size(btcDifficultyStatsContainer, 656, 184);
+    lv_obj_align(btcDifficultyStatsContainer, LV_ALIGN_BOTTOM_MID, 0, 16);
+    lv_obj_set_style_bg_opa(btcDifficultyStatsContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_width(btcDifficultyStatsContainer, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(btcDifficultyStatsContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+
+    // BTC Difficulty Stats Label
+    lv_obj_t* btcDifficultyStatsLabel = lv_label_create(btcDifficultyStatsContainer);
+    lv_label_set_text(btcDifficultyStatsLabel, "DIFFICULTY STATS");
+    lv_obj_set_style_text_font(btcDifficultyStatsLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcDifficultyStatsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_text_align(btcDifficultyStatsLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_align(btcDifficultyStatsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(btcDifficultyStatsLabel, LV_OBJ_FLAG_SCROLLABLE);
 }
 
