@@ -16,7 +16,6 @@
 #define LVGL_REG_POOL_URL       0x24
 #define LVGL_REG_FALLBACK_URL   0x25
 #define LVGL_REG_POOL_PORTS     0x26
-#define LVGL_REG_PORTS         0x26
 
 // Mining data registers (5 second updates)
 #define LVGL_REG_HASHRATE        0x30
@@ -64,6 +63,7 @@
 #define PSRAM_ATTR __attribute__((section(".psram")))
 
 #define MAX_DIFF_LENGTH 16
+#define I2C_BUFFER_SIZE 512
 
 // Network data structure
 struct NetworkData 
@@ -140,9 +140,12 @@ struct I2CDataContainer
 extern uint32_t byteCount;
 extern TwoWire Wire2;
 extern PSRAM_ATTR I2CDataContainer i2cData;
-
+extern uint8_t* i2cBuffer;
 // Function declarations
 extern void onRequest();
 extern void onReceive(int len);
 extern void initI2CSlave();
 extern uint32_t keepClockTime();
+extern void resetI2C();
+extern void checkI2CHealth();
+extern void initI2CBuffer();

@@ -12,6 +12,64 @@ uint32_t PSRAM_ATTR byteCount = 0;
 TwoWire Wire2 = TwoWire(1);
 I2CDataContainer PSRAM_ATTR i2cData = {0};
 
+static bool i2cNeedsReset = false;
+static uint32_t lastErrorTime = 0;
+static uint32_t errorCount = 0;
+#define ERROR_THRESHOLD 25        // Number of errors before forcing reset
+#define ERROR_WINDOW 60000       // Time window for counting errors (60 seconds)
+
+// At file scope
+uint8_t* i2cBuffer = nullptr;
+
+void initI2CBuffer() {
+    if (i2cBuffer == nullptr) {
+        i2cBuffer = (uint8_t*)heap_caps_calloc(I2C_BUFFER_SIZE, sizeof(uint8_t), MALLOC_CAP_8BIT);
+    }
+}
+
+void freeI2CBuffer() {
+    if (i2cBuffer != nullptr) {
+        heap_caps_free(i2cBuffer);
+        i2cBuffer = nullptr;
+    }
+}
+
+// Resetting the I2C bus to avoid memory corruption due to accumulated errors
+void resetI2C() {
+    Serial.println("Starting I2C reset...");
+    
+    portDISABLE_INTERRUPTS();
+    
+    Wire2.end();
+    
+    // Free and reinitialize the I2C buffer
+    freeI2CBuffer();
+    initI2CBuffer();
+    
+    errorCount = 0;
+    i2cNeedsReset = false;
+    
+    delay(100);
+    
+    Wire2.onReceive(onReceive);
+    Wire2.onRequest(onRequest);
+    Wire2.setPins(i2cSlaveSDA, i2cSlaveSCL);
+    Wire2.setBufferSize(512);
+    
+    bool begun = Wire2.begin((uint8_t)i2cSlaveAddress);
+    
+    portENABLE_INTERRUPTS();
+    
+    if (begun) {
+        Serial.println("I2C bus reset completed successfully");
+    } else {
+        Serial.println("I2C bus reset failed - will try again later");
+        i2cNeedsReset = true;
+    }
+    
+    memset(&i2cData, 0, sizeof(I2CDataContainer));
+}
+
 // Data handling functions
 void handleNetworkData(uint8_t* buffer, uint8_t len) 
 {
@@ -368,48 +426,81 @@ const char* getRegisterName(uint8_t reg)
 
 // Modified onReceive function
 void onReceive(int len) {
-    if (len < MIN_MESSAGE_LENGTH) return;
-    
-    // Use static buffer to avoid stack issues
-    static uint8_t buffer[I2C_BUFFER_SIZE] = {0};
-    int bytesRead = 0;
-    
-    // Read with bounds checking
-    while (Wire2.available() && bytesRead < I2C_BUFFER_SIZE) {
-        buffer[bytesRead] = Wire2.read();
-        bytesRead++;
+    if (i2cBuffer == nullptr) {
+        initI2CBuffer();
     }
-
-    // Flush any remaining bytes
-    while (Wire2.available()) {
-        Wire2.read();
-    }
-
-    // Verify we have enough data for the claimed length
-    uint8_t reg = buffer[0];
-    uint8_t dataLen = buffer[1];
-    if (bytesRead < (dataLen + 2)) {
-        Serial.printf("Error: Incomplete message received. Expected %d bytes, got %d\n", 
-                     dataLen + 2, bytesRead);
+    
+    if (i2cNeedsReset) {
+        resetI2C();
         return;
     }
 
-    Serial.printf("onReceive[%d] Register: %s (0x%02X): ", len, getRegisterName(reg), reg);
+    // Use i2cBuffer instead of static buffer
+    memset(i2cBuffer, 0, I2C_BUFFER_SIZE);
     
-    for (int i = 0; i < bytesRead; i++) 
-    {
-        Serial.printf("%02X ", buffer[i]);
+    // Read with timeout
+    uint32_t startTime = millis();
+    int bytesRead = 0;
+    
+    while (Wire2.available() && bytesRead < I2C_BUFFER_SIZE && 
+           (millis() - startTime) < 50) {  // 50ms timeout
+        i2cBuffer[bytesRead] = Wire2.read();
+        bytesRead++;
     }
-    Serial.println();
+
+    // Check for timeout or incomplete read
+    if (Wire2.available() || (bytesRead != len)) {
+        Serial.printf("Error: Read timeout or length mismatch. Expected %d, got %d\n", 
+                     len, bytesRead);
+        errorCount++;
+        Serial.printf("Error count: %d\n", errorCount);
+        
+        // Flush remaining bytes
+        while (Wire2.available()) 
+        {
+            Wire2.read();
+        }
+        
+        if (errorCount >= ERROR_THRESHOLD) 
+        {
+            Serial.println("Error threshold reached, scheduling I2C reset");
+            i2cNeedsReset = true;
+        }
+        return;
+    }
+
+    // Validate message structure
+    uint8_t reg = i2cBuffer[0];
+    uint8_t dataLen = i2cBuffer[1];
     
-    if (reg >= 0x21 && reg <= 0x26) handleNetworkData(buffer, bytesRead);
-    else if (reg >= 0x30 && reg <= 0x35) handleMiningData(buffer, bytesRead);
-    else if (reg >= 0x40 && reg <= 0x45) handleMonitoringData(buffer, bytesRead);
-    else if (reg >= 0x50 && reg <= 0x54) handleDeviceStatus(buffer, bytesRead);
-    else if (reg >= 0x60 && reg <= 0x63) handleAPIData(buffer, bytesRead);
+    if (dataLen > (I2C_BUFFER_SIZE - 2) || (dataLen + 2) != bytesRead) 
+    {
+        Serial.printf("Error: Invalid data length. Claimed: %d, Actual: %d\n", 
+                     dataLen, bytesRead - 2);
+        errorCount++;
+        Serial.printf("Error count: %d\n", errorCount);
+        if (errorCount >= ERROR_THRESHOLD) 
+        {
+            Serial.println("Error threshold reached, scheduling I2C reset");
+            i2cNeedsReset = true;
+        }
+        return;
+    }
+
+    // If we got here, we have a valid message
+    //errorCount = 0;  // Reset error count on successful message
+
+    // Process the message (existing code)
+    if (reg >= 0x21 && reg <= 0x26) handleNetworkData(i2cBuffer, bytesRead);
+    else if (reg >= 0x30 && reg <= 0x35) handleMiningData(i2cBuffer, bytesRead);
+    else if (reg >= 0x40 && reg <= 0x45) handleMonitoringData(i2cBuffer, bytesRead);
+    else if (reg >= 0x50 && reg <= 0x54) handleDeviceStatus(i2cBuffer, bytesRead);
+    else if (reg >= 0x60 && reg <= 0x63) handleAPIData(i2cBuffer, bytesRead);
     else 
     {
         Serial.printf("Error: Register 0x%02X outside of valid ranges\n", reg);
+        errorCount++;
+        Serial.printf("Error count: %d\n", errorCount);
     }
 }
 
@@ -427,7 +518,7 @@ void initI2CSlave() {
     Wire2.onReceive(onReceive);
     Wire2.onRequest(onRequest);
     Wire2.setPins(i2cSlaveSDA, i2cSlaveSCL);
-    Wire2.setBufferSize(512);
+    Wire2.setBufferSize(I2C_BUFFER_SIZE);
     Wire2.begin((uint8_t)i2cSlaveAddress);
 }
 
@@ -466,4 +557,19 @@ uint32_t keepClockTime()
         adjustTime(-6 * 3600); //to do make this user adjustable
     }
     return currentTime;
+}
+
+// Add a periodic check in your main loop
+void checkI2CHealth() {
+    static uint32_t lastCheck = 0;
+    const uint32_t CHECK_INTERVAL = 5000;  // Check every 5 seconds
+
+    if (millis() - lastCheck > CHECK_INTERVAL) {
+        lastCheck = millis();
+        
+        // Perform reset if needed
+        if (i2cNeedsReset) {
+            resetI2C();
+        }
+    }
 }

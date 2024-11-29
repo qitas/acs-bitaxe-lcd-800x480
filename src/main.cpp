@@ -1,4 +1,3 @@
-
 #include <Arduino.h>
 #include <SPIFFS.h>
 #include <esp_heap_caps.h>
@@ -81,6 +80,7 @@ void printMemoryInfo() {
 
 void setup()
 {
+    initI2CBuffer();
     if(!psramFound()) {
         Serial.println("PSRAM not found, halting!");
         while(1) {
@@ -172,10 +172,10 @@ void setup()
 
 void loop() {
  
+    checkI2CHealth();
+
     static uint32_t lastHeapCheck = 0;
     static uint32_t lastClockSync = 0;
-
-    
     // Monitor heap every second
     if (millis() - lastHeapCheck > 1000) {
         //monitorHeapAllocation();
@@ -190,5 +190,10 @@ void loop() {
         Serial.printf("Clock synced to: %02d/%02d/%04d %02d:%02d:%02d\n", 
             month(), day(), year(),
             hour(), minute(), second());
+    }
+
+    // Add buffer check to health check
+    if (i2cBuffer == nullptr) {
+        initI2CBuffer();
     }
 }
