@@ -38,8 +38,6 @@ void freeI2CBuffer() {
 void resetI2C() {
     Serial.println("Starting I2C reset...");
     
-    //portDISABLE_INTERRUPTS();
-    
     Wire2.end();
     Serial.println("I2C bus ended");
     
@@ -66,8 +64,6 @@ void resetI2C() {
     bool begun = Wire2.begin((uint8_t)i2cSlaveAddress);
     Serial.println("I2C begun");
     
-    //portENABLE_INTERRUPTS();
-    
     if (begun) {
         Serial.println("I2C bus reset completed successfully");
     } else {
@@ -75,7 +71,7 @@ void resetI2C() {
         i2cNeedsReset = true;
     }
     
-    memset(&i2cData, 0, sizeof(I2CDataContainer));
+    //memset(&i2cData, 0, sizeof(I2CDataContainer));
 }
 
 // Data handling functions
