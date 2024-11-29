@@ -44,10 +44,10 @@ void resetI2C() {
     Serial.println("I2C bus ended");
     
     // Free and reinitialize the I2C buffer
-    freeI2CBuffer();
-    Serial.println("I2C buffer freed");
-    initI2CBuffer();
-    Serial.println("I2C buffer initialized");
+    //freeI2CBuffer();
+    //Serial.println("I2C buffer freed");
+    //initI2CBuffer();
+    //Serial.println("I2C buffer initialized");
     
     errorCount = 0;
     i2cNeedsReset = false;
@@ -60,7 +60,7 @@ void resetI2C() {
     Serial.println("I2C onRequest set");
     Wire2.setPins(i2cSlaveSDA, i2cSlaveSCL);
     Serial.println("I2C pins set");
-    Wire2.setBufferSize(512);
+    Wire2.setBufferSize(I2C_BUFFER_SIZE);
     Serial.println("I2C buffer size set");
     
     bool begun = Wire2.begin((uint8_t)i2cSlaveAddress);
@@ -533,7 +533,7 @@ uint32_t keepClockTime()
 
     portENTER_CRITICAL(&timeMux);
     
-    if (i2cData.status.clockSync != lastSyncTime) 
+    if (i2cData.status.clockSync > lastSyncTime) 
     {
         lastSyncMillis = millis();
         lastSyncTime = i2cData.status.clockSync;
