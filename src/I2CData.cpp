@@ -111,8 +111,6 @@ void handleNetworkData(uint8_t* buffer, uint8_t len)
         case LVGL_REG_POOL_PORTS:
                 if (dataLen >= 4) 
             {
-                    memset(i2cData.network.poolUrl, 0, MAX_URL_LENGTH);
-                    memset(i2cData.network.fallbackUrl, 0, MAX_URL_LENGTH);
                 i2cData.network.poolPort = (buffer[3] << 8) | buffer[2];
                 i2cData.network.fallbackPort = (buffer[5] << 8) | buffer[4];
                 Serial.printf("Pool: %s : %d, Fallback: %s : %d\n", i2cData.network.poolUrl, i2cData.network.poolPort, i2cData.network.fallbackUrl, i2cData.network.fallbackPort);
