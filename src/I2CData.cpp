@@ -38,13 +38,16 @@ void freeI2CBuffer() {
 void resetI2C() {
     Serial.println("Starting I2C reset...");
     
-    portDISABLE_INTERRUPTS();
+    //portDISABLE_INTERRUPTS();
     
     Wire2.end();
+    Serial.println("I2C bus ended");
     
     // Free and reinitialize the I2C buffer
     freeI2CBuffer();
+    Serial.println("I2C buffer freed");
     initI2CBuffer();
+    Serial.println("I2C buffer initialized");
     
     errorCount = 0;
     i2cNeedsReset = false;
@@ -52,13 +55,18 @@ void resetI2C() {
     delay(100);
     
     Wire2.onReceive(onReceive);
+    Serial.println("I2C onReceive set");
     Wire2.onRequest(onRequest);
+    Serial.println("I2C onRequest set");
     Wire2.setPins(i2cSlaveSDA, i2cSlaveSCL);
+    Serial.println("I2C pins set");
     Wire2.setBufferSize(512);
+    Serial.println("I2C buffer size set");
     
     bool begun = Wire2.begin((uint8_t)i2cSlaveAddress);
+    Serial.println("I2C begun");
     
-    portENABLE_INTERRUPTS();
+    //portENABLE_INTERRUPTS();
     
     if (begun) {
         Serial.println("I2C bus reset completed successfully");
@@ -428,11 +436,6 @@ const char* getRegisterName(uint8_t reg)
 void onReceive(int len) {
     if (i2cBuffer == nullptr) {
         initI2CBuffer();
-    }
-    
-    if (i2cNeedsReset) {
-        resetI2C();
-        return;
     }
 
     // Use i2cBuffer instead of static buffer
