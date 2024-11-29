@@ -20,13 +20,16 @@ void switchToScreen(ScreenType newScreen)
     lv_obj_add_flag(screenObjs.activityMainContainer, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(screenObjs.bitcoinNewsMainContainer, LV_OBJ_FLAG_HIDDEN);
     // Pause all timers
-     if (screenObjs.labelUpdateTimer) {
+    if (screenObjs.labelUpdateTimer) 
+    {
         lv_timer_pause(screenObjs.labelUpdateTimer);
     }
-    if (screenObjs.chartUpdateTimer) {
+    if (screenObjs.chartUpdateTimer) 
+    {
         lv_timer_pause(screenObjs.chartUpdateTimer);
     }
-    if (screenObjs.clockTimer) {
+    if (screenObjs.clockTimer) 
+    {
         lv_timer_pause(screenObjs.clockTimer);
     }
 

@@ -99,7 +99,8 @@ static void updateLabels(lv_timer_t* timer)
     float domainVoltage = i2cData.monitoring.powerStats.domainVoltage;
     
     // Lock for LVGL operations
-    if (lvgl_port_lock(10)) {  // 10ms timeout
+    if (lvgl_port_lock(10)) 
+    {  // 10ms timeout
         lv_obj_t** labels = (lv_obj_t**)timer->user_data;
         
         // Batch all LVGL operations together
@@ -201,7 +202,8 @@ void homeScreen()
     //lv_obj_set_style_border_color(dateLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
 
     // Create the clock timer
-    screenObjs.clockTimer = lv_timer_create([](lv_timer_t* timer) {
+    screenObjs.clockTimer = lv_timer_create([](lv_timer_t* timer) 
+    {
        // Get values outside the lock
         uint8_t h = hourFormat12();
         uint8_t m = minute();
@@ -213,7 +215,8 @@ void homeScreen()
         bool isAm = isAM();
 
         // Lock for LVGL operations
-        if (lvgl_port_lock(10)) {  // 10ms timeout
+        if (lvgl_port_lock(10)) 
+        {  // 10ms timeout
             
             // Check if the time is before 2000, This is used to check if the time has been set
             if (now() < 946684800) 
@@ -499,7 +502,8 @@ void activityScreen()
 
 
 
-     static lv_obj_t* allLabels[18] = {
+     static lv_obj_t* allLabels[18] = 
+    {
         ssidLabel, ipLabel, wifiStatusLabel, poolUrlLabel,
         hashrateLabel, efficiencyLabel, 
         bestDiffLabel, sessionDiffLabel, acceptedSharesLabel, rejectedSharesLabel,
@@ -579,13 +583,16 @@ void initalizeOneScreen()
     lv_obj_clear_flag(screenObjs.homeMainContainer, LV_OBJ_FLAG_HIDDEN);
     
     // Create timers only after all objects are initialized
-    if (screenObjs.labelUpdateTimer) {
+    if (screenObjs.labelUpdateTimer) 
+    {
         lv_timer_pause(screenObjs.labelUpdateTimer);
     }
-    if (screenObjs.chartUpdateTimer) {
+    if (screenObjs.chartUpdateTimer) 
+    {
         lv_timer_pause(screenObjs.chartUpdateTimer);
     }
-    if (screenObjs.clockTimer) {
+    if (screenObjs.clockTimer) 
+    {
         lv_timer_pause(screenObjs.clockTimer);
     }
     // Start home screen timer
@@ -601,7 +608,8 @@ float calculateMovingAverage(float newValue)
     bufferIndex = (bufferIndex + 1) % SMOOTHING_WINDOW_SIZE;
     
     float sum = 0;
-    for (int i = 0; i < SMOOTHING_WINDOW_SIZE; i++) {
+    for (int i = 0; i < SMOOTHING_WINDOW_SIZE; i++) 
+    {
         sum += hashrateBuffer[i];
     }
     return sum / SMOOTHING_WINDOW_SIZE;

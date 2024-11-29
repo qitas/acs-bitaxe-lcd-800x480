@@ -21,21 +21,26 @@ static uint32_t errorCount = 0;
 // At file scope
 uint8_t* i2cBuffer = nullptr;
 
-void initI2CBuffer() {
-    if (i2cBuffer == nullptr) {
+void initI2CBuffer() 
+{
+    if (i2cBuffer == nullptr) 
+    {
         i2cBuffer = (uint8_t*)heap_caps_calloc(I2C_BUFFER_SIZE, sizeof(uint8_t), MALLOC_CAP_8BIT);
     }
 }
 
-void freeI2CBuffer() {
-    if (i2cBuffer != nullptr) {
+void freeI2CBuffer() 
+{
+    if (i2cBuffer != nullptr) 
+    {
         heap_caps_free(i2cBuffer);
         i2cBuffer = nullptr;
     }
 }
 
 // Resetting the I2C bus to avoid memory corruption due to accumulated errors
-void resetI2C() {
+void resetI2C() 
+{
     Serial.println("Starting I2C reset...");
     
     Wire2.end();
@@ -61,12 +66,15 @@ void resetI2C() {
     Wire2.setBufferSize(I2C_BUFFER_SIZE);
     Serial.println("I2C buffer size set");
     
-    bool begun = Wire2.begin((uint8_t)i2cSlaveAddress);
+    bool beginResult = Wire2.begin((uint8_t)i2cSlaveAddress);
     Serial.println("I2C begun");
     
-    if (begun) {
+    if (beginResult) 
+    {
         Serial.println("I2C bus reset completed successfully");
-    } else {
+    } 
+    else 
+    {
         Serial.println("I2C bus reset failed - will try again later");
         i2cNeedsReset = true;
     }
@@ -218,7 +226,8 @@ void handleMonitoringData(uint8_t* buffer, uint8_t len)
             // Take the last 4 bytes from the buffer for Temp 1
             float temperature;
             memset(&temperature, 0, sizeof(float));
-            uint8_t tempBytes[4] = {
+            uint8_t tempBytes[4] = 
+            {
                 buffer[len-4],
                 buffer[len-3],
                 buffer[len-2],
@@ -459,8 +468,10 @@ const char* getRegisterName(uint8_t reg)
 #define MIN_MESSAGE_LENGTH 2  // Register + Length bytes
 
 // Modified onReceive function
-void onReceive(int len) {
-    if (i2cBuffer == nullptr) {
+void onReceive(int len) 
+{
+    if (i2cBuffer == nullptr) 
+    {
         initI2CBuffer();
     }
 
@@ -472,13 +483,15 @@ void onReceive(int len) {
     int bytesRead = 0;
     
     while (Wire2.available() && bytesRead < I2C_BUFFER_SIZE && 
-           (millis() - startTime) < 50) {  // 50ms timeout
+           (millis() - startTime) < 50) // 50ms timeout
+    {  
         i2cBuffer[bytesRead] = Wire2.read();
         bytesRead++;
     }
 
     // Check for timeout or incomplete read
-    if (Wire2.available() || (bytesRead != len)) {
+    if (Wire2.available() || (bytesRead != len)) 
+    {
         Serial.printf("Error: Read timeout or length mismatch. Expected %d, got %d\n", 
                      len, bytesRead);
         errorCount++;
@@ -536,14 +549,16 @@ void onReceive(int len) {
 // This is called when the master requests data from the slave 
 // Not Implemented yet
 // I would like to be able to send wifi data to the master on request for an alternative to HTML page
-void onRequest() {
+void onRequest() 
+{
     Wire2.print(byteCount++);
     Wire2.print(" Packets.");
     Serial.println("onRequest");
 }
 
 // Initialize the I2C slave on Wire2 Since Wire is already used for the display touchscreen
-void initI2CSlave() {
+void initI2CSlave() 
+{
     Wire2.onReceive(onReceive);
     Wire2.onRequest(onRequest);
     Wire2.setPins(i2cSlaveSDA, i2cSlaveSCL);
@@ -582,22 +597,26 @@ uint32_t keepClockTime()
     setTime(currentTime);  
     
     // If time has been set, adjust for timezone offset chosen by user
-    if (currentTime > 946684800) {
+    if (currentTime > 946684800) 
+    {
         adjustTime(-6 * 3600); //to do make this user adjustable
     }
     return currentTime;
 }
 
 // Add a periodic check in your main loop
-void checkI2CHealth() {
+void checkI2CHealth() 
+{
     static uint32_t lastCheck = 0;
     const uint32_t CHECK_INTERVAL = 5000;  // Check every 5 seconds
 
-    if (millis() - lastCheck > CHECK_INTERVAL) {
+    if (millis() - lastCheck > CHECK_INTERVAL) 
+    {
         lastCheck = millis();
         
         // Perform reset if needed
-        if (i2cNeedsReset) {
+        if (i2cNeedsReset) 
+        {
             resetI2C();
         }
     }

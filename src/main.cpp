@@ -27,7 +27,8 @@
 
 // TODO Figure out why this will crash on bootup when deleted. Most likely something to do with memory initialization.
 // DO NOT DELETE!!! 
-struct HeapStats {
+struct HeapStats
+ {
     uint32_t totalHeap;
     uint32_t freeHeap;
     uint32_t largestBlock;
@@ -36,7 +37,8 @@ struct HeapStats {
 
 HeapStats lastHeapStats = {0, 0, 0, 0};
 
-void monitorHeapAllocation() {
+void monitorHeapAllocation() 
+{
     HeapStats currentStats;
     
     // Get current heap statistics
@@ -50,12 +52,14 @@ void monitorHeapAllocation() {
     bool hasChanged = false;
 
     if (abs(static_cast<int32_t>(currentStats.freeHeap - lastHeapStats.freeHeap)) > threshold ||
-        abs(static_cast<int32_t>(currentStats.largestBlock - lastHeapStats.largestBlock)) > threshold) {
+        abs(static_cast<int32_t>(currentStats.largestBlock - lastHeapStats.largestBlock)) > threshold)
+    {
         hasChanged = true;
     }
 
     // Print only if values have changed significantly
-    if (hasChanged) {
+    if (hasChanged) 
+    {
         Serial.println("=== Heap Statistics ===");
         Serial.printf("Total heap: %u bytes\n", currentStats.totalHeap);
         Serial.printf("Free heap: %u bytes\n", currentStats.freeHeap);
@@ -69,7 +73,8 @@ void monitorHeapAllocation() {
     }
 }
 
-void printMemoryInfo() {
+void printMemoryInfo() 
+{
     Serial.printf("Free PSRAM: %d bytes\n", ESP.getFreePsram());
     Serial.printf("Free heap: %d bytes\n", ESP.getFreeHeap());
     Serial.printf("Total PSRAM: %d bytes\n", ESP.getPsramSize());
@@ -81,9 +86,11 @@ void printMemoryInfo() {
 void setup()
 {
     initI2CBuffer();
-    if(!psramFound()) {
+    if(!psramFound()) 
+    {
         Serial.println("PSRAM not found, halting!");
-        while(1) {
+        while(1) 
+        {
             delay(1000);
         }
     }
@@ -177,14 +184,16 @@ void loop() {
     static uint32_t lastHeapCheck = 0;
     static uint32_t lastClockSync = 0;
     // Monitor heap every second
-    if (millis() - lastHeapCheck > 1000) {
+    if (millis() - lastHeapCheck > 1000) 
+    {
         //monitorHeapAllocation();
         printMemoryInfo();
        // lastHeapCheck = millis();
        lastHeapCheck = millis();
     }
 
-    if (millis() - lastClockSync > 1000) {
+    if (millis() - lastClockSync > 1000) 
+    {
         keepClockTime();
         lastClockSync = millis();
         Serial.printf("Clock synced to: %02d/%02d/%04d %02d:%02d:%02d\n", 
@@ -193,7 +202,8 @@ void loop() {
     }
 
     // Add buffer check to health check
-    if (i2cBuffer == nullptr) {
+    if (i2cBuffer == nullptr) 
+    {
         initI2CBuffer();
     }
 }
