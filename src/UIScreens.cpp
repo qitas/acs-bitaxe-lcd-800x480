@@ -767,6 +767,46 @@ void hashrateGraph(lv_obj_t* parent)
 
 }
 
+static void updateMempoolAPIInfo(lv_timer_t* timer) 
+{
+    auto* labels = (lv_obj_t**)timer->user_data;
+    
+    // Get values outside the lock
+    uint32_t btcPriceUSD = i2cData.api.btcPriceUSD;
+    double networkHashrate = i2cData.api.networkHashrate;
+    double networkDifficulty = i2cData.api.networkDifficulty;
+    uint32_t blockHeight = i2cData.api.blockHeight;
+    uint32_t remainingTimeToDifficultyAdjustment = i2cData.api.remainingTimeToDifficultyAdjustment;
+    uint32_t remainingBlocksToDifficultyAdjustment = i2cData.api.remainingBlocksToDifficultyAdjustment;
+    double difficultyProgressPercent = i2cData.api.difficultyProgressPercent;
+    double difficultyChangePercent = i2cData.api.difficultyChangePercent;
+    uint32_t fastestFee = i2cData.api.fastestFee;
+    uint32_t halfHourFee = i2cData.api.halfHourFee;
+    uint32_t hourFee = i2cData.api.hourFee;
+    uint32_t economyFee = i2cData.api.economyFee;
+    uint32_t minimumFee = i2cData.api.minimumFee;
+
+    if (lvgl_port_lock(10)) 
+    {
+        lv_label_set_text_fmt(labels[0], "$%d,%03d", (int)(btcPriceUSD/1000), (int)(btcPriceUSD) % 1000);
+        lv_label_set_text_fmt(labels[1], "Hashrate: %d.%02d EH/s", (int)(networkHashrate / 1e18), (int)(networkHashrate / 1e18) % 100);
+        lv_label_set_text_fmt(labels[2], "Difficulty: %d.%02d T", (int)(networkDifficulty / 1e12), (int)(networkDifficulty / 1e12) % 100);
+        lv_label_set_text_fmt(labels[3], "Block Height: %d", blockHeight);
+        lv_label_set_text_fmt(labels[4], "Blocks to Halving: %d", 1050000 - blockHeight);
+        lv_label_set_text_fmt(labels[5], "PROGRESS: %d.%02d%%\nREMAINING BLOCKS: %d\nREMAINING TIME: %dd:%02dh\nESTIMATED CHANGE: %d.%02d%%", 
+                (int)(difficultyProgressPercent), (int)(difficultyProgressPercent * 100) % 100,
+                remainingBlocksToDifficultyAdjustment,
+                remainingTimeToDifficultyAdjustment / 86400, (remainingTimeToDifficultyAdjustment / 3600) % 24,
+                (int)(difficultyChangePercent), (int)(difficultyChangePercent * 100) % 100);
+        lv_label_set_text_fmt(labels[6], "Fastest Fee: %d SAT/B", fastestFee);
+        lv_label_set_text_fmt(labels[7], "Half Hour Fee: %d SAT/B", halfHourFee);
+        lv_label_set_text_fmt(labels[8], "Hour Fee: %d SAT/B", hourFee);
+        lv_label_set_text_fmt(labels[9], "Economy Fee: %d SAT/B", economyFee);
+        lv_label_set_text_fmt(labels[10], "Minimum Fee: %d SAT/B", minimumFee);
+        lvgl_port_unlock();
+    }
+}
+
 void bitcoinNewsScreen()
 {
     activeScreen = activeScreenBitcoinNews;
@@ -789,9 +829,9 @@ void bitcoinNewsScreen()
     // BTC Price Value Label
     lv_obj_t* btcPriceValueLabel = lv_label_create(btcPriceContainer);
     lv_label_set_text_fmt(btcPriceValueLabel, "$%d,%03d", (int)(i2cData.api.btcPriceUSD/1000), (int)(i2cData.api.btcPriceUSD) % 1000);
-    lv_obj_set_style_text_font(btcPriceValueLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_font(btcPriceValueLabel, &interExtraBold32, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcPriceValueLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcPriceValueLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
+    lv_obj_align(btcPriceValueLabel, LV_ALIGN_TOP_LEFT, 0, 56);
 
     // BTC Hashrate and Difficulty Container
     lv_obj_t* btcHashrateDiffContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
@@ -814,28 +854,28 @@ void bitcoinNewsScreen()
     lv_label_set_text_fmt(btcNetworkHashrateLabel, "Hashrate: %d.%02d EH/s", (int)(i2cData.api.networkHashrate / 1e18), (int)(i2cData.api.networkHashrate / 1e18) % 100);
     lv_obj_set_style_text_font(btcNetworkHashrateLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcNetworkHashrateLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcNetworkHashrateLabel, LV_ALIGN_TOP_RIGHT, 0, 32);
+    lv_obj_align(btcNetworkHashrateLabel, LV_ALIGN_TOP_LEFT, 0, 32);
 
     // BTC Network Difficulty Label
     lv_obj_t* btcNetworkDifficultyLabel = lv_label_create(btcHashrateDiffContainer);
     lv_label_set_text_fmt(btcNetworkDifficultyLabel, "Difficulty: %d.%02d T", (int)(i2cData.api.networkDifficulty / 1e12), (int)(i2cData.api.networkDifficulty / 1e18) % 100);
     lv_obj_set_style_text_font(btcNetworkDifficultyLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcNetworkDifficultyLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcNetworkDifficultyLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
+    lv_obj_align(btcNetworkDifficultyLabel, LV_ALIGN_TOP_LEFT, 0, 56);
 
     // BTC Block Height Label
     lv_obj_t* btcBlockHeightLabel = lv_label_create(btcHashrateDiffContainer);
     lv_label_set_text_fmt(btcBlockHeightLabel, "Block Height: %d", i2cData.api.blockHeight);
     lv_obj_set_style_text_font(btcBlockHeightLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcBlockHeightLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcBlockHeightLabel, LV_ALIGN_TOP_RIGHT, 0, 80);
+    lv_obj_align(btcBlockHeightLabel, LV_ALIGN_TOP_LEFT, 0, 80);
 
     // BTC Remaining Blocks to Halving Label
     lv_obj_t* btcRemainingBlocksToHalvingLabel = lv_label_create(btcHashrateDiffContainer);
     lv_label_set_text_fmt(btcRemainingBlocksToHalvingLabel, "Blocks to Halving: %d", 1050000 - i2cData.api.blockHeight);
     lv_obj_set_style_text_font(btcRemainingBlocksToHalvingLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcRemainingBlocksToHalvingLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcRemainingBlocksToHalvingLabel, LV_ALIGN_TOP_RIGHT, 0, 104);
+    lv_obj_align(btcRemainingBlocksToHalvingLabel, LV_ALIGN_TOP_LEFT, 0, 104);
 
     // BTC Difficulty Stats Container
     lv_obj_t* btcDifficultyStatsContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
@@ -896,8 +936,75 @@ void bitcoinNewsScreen()
     lv_obj_set_style_border_width(btcDifficultyProgressPercentLabel, 2, LV_PART_MAIN);
     lv_obj_set_style_border_color(btcDifficultyProgressPercentLabel, lv_color_hex(0x000000), LV_PART_MAIN);
 
+    // BTC Fees Container
+    lv_obj_t* btcFeesContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
+    lv_obj_set_size(btcFeesContainer, 320, 184);
+    lv_obj_align(btcFeesContainer, LV_ALIGN_BOTTOM_RIGHT, 16, 16);
+    lv_obj_set_style_bg_opa(btcFeesContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_width(btcFeesContainer, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(btcFeesContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
 
+    // BTC Fees Label
+    lv_obj_t* btcFeesLabel = lv_label_create(btcFeesContainer);
+    lv_label_set_text(btcFeesLabel, "NETWORK FEES");
+    lv_obj_set_style_text_font(btcFeesLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcFeesLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcFeesLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(btcFeesLabel, LV_OBJ_FLAG_SCROLLABLE);
 
+    // BTC Fastest Fee Label
+    lv_obj_t* btcFastestFeeLabel = lv_label_create(btcFeesContainer);
+    lv_label_set_text_fmt(btcFastestFeeLabel, "Fastest Fee: %d SAT/B", (int)(i2cData.api.fastestFee));
+    lv_obj_set_style_text_font(btcFastestFeeLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcFastestFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcFastestFeeLabel, LV_ALIGN_TOP_LEFT, 0, 32);
+    lv_obj_clear_flag(btcFastestFeeLabel, LV_OBJ_FLAG_SCROLLABLE);
 
+    // BTC Half Hour Fee Label
+    lv_obj_t* btcHalfHourFeeLabel = lv_label_create(btcFeesContainer);
+    lv_label_set_text_fmt(btcHalfHourFeeLabel, "Half Hour Fee: %d SAT/B", (int)(i2cData.api.halfHourFee));
+    lv_obj_set_style_text_font(btcHalfHourFeeLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcHalfHourFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcHalfHourFeeLabel, LV_ALIGN_TOP_LEFT, 0, 56);
+    lv_obj_clear_flag(btcHalfHourFeeLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    // BTC Hour Fee Label
+    lv_obj_t* btcHourFeeLabel = lv_label_create(btcFeesContainer);
+    lv_label_set_text_fmt(btcHourFeeLabel, "Hour Fee: %d SAT/B", (int)(i2cData.api.hourFee));
+    lv_obj_set_style_text_font(btcHourFeeLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcHourFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcHourFeeLabel, LV_ALIGN_TOP_LEFT, 0, 80);
+    lv_obj_clear_flag(btcHourFeeLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    // BTC Economy Fee Label   
+    lv_obj_t* btcEconomyFeeLabel = lv_label_create(btcFeesContainer);
+    lv_label_set_text_fmt(btcEconomyFeeLabel, "Economy Fee: %d SAT/B", (int)(i2cData.api.economyFee));
+    lv_obj_set_style_text_font(btcEconomyFeeLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcEconomyFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcEconomyFeeLabel, LV_ALIGN_TOP_LEFT, 0, 104);
+    lv_obj_clear_flag(btcEconomyFeeLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    // BTC Minimum Fee Label
+    lv_obj_t* btcMinimumFeeLabel = lv_label_create(btcFeesContainer);
+    lv_label_set_text_fmt(btcMinimumFeeLabel, "Minimum Fee: %d SAT/B", (int)(i2cData.api.minimumFee));
+    lv_obj_set_style_text_font(btcMinimumFeeLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcMinimumFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcMinimumFeeLabel, LV_ALIGN_TOP_LEFT, 0, 128);
+    lv_obj_clear_flag(btcMinimumFeeLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    static lv_obj_t* mempoolAPILabels[11]; // Adjust size as needed
+    mempoolAPILabels[0] = btcPriceValueLabel;
+    mempoolAPILabels[1] = btcNetworkHashrateLabel;
+    mempoolAPILabels[2] = btcNetworkDifficultyLabel;
+    mempoolAPILabels[3] = btcBlockHeightLabel;
+    mempoolAPILabels[4] = btcRemainingBlocksToHalvingLabel;
+    mempoolAPILabels[5] = btcDifficultyProgressPercentLabel;
+    mempoolAPILabels[6] = btcFastestFeeLabel;
+    mempoolAPILabels[7] = btcHalfHourFeeLabel;
+    mempoolAPILabels[8] = btcHourFeeLabel;
+    mempoolAPILabels[9] = btcEconomyFeeLabel;
+    mempoolAPILabels[10] = btcMinimumFeeLabel;
+
+    screenObjs.apiUpdateTimer = lv_timer_create(updateMempoolAPIInfo, 1000, mempoolAPILabels);
 }
 

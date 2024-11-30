@@ -47,6 +47,7 @@ struct ScreenObjects
     lv_timer_t* chartUpdateTimer;
     lv_timer_t* statusBarUpdateTimer;
     lv_timer_t* clockTimer;
+    lv_timer_t* apiUpdateTimer;
 };
 
 extern ScreenObjects screenObjs;
