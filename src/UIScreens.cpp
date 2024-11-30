@@ -830,14 +830,60 @@ void bitcoinNewsScreen()
     lv_obj_set_style_bg_opa(btcDifficultyStatsContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(btcDifficultyStatsContainer, 2, LV_PART_MAIN);
     lv_obj_set_style_border_color(btcDifficultyStatsContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_clear_flag(btcDifficultyStatsContainer, LV_OBJ_FLAG_SCROLLABLE);
 
-    // BTC Difficulty Stats Label
-    lv_obj_t* btcDifficultyStatsLabel = lv_label_create(btcDifficultyStatsContainer);
-    lv_label_set_text(btcDifficultyStatsLabel, "DIFFICULTY STATS");
-    lv_obj_set_style_text_font(btcDifficultyStatsLabel, &interMedium24, LV_PART_MAIN);
-    lv_obj_set_style_text_color(btcDifficultyStatsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_set_style_text_align(btcDifficultyStatsLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
-    lv_obj_align(btcDifficultyStatsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
-    lv_obj_clear_flag(btcDifficultyStatsLabel, LV_OBJ_FLAG_SCROLLABLE);
+    // BTC Difficulty Progress Label
+    lv_obj_t* btcDifficultyProgressLabel = lv_label_create(btcDifficultyStatsContainer);
+    lv_label_set_text(btcDifficultyProgressLabel, "DIFFICULTY PROGRESS");
+    lv_obj_set_style_text_font(btcDifficultyProgressLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcDifficultyProgressLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_text_align(btcDifficultyProgressLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_align(btcDifficultyProgressLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(btcDifficultyProgressLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    //Difficulty Progress Bar
+    static lv_style_t styleBarBG;
+    static lv_style_t styleBarIndicator;
+    lv_style_init(&styleBarBG);
+    //lv_style_set_radius(&styleBar, LV_RADIUS_CIRCLE);
+    lv_style_set_border_color(&styleBarIndicator, lv_color_hex(0xA7F3D0));
+    lv_style_set_bg_opa(&styleBarIndicator, LV_OPA_COVER);
+    lv_style_set_bg_color(&styleBarIndicator, lv_color_hex(0xA7F3D0));
+    lv_style_set_radius(&styleBarIndicator, 8);
+
+    lv_style_init(&styleBarBG);
+    lv_style_set_border_color(&styleBarBG, lv_color_hex(0xA7F3D0));
+    lv_style_set_bg_opa(&styleBarBG, LV_OPA_40);
+    lv_style_set_bg_color(&styleBarBG, lv_color_hex(0xA7F3D0));
+    lv_style_set_radius(&styleBarBG, 12);
+
+    lv_obj_t* btcDifficultyProgressBar = lv_bar_create(btcDifficultyStatsContainer);
+    lv_obj_set_size(btcDifficultyProgressBar, 304, 144);
+    lv_obj_align(btcDifficultyProgressBar, LV_ALIGN_TOP_LEFT, -16, 16);
+    lv_obj_add_style(btcDifficultyProgressBar, &styleBarBG, LV_PART_MAIN);
+    lv_obj_add_style(btcDifficultyProgressBar, &styleBarIndicator, LV_PART_INDICATOR);
+    lv_bar_set_value(btcDifficultyProgressBar, 75, LV_ANIM_OFF);
+    //lv_obj_set_style_bg_opa(btcDifficultyProgressBar, LV_OPA_0, LV_PART_MAIN);
+    
+    // BTC Difficulty Progress Percent Label
+    lv_obj_t* btcDifficultyProgressPercentLabel = lv_label_create(btcDifficultyProgressBar);
+    lv_label_set_text_fmt(btcDifficultyProgressPercentLabel, "PROGRESS: %d.%02d%%\nREMAINING BLOCKS: %d\nREMAINING TIME: %dd:%02dh\nESTIMATED CHANGE: %d.%02d%%", 
+        (int)(i2cData.api.difficultyProgressPercent * 100), (int)(i2cData.api.difficultyProgressPercent * 1000) % 100,
+        i2cData.api.remainingBlocksToDifficultyAdjustment,
+        i2cData.api.remainingTimeToDifficultyAdjustment / 86400, (i2cData.api.remainingTimeToDifficultyAdjustment / 3600) % 24,
+        (int)(i2cData.api.difficultyChangePercent * 100), (int)(i2cData.api.difficultyChangePercent * 1000) % 100);
+    lv_obj_set_style_text_font(btcDifficultyProgressPercentLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcDifficultyProgressPercentLabel, lv_color_hex(0x000000), LV_PART_MAIN);
+    lv_obj_align(btcDifficultyProgressPercentLabel, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_clear_flag(btcDifficultyProgressPercentLabel, LV_OBJ_FLAG_SCROLLABLE);
+    lv_label_set_long_mode(btcDifficultyProgressPercentLabel, LV_LABEL_LONG_CLIP);
+    lv_obj_set_style_text_align(btcDifficultyProgressPercentLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_set_width(btcDifficultyProgressPercentLabel, 288);
+    lv_obj_set_style_border_width(btcDifficultyProgressPercentLabel, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(btcDifficultyProgressPercentLabel, lv_color_hex(0x000000), LV_PART_MAIN);
+
+
+
+
 }
 

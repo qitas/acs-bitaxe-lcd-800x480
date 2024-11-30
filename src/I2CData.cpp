@@ -16,9 +16,7 @@ static bool i2cNeedsReset = false;
 static uint32_t lastErrorTime = 0;
 static uint32_t errorCount = 0;
 #define ERROR_THRESHOLD 25        // Number of errors before forcing reset
-#define ERROR_WINDOW 60000       // Time window for counting errors (60 seconds)
 
-// At file scope
 uint8_t* i2cBuffer = nullptr;
 
 void initI2CBuffer() 
