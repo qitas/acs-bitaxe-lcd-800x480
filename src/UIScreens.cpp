@@ -811,17 +811,31 @@ void bitcoinNewsScreen()
 
     // BTC Network Hashrate Label
     lv_obj_t* btcNetworkHashrateLabel = lv_label_create(btcHashrateDiffContainer);
-    lv_label_set_text_fmt(btcNetworkHashrateLabel, "%d.%02d EH/s", (int)(i2cData.api.networkHashrate / 1e18), (int)(i2cData.api.networkHashrate / 1e18) % 100);
+    lv_label_set_text_fmt(btcNetworkHashrateLabel, "Hashrate: %d.%02d EH/s", (int)(i2cData.api.networkHashrate / 1e18), (int)(i2cData.api.networkHashrate / 1e18) % 100);
     lv_obj_set_style_text_font(btcNetworkHashrateLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcNetworkHashrateLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcNetworkHashrateLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
+    lv_obj_align(btcNetworkHashrateLabel, LV_ALIGN_TOP_RIGHT, 0, 32);
 
-    // BTC Network Fee Label
-    lv_obj_t* btcNetworkFeeLabel = lv_label_create(btcHashrateDiffContainer);
-    lv_label_set_text_fmt(btcNetworkFeeLabel, "Network Fee:"); // TODO: Add Network Fee
-    lv_obj_set_style_text_font(btcNetworkFeeLabel, &interMedium16_19px, LV_PART_MAIN);
-    lv_obj_set_style_text_color(btcNetworkFeeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(btcNetworkFeeLabel, LV_ALIGN_TOP_RIGHT, 0, 96);
+    // BTC Network Difficulty Label
+    lv_obj_t* btcNetworkDifficultyLabel = lv_label_create(btcHashrateDiffContainer);
+    lv_label_set_text_fmt(btcNetworkDifficultyLabel, "Difficulty: %d.%02d T", (int)(i2cData.api.networkDifficulty / 1e12), (int)(i2cData.api.networkDifficulty / 1e18) % 100);
+    lv_obj_set_style_text_font(btcNetworkDifficultyLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcNetworkDifficultyLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcNetworkDifficultyLabel, LV_ALIGN_TOP_RIGHT, 0, 56);
+
+    // BTC Block Height Label
+    lv_obj_t* btcBlockHeightLabel = lv_label_create(btcHashrateDiffContainer);
+    lv_label_set_text_fmt(btcBlockHeightLabel, "Block Height: %d", i2cData.api.blockHeight);
+    lv_obj_set_style_text_font(btcBlockHeightLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcBlockHeightLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcBlockHeightLabel, LV_ALIGN_TOP_RIGHT, 0, 80);
+
+    // BTC Remaining Blocks to Halving Label
+    lv_obj_t* btcRemainingBlocksToHalvingLabel = lv_label_create(btcHashrateDiffContainer);
+    lv_label_set_text_fmt(btcRemainingBlocksToHalvingLabel, "Blocks to Halving: %d", 1050000 - i2cData.api.blockHeight);
+    lv_obj_set_style_text_font(btcRemainingBlocksToHalvingLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btcRemainingBlocksToHalvingLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(btcRemainingBlocksToHalvingLabel, LV_ALIGN_TOP_RIGHT, 0, 104);
 
     // BTC Difficulty Stats Container
     lv_obj_t* btcDifficultyStatsContainer = lv_obj_create(screenObjs.bitcoinNewsMainContainer);
@@ -844,16 +858,16 @@ void bitcoinNewsScreen()
     //Difficulty Progress Bar
     static lv_style_t styleBarBG;
     static lv_style_t styleBarIndicator;
-    lv_style_init(&styleBarBG);
+    lv_style_init(&styleBarIndicator);
     //lv_style_set_radius(&styleBar, LV_RADIUS_CIRCLE);
     lv_style_set_border_color(&styleBarIndicator, lv_color_hex(0xA7F3D0));
-    lv_style_set_bg_opa(&styleBarIndicator, LV_OPA_COVER);
+    lv_style_set_bg_opa(&styleBarIndicator, LV_OPA_70);
     lv_style_set_bg_color(&styleBarIndicator, lv_color_hex(0xA7F3D0));
     lv_style_set_radius(&styleBarIndicator, 8);
 
     lv_style_init(&styleBarBG);
     lv_style_set_border_color(&styleBarBG, lv_color_hex(0xA7F3D0));
-    lv_style_set_bg_opa(&styleBarBG, LV_OPA_40);
+    lv_style_set_bg_opa(&styleBarBG, LV_OPA_30);
     lv_style_set_bg_color(&styleBarBG, lv_color_hex(0xA7F3D0));
     lv_style_set_radius(&styleBarBG, 12);
 
@@ -863,7 +877,7 @@ void bitcoinNewsScreen()
     lv_obj_add_style(btcDifficultyProgressBar, &styleBarBG, LV_PART_MAIN);
     lv_obj_add_style(btcDifficultyProgressBar, &styleBarIndicator, LV_PART_INDICATOR);
     lv_bar_set_value(btcDifficultyProgressBar, 75, LV_ANIM_OFF);
-    //lv_obj_set_style_bg_opa(btcDifficultyProgressBar, LV_OPA_0, LV_PART_MAIN);
+    //lv_obj_set_style_bg_opa(btcDifficultyProgressBar, LV_OPA_80, LV_PART_MAIN);
     
     // BTC Difficulty Progress Percent Label
     lv_obj_t* btcDifficultyProgressPercentLabel = lv_label_create(btcDifficultyProgressBar);

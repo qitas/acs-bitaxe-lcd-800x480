@@ -405,6 +405,41 @@ void handleAPIData(uint8_t* buffer, uint8_t len)
             Serial.printf("Remaining Time to Difficulty Adjustment received: %d\n", i2cData.api.remainingTimeToDifficultyAdjustment);
             break;
         }
+        case LVGL_REG_API_FASTEST_FEE:
+        {
+            memset(&i2cData.api.fastestFee, 0, MAX_UINT32_SIZE);
+            memcpy(&i2cData.api.fastestFee, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("Fastest Fee received: %d\n", i2cData.api.fastestFee);
+            break;
+        }
+        case LVGL_REG_API_HALF_HOUR_FEE:
+        {
+            memset(&i2cData.api.halfHourFee, 0, MAX_UINT32_SIZE);
+            memcpy(&i2cData.api.halfHourFee, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("Half Hour Fee received: %d\n", i2cData.api.halfHourFee);
+            break;
+        }
+        case LVGL_REG_API_HOUR_FEE:
+        {
+            memset(&i2cData.api.hourFee, 0, MAX_UINT32_SIZE);
+            memcpy(&i2cData.api.hourFee, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("Hour Fee received: %d\n", i2cData.api.hourFee);
+            break;
+        }
+        case LVGL_REG_API_ECONOMY_FEE:
+        {
+            memset(&i2cData.api.economyFee, 0, MAX_UINT32_SIZE);
+            memcpy(&i2cData.api.economyFee, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("Economy Fee received: %d\n", i2cData.api.economyFee);
+            break;
+        }
+        case LVGL_REG_API_MINIMUM_FEE:
+        {
+            memset(&i2cData.api.minimumFee, 0, MAX_UINT32_SIZE);
+            memcpy(&i2cData.api.minimumFee, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            Serial.printf("Minimum Fee received: %d\n", i2cData.api.minimumFee);
+            break;
+        }
         default:
         {
             Serial.printf("Warning: Unknown API register 0x%02X with length %d\n", reg, dataLen);
@@ -456,6 +491,11 @@ const char* getRegisterName(uint8_t reg)
         case LVGL_REG_API_DIFFICULTY_CHANGE: return "API_DIFFICULTY_CHANGE";
         case LVGL_REG_API_REMAINING_BLOCKS: return "API_REMAINING_BLOCKS";
         case LVGL_REG_API_REMAINING_TIME: return "API_REMAINING_TIME";
+        case LVGL_REG_API_FASTEST_FEE: return "API_FASTEST_FEE";
+        case LVGL_REG_API_HALF_HOUR_FEE: return "API_HALF_HOUR_FEE";
+        case LVGL_REG_API_HOUR_FEE: return "API_HOUR_FEE";
+        case LVGL_REG_API_ECONOMY_FEE: return "API_ECONOMY_FEE";
+        case LVGL_REG_API_MINIMUM_FEE: return "API_MINIMUM_FEE";
         
         default: return "UNKNOWN";
     }
@@ -535,7 +575,7 @@ void onReceive(int len)
     else if (reg >= 0x30 && reg <= 0x35) handleMiningData(i2cBuffer, bytesRead);
     else if (reg >= 0x40 && reg <= 0x45) handleMonitoringData(i2cBuffer, bytesRead);
     else if (reg >= 0x50 && reg <= 0x54) handleDeviceStatus(i2cBuffer, bytesRead);
-    else if (reg >= 0x60 && reg <= 0x67) handleAPIData(i2cBuffer, bytesRead);
+    else if (reg >= 0x60 && reg <= 0x6C) handleAPIData(i2cBuffer, bytesRead);
     else 
     {
         Serial.printf("Error: Register 0x%02X outside of valid ranges\n", reg);

@@ -49,6 +49,11 @@
 #define LVGL_REG_API_DIFFICULTY_CHANGE 0x65 // double
 #define LVGL_REG_API_REMAINING_BLOCKS 0x66 // uint32
 #define LVGL_REG_API_REMAINING_TIME 0x67 // uint32
+#define LVGL_REG_API_FASTEST_FEE 0x68 // uint32
+#define LVGL_REG_API_HALF_HOUR_FEE 0x69 // uint32
+#define LVGL_REG_API_HOUR_FEE 0x6A // uint32
+#define LVGL_REG_API_ECONOMY_FEE 0x6B // uint32
+#define LVGL_REG_API_MINIMUM_FEE 0x6C // uint32
 
 // Maximum lengths for strings
 #define MAX_SSID_LENGTH       32
@@ -132,7 +137,11 @@ struct APIData
     double difficultyChangePercent;
     uint32_t remainingBlocksToDifficultyAdjustment;
     uint32_t remainingTimeToDifficultyAdjustment;
-
+    uint32_t fastestFee;
+    uint32_t halfHourFee;
+    uint32_t hourFee;
+    uint32_t economyFee;
+    uint32_t minimumFee;
 };
 
 // Global data container
