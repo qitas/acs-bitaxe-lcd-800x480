@@ -402,6 +402,7 @@ void handleAPIData(uint8_t* buffer, uint8_t len)
         {
             memset(&i2cData.api.remainingTimeToDifficultyAdjustment, 0, MAX_UINT32_SIZE);
             memcpy(&i2cData.api.remainingTimeToDifficultyAdjustment, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
+            i2cData.api.remainingTimeToDifficultyAdjustment /= 1000; // Convert from milliseconds to seconds?
             Serial.printf("Remaining Time to Difficulty Adjustment received: %d\n", i2cData.api.remainingTimeToDifficultyAdjustment);
             break;
         }

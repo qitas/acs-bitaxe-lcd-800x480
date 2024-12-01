@@ -43,6 +43,7 @@ struct ScreenObjects
     lv_obj_t* miningMainContainer;
     lv_obj_t* activityMainContainer;
     lv_obj_t* bitcoinNewsMainContainer;
+    lv_obj_t* settingsMainContainer;
     lv_timer_t* labelUpdateTimer;
     lv_timer_t* chartUpdateTimer;
     lv_timer_t* statusBarUpdateTimer;

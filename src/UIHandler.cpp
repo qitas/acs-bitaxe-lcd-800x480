@@ -16,21 +16,35 @@ void switchToScreen(ScreenType newScreen)
 
     // Hide all containers first
     lv_obj_add_flag(screenObjs.homeMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Home Container Hidden");
     lv_obj_add_flag(screenObjs.miningMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Mining Container Hidden");
     lv_obj_add_flag(screenObjs.activityMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Activity Container Hidden");
     lv_obj_add_flag(screenObjs.bitcoinNewsMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Bitcoin News Container Hidden");
+    //lv_obj_add_flag(screenObjs.settingsMainContainer, LV_OBJ_FLAG_HIDDEN);
+    //Serial.println("Settings Container Hidden");
     // Pause all timers
     if (screenObjs.labelUpdateTimer) 
     {
         lv_timer_pause(screenObjs.labelUpdateTimer);
+        Serial.println("Label Update Timer Paused");
     }
     if (screenObjs.chartUpdateTimer) 
     {
         lv_timer_pause(screenObjs.chartUpdateTimer);
+        Serial.println("Chart Update Timer Paused");
     }
     if (screenObjs.clockTimer) 
     {
         lv_timer_pause(screenObjs.clockTimer);
+        Serial.println("Clock Timer Paused");
+    }
+    if (screenObjs.apiUpdateTimer) 
+    {
+        lv_timer_pause(screenObjs.apiUpdateTimer);
+        Serial.println("API Update Timer Paused");
     }
 
     // Show the requested container
@@ -39,6 +53,9 @@ void switchToScreen(ScreenType newScreen)
         case activeScreenHome:
             lv_obj_clear_flag(screenObjs.homeMainContainer, LV_OBJ_FLAG_HIDDEN);
             lv_timer_resume(screenObjs.clockTimer);
+            //lv_obj_add_flag(tabHome, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_clear_flag(tabBitcoinNews, LV_OBJ_FLAG_HIDDEN);
+            Serial.println("Home Container Shown");
             break;
         case activeScreenMining:
             lv_obj_clear_flag(screenObjs.miningMainContainer, LV_OBJ_FLAG_HIDDEN);
@@ -50,7 +67,13 @@ void switchToScreen(ScreenType newScreen)
             break;
         case activeScreenBitcoinNews:
             lv_obj_clear_flag(screenObjs.bitcoinNewsMainContainer, LV_OBJ_FLAG_HIDDEN);
+            lv_timer_resume(screenObjs.apiUpdateTimer);
+            lv_obj_add_flag(tabBitcoinNews, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(tabHome, LV_OBJ_FLAG_HIDDEN);
             break;
+        //case activeScreenSettings:
+        //    lv_obj_clear_flag(screenObjs.settingsMainContainer, LV_OBJ_FLAG_HIDDEN);
+        //    break;
     }
     // Update the active screen to new screen
     activeScreen = newScreen;
@@ -72,6 +95,8 @@ void tabIconEventHandler(lv_event_t* tabEvent)
             switchToScreen(activeScreenActivity);
         } else if (clickedTab == tabBitcoinNews) {
             switchToScreen(activeScreenBitcoinNews);
+        } else if (clickedTab == tabSettings) {
+            switchToScreen(activeScreenSettings);
         }
     }
 }
