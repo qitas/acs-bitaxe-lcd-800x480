@@ -53,6 +53,7 @@ struct {
 } settingsData;
 
 SettingsTextAreas settingsTextAreas;
+bool settingsChanged = false;
 
 // Add near the top of the file with other function declarations
 static void saveButtonEventHandler(lv_event_t* e);
@@ -71,6 +72,11 @@ static void saveButtonEventHandler(lv_event_t* e) {
         Serial.printf("Hostname: %s\n", hostname);
         Serial.printf("WiFi SSID: %s\n", wifiSSID);
         Serial.printf("WiFi Password: %s\n", wifiPassword);
+
+        if (strlen(hostname) > 0 && strlen(wifiSSID) > 0 && strlen(wifiPassword) > 0)
+        {
+            settingsChanged = true;
+        }
 
         // TODO: Add your I2C sending code here
         

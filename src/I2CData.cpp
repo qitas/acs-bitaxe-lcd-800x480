@@ -3,6 +3,8 @@
 #include "esp_mac.h"
 #include <algorithm>
 #include <TimeLib.h>
+#include "UIScreens.h"
+#include <lvgl.h>
 
 // Custom min function because the standard one is not available 
 #define __min(a,b) ((a)<(b)?(a):(b))
@@ -12,12 +14,17 @@ uint32_t PSRAM_ATTR byteCount = 0;
 TwoWire Wire2 = TwoWire(1);
 I2CDataContainer PSRAM_ATTR i2cData = {0};
 
+
 static bool i2cNeedsReset = false;
 static uint32_t lastErrorTime = 0;
 static uint32_t errorCount = 0;
 #define ERROR_THRESHOLD 25        // Number of errors before forcing reset
 
 uint8_t* i2cBuffer = nullptr;
+
+// Global variables for tracking request state
+static uint8_t currentSettingsReg = 0;
+
 
 void initI2CBuffer() 
 {
@@ -590,9 +597,41 @@ void onReceive(int len)
 // I would like to be able to send wifi data to the master on request for an alternative to HTML page
 void onRequest() 
 {
-    Wire2.print(byteCount++);
-    Wire2.print(" Packets.");
-    Serial.println("onRequest");
+    if (!settingsChanged) {
+        Wire2.write(0x00);  // No changes
+        return;
+    }
+
+    // Settings have changed - check and send each setting
+    if (settingsTextAreas.hostnameTextArea) {
+        uint8_t len = strlen(lv_textarea_get_text(settingsTextAreas.hostnameTextArea));
+        if (len > 0) {
+            Wire2.write(LVGL_REG_SETTINGS_HOSTNAME);
+            Wire2.write(len);
+            Wire2.write((uint8_t*)settingsTextAreas.hostnameTextArea, len);
+        }
+    }
+
+    if (settingsTextAreas.wifiTextArea) {
+        uint8_t len = strlen(lv_textarea_get_text(settingsTextAreas.wifiTextArea));
+        if (len > 0) {
+            Wire2.write(LVGL_REG_SETTINGS_WIFI_SSID);
+            Wire2.write(len);
+            Wire2.write((uint8_t*)settingsTextAreas.wifiTextArea, len);
+        }
+    }
+
+    if (settingsTextAreas.wifiPasswordTextArea) {
+        uint8_t len = strlen(lv_textarea_get_text(settingsTextAreas.wifiPasswordTextArea));
+        if (len > 0) {
+            Wire2.write(LVGL_REG_SETTINGS_WIFI_PASSWORD);
+            Wire2.write(len);
+            Wire2.write((uint8_t*)settingsTextAreas.wifiPasswordTextArea, len);
+        }
+    }
+
+    settingsChanged = false;  // Reset flag after sending
+    Serial.println("Sent settings");
 }
 
 // Initialize the I2C slave on Wire2 Since Wire is already used for the display touchscreen

@@ -2,7 +2,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <esp_attr.h>
-
+#include "UIScreens.h"
+#include <lvgl.h>
 // Unavailable Addresses : 20-27 30-3f, 5d These are used for touch screen
 // Unavailable Bitaxe Addresses : 0x40, 0x49, 0x4c, 0x3c -> This if for the OLED and has overlapping I2c. Need to get rid of this.
 
@@ -54,6 +55,11 @@
 #define LVGL_REG_API_HOUR_FEE 0x6A // uint32
 #define LVGL_REG_API_ECONOMY_FEE 0x6B // uint32
 #define LVGL_REG_API_MINIMUM_FEE 0x6C // uint32
+
+// Settings registers
+#define LVGL_REG_SETTINGS_HOSTNAME 0xA0 // 32 bytes
+#define LVGL_REG_SETTINGS_WIFI_SSID 0xA1 // 32 bytes
+#define LVGL_REG_SETTINGS_WIFI_PASSWORD 0xA2 // 32 bytes
 
 // Maximum lengths for strings
 #define MAX_SSID_LENGTH       32
@@ -154,11 +160,16 @@ struct I2CDataContainer
     APIData api;
 };
 
+extern bool settingsChanged;
+
 // External declarations
 extern uint32_t byteCount;
 extern TwoWire Wire2;
 extern PSRAM_ATTR I2CDataContainer i2cData;
 extern uint8_t* i2cBuffer;
+extern SettingsTextAreas settingsTextAreas;
+
+
 // Function declarations
 extern void onRequest();
 extern void onReceive(int len);
