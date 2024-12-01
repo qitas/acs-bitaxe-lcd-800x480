@@ -546,32 +546,45 @@ void initalizeOneScreen()
     screenObjs.labelUpdateTimer = NULL;
     screenObjs.chartUpdateTimer = NULL;
     screenObjs.clockTimer = NULL;
-    
+    screenObjs.apiUpdateTimer = NULL;
+
+    Serial.println("Timer Pointers Initialized");
     // Create and load the background screen
     screenObjs.background = lv_obj_create(NULL);
     lv_scr_load(screenObjs.background);
-    
+    Serial.println("Background Screen Created");
     // Create basic UI elements
     backgroundImage(screenObjs.background);
+    Serial.println("Background Image Created");
     lvglTabIcons(screenObjs.background);
+    Serial.println("Tab Icons Created");
     statusBar(screenObjs.background);
+    Serial.println("Status Bar Created");
     
     // Create containers but keep them hidden initially
     mainContainer(screenObjs.background);
     screenObjs.homeMainContainer = lv_obj_get_child(screenObjs.background, -1);  // Get last created object
     lv_obj_add_flag(screenObjs.homeMainContainer, LV_OBJ_FLAG_HIDDEN);
-    
+    Serial.println("Home Container Created");
     mainContainer(screenObjs.background);
     screenObjs.miningMainContainer = lv_obj_get_child(screenObjs.background, -1);  // Get last created object
     lv_obj_add_flag(screenObjs.miningMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Mining Container Created");
 
     mainContainer(screenObjs.background);
     screenObjs.activityMainContainer = lv_obj_get_child(screenObjs.background, -1);  // Get last created object
     lv_obj_add_flag(screenObjs.activityMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Activity Container Created");
 
     mainContainer(screenObjs.background);
     screenObjs.bitcoinNewsMainContainer = lv_obj_get_child(screenObjs.background, -1);  // Get last created object
     lv_obj_add_flag(screenObjs.bitcoinNewsMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Bitcoin News Container Created");
+
+    mainContainer(screenObjs.background);
+    screenObjs.settingsMainContainer = lv_obj_get_child(screenObjs.background, -1);  // Get last created object
+    lv_obj_add_flag(screenObjs.settingsMainContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Settings Container Created");
     
     // Initialize screens without timers
     activityScreen();
@@ -581,24 +594,30 @@ void initalizeOneScreen()
     Serial.println("Hashrate Graph Created");
     bitcoinNewsScreen();
     Serial.println("Bitcoin News Screen Created");
+    settingsScreen();
+    Serial.println("Settings Screen Created");
     // Now show the initial screen and start its timer
     lv_obj_clear_flag(screenObjs.homeMainContainer, LV_OBJ_FLAG_HIDDEN);
-    
+    Serial.println("Home Screen Shown");
     // Create timers only after all objects are initialized
     if (screenObjs.labelUpdateTimer) 
     {
         lv_timer_pause(screenObjs.labelUpdateTimer);
+        Serial.println("Label Update Timer Paused");
     }
     if (screenObjs.chartUpdateTimer) 
     {
         lv_timer_pause(screenObjs.chartUpdateTimer);
+        Serial.println("Chart Update Timer Paused");
     }
     if (screenObjs.clockTimer) 
     {
         lv_timer_pause(screenObjs.clockTimer);
-    }
+        Serial.println("Clock Timer Paused");
+        }
     // Start home screen timer
     lv_timer_resume(screenObjs.clockTimer);
+    Serial.println("Clock Timer Resumed");
     
     lvgl_port_unlock();
     Serial.println("UI Initialized");
@@ -1018,3 +1037,22 @@ void bitcoinNewsScreen()
     screenObjs.apiUpdateTimer = lv_timer_create(updateMempoolAPIInfo, 3000, mempoolAPILabels);
 }
 
+void settingsScreen()
+{
+    activeScreen = activeScreenSettings;
+
+    lv_obj_t* settingsContainer = lv_obj_create(screenObjs.settingsMainContainer);
+    lv_obj_set_size(settingsContainer, 320, 192 );
+    lv_obj_align(settingsContainer, LV_ALIGN_TOP_LEFT, -16, -16);
+    lv_obj_set_style_bg_opa(settingsContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(settingsContainer, LV_OPA_100, LV_PART_MAIN);
+
+     // BTC Price Label
+    lv_obj_t* settingsLabel = lv_label_create(settingsContainer);
+    lv_label_set_text(settingsLabel, "SETTINGS");
+    lv_obj_set_style_text_font(settingsLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(settingsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(settingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(settingsLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+}

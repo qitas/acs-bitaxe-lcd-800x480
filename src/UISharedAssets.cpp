@@ -38,7 +38,7 @@ void lvglTabIcons(lv_obj_t*parent)
     lv_obj_align(tabSettings, LV_ALIGN_CENTER, 0, 164);
     lv_obj_add_flag(tabSettings, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_ext_click_area(tabSettings, 24);
-    //lv_obj_add_event_cb(tabSettings, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(tabSettings, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
     
     tabMining = lv_img_create(tab);
     lv_img_set_src(tabMining, "S:/pickaxe.png");
