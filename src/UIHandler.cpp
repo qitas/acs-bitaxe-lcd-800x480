@@ -40,10 +40,12 @@ void switchToScreen(ScreenType newScreen)
             lv_timer_resume(screenObjs.clockTimer);
             break;
         case activeScreenMining:
+            lv_obj_add_flag(tabBitcoinNews, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(screenObjs.miningMainContainer, LV_OBJ_FLAG_HIDDEN);
             lv_timer_resume(screenObjs.chartUpdateTimer);
             break;
         case activeScreenActivity:
+            lv_obj_add_flag(tabBitcoinNews, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(screenObjs.activityMainContainer, LV_OBJ_FLAG_HIDDEN);
             lv_timer_resume(screenObjs.labelUpdateTimer);
             break;
