@@ -51,6 +51,20 @@ struct ScreenObjects
     lv_timer_t* apiUpdateTimer;
 };
 
+// Declare the struct type
+struct SettingsTextAreas {
+    lv_obj_t* hostnameTextArea;
+    lv_obj_t* wifiTextArea;
+    lv_obj_t* wifiPasswordTextArea;
+    //lv_obj_t* stratumUrlTextArea;
+    //lv_obj_t* stratumPortTextArea;
+    //lv_obj_t* stratumUserTextArea;
+    //lv_obj_t* stratumPasswordTextArea;
+};
+
+// Declare as extern
+extern SettingsTextAreas settingsTextAreas;
+
 extern ScreenObjects screenObjs;
 
 // global variables

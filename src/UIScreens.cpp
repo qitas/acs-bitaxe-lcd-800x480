@@ -41,6 +41,44 @@ float maxHashrateSeen = 400;        // Initialize to minimum for positive values
 float hashrateBuffer[SMOOTHING_WINDOW_SIZE] = {0};
 int bufferIndex = 0;
 
+// Add these as global variables to store the settings and text area references
+struct {
+    char hostname[32];
+    char wifiSSID[MAX_SSID_LENGTH];
+    char wifiPassword[64];
+    char stratumUrl[128];
+    char stratumPort[8];
+    char stratumUser[64];
+    char stratumPassword[64];
+} settingsData;
+
+SettingsTextAreas settingsTextAreas;
+
+// Add near the top of the file with other function declarations
+static void saveButtonEventHandler(lv_event_t* e);
+
+// Add the implementation before the settingsScreen function
+static void saveButtonEventHandler(lv_event_t* e) {
+    lv_event_code_t code = lv_event_get_code(e);
+    if(code == LV_EVENT_CLICKED) {
+        // Store all text area values
+        const char* hostname = lv_textarea_get_text(settingsTextAreas.hostnameTextArea);
+        const char* wifiSSID = lv_textarea_get_text(settingsTextAreas.wifiTextArea);
+        const char* wifiPassword = lv_textarea_get_text(settingsTextAreas.wifiPasswordTextArea);
+
+        // Debug print
+        Serial.println("Save button clicked!");
+        Serial.printf("Hostname: %s\n", hostname);
+        Serial.printf("WiFi SSID: %s\n", wifiSSID);
+        Serial.printf("WiFi Password: %s\n", wifiPassword);
+
+        // TODO: Add your I2C sending code here
+        
+        // Show confirmation message
+        //lv_obj_t* mbox = lv_msgbox_create(NULL, "Settings", "Settings saved successfully", NULL, true);
+        //lv_obj_center(mbox);
+    }
+}
 
 // This is used because Timelib day function is having issues
 const char* customDayStr(uint8_t day)
@@ -1052,7 +1090,7 @@ static lv_obj_t* setTextAreaStyles(lv_obj_t* parent, const char* placeholder)
     lv_obj_set_style_border_width(ta, 2, LV_PART_MAIN);
     lv_obj_set_style_border_color(ta, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_set_style_radius(ta, 16, LV_PART_MAIN);
-    lv_textarea_set_max_length(ta, 32); // Set Max Hostname Length Look through ESP Miner for this
+    // lv_textarea_set_max_length(ta, 32); // This should be set per text area
     lv_obj_align(ta, LV_ALIGN_TOP_LEFT, 0, 16);
     lv_obj_set_width(ta, lv_pct(80));
     lv_obj_add_event_cb(ta, ta_event_cb, LV_EVENT_ALL, NULL);
@@ -1094,16 +1132,27 @@ void settingsScreen()
 {
     activeScreen = activeScreenSettings;
 
+
     lv_obj_t * settingTabView = lv_tabview_create(screenObjs.settingsMainContainer, LV_DIR_BOTTOM, 72);
     // Make tileview transparent
     lv_obj_set_style_bg_opa(settingTabView, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_opa(settingTabView, LV_OPA_0, LV_PART_MAIN);
     lv_obj_clear_flag(lv_tabview_get_content(settingTabView), LV_OBJ_FLAG_SCROLLABLE);
-    // Add scroll event callback to disable animations
+    
+    lv_obj_set_size(settingTabView, 672, 392);
+    lv_obj_align(settingTabView, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_border_opa(settingTabView, LV_OPA_80, LV_PART_MAIN);
+    lv_obj_set_style_border_width(settingTabView, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(settingTabView, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_clear_flag(settingTabView, LV_OBJ_FLAG_SCROLLABLE);
+
 
     lv_obj_t * networkSettingsTab = lv_tabview_add_tab(settingTabView, "NETWORK");
+    lv_obj_clear_flag(networkSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_t * miningSettingsTab = lv_tabview_add_tab(settingTabView, "MINING");
+    lv_obj_clear_flag(miningSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_t * asicSettingsTab = lv_tabview_add_tab(settingTabView, "ASIC");
+    lv_obj_clear_flag(asicSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t * tab_btns = lv_tabview_get_tab_btns(settingTabView);
     lv_obj_set_style_bg_color(tab_btns, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
@@ -1111,9 +1160,6 @@ void settingsScreen()
     lv_obj_set_style_bg_opa(tab_btns, LV_OPA_0, LV_PART_ITEMS | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(tab_btns, LV_OPA_30, LV_PART_MAIN | LV_STATE_CHECKED);
     lv_obj_set_style_bg_opa(tab_btns, LV_OPA_0, LV_PART_MAIN | LV_STATE_DEFAULT);
-   
-
-
     
     lv_obj_set_style_border_color(tab_btns, lv_color_hex(0xA7F3D0), LV_PART_ITEMS | LV_STATE_CHECKED);
     lv_obj_set_style_radius(tab_btns, 16, LV_PART_ITEMS);
@@ -1122,18 +1168,19 @@ void settingsScreen()
     lv_obj_set_style_text_font(tab_btns, &interMedium16_19px, LV_PART_ITEMS | LV_STATE_CHECKED);  // Checked state
     lv_obj_set_style_text_color(tab_btns, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);  // Default state
     lv_obj_set_style_text_color(tab_btns, lv_color_hex(0xA7F3D0), LV_PART_ITEMS | LV_STATE_CHECKED);  // Checked state
-    
 
     // Make individual tile transparent (optional if tileview is already transparent)
     lv_obj_set_style_bg_opa(networkSettingsTab, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_opa(networkSettingsTab, LV_OPA_0, LV_PART_MAIN);
 
+
     // Network Settings Container
     lv_obj_t* networkSettingsContainer = lv_obj_create(networkSettingsTab);
-    lv_obj_set_size(networkSettingsContainer, 320, 224);
-    lv_obj_align(networkSettingsContainer, LV_ALIGN_TOP_LEFT, -16, -16);
+    lv_obj_set_size(networkSettingsContainer, 672, 312);
+    lv_obj_align(networkSettingsContainer, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_bg_opa(networkSettingsContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_opa(networkSettingsContainer, LV_OPA_100, LV_PART_MAIN);
+    lv_obj_clear_flag(networkSettingsContainer, LV_OBJ_FLAG_SCROLLABLE);
 
     // Network Settings Label
     lv_obj_t* networkSettingsLabel = lv_label_create(networkSettingsContainer);
@@ -1147,7 +1194,7 @@ void settingsScreen()
     // Hostname Text Area
     lv_obj_t* hostnameTextArea = setTextAreaStyles(networkSettingsContainer, "Hostname");
     lv_obj_align(hostnameTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
-    lv_obj_set_width(hostnameTextArea, lv_pct(80));
+    lv_obj_set_width(hostnameTextArea, lv_pct(40));
     lv_obj_add_event_cb(hostnameTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
     lv_obj_clear_flag(hostnameTextArea, LV_OBJ_FLAG_SCROLLABLE);
     setCursorStyles(hostnameTextArea);
@@ -1156,7 +1203,7 @@ void settingsScreen()
     lv_obj_t* wifiTextArea = setTextAreaStyles(networkSettingsContainer, "Network SSID");
     lv_textarea_set_max_length(wifiTextArea, MAX_SSID_LENGTH);
     lv_obj_align(wifiTextArea, LV_ALIGN_TOP_LEFT, 0, 80);
-    lv_obj_set_width(wifiTextArea, lv_pct(80));
+    lv_obj_set_width(wifiTextArea, lv_pct(40));
     lv_obj_add_event_cb(wifiTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
     lv_obj_clear_flag(wifiTextArea, LV_OBJ_FLAG_SCROLLABLE);
     setCursorStyles(wifiTextArea);
@@ -1165,7 +1212,7 @@ void settingsScreen()
     lv_obj_t* wifiPasswordTextArea = setTextAreaStyles(networkSettingsContainer, "Network Password");
     lv_textarea_set_password_mode(wifiPasswordTextArea, true);
     lv_obj_align(wifiPasswordTextArea, LV_ALIGN_TOP_LEFT, 0, 144);
-    lv_obj_set_width(wifiPasswordTextArea, lv_pct(80));
+    lv_obj_set_width(wifiPasswordTextArea, lv_pct(40));
     lv_obj_add_event_cb(wifiPasswordTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
     lv_obj_clear_flag(wifiPasswordTextArea, LV_OBJ_FLAG_SCROLLABLE);
     setCursorStyles(wifiPasswordTextArea);
@@ -1261,4 +1308,35 @@ void settingsScreen()
     lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_keyboard_set_textarea(kb, wifiTextArea);
     lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
+
+
+    // Store text area references as we create them
+    settingsTextAreas.hostnameTextArea = hostnameTextArea;
+    settingsTextAreas.wifiTextArea = wifiTextArea;
+    settingsTextAreas.wifiPasswordTextArea = wifiPasswordTextArea;
+    //settingsTextAreas.stratumUrlTextArea = stratumUrlTextArea;
+    //settingsTextAreas.stratumPortTextArea = stratumPortTextArea;
+    //settingsTextAreas.stratumUserTextArea = stratumUserTextArea;
+    //settingsTextAreas.stratumPasswordTextArea = stratumPasswordTextArea;
+
+    // Create save button
+    lv_obj_t* saveButton = lv_btn_create(networkSettingsContainer);
+    lv_obj_set_size(saveButton, 120, 48);
+    lv_obj_align(saveButton, LV_ALIGN_BOTTOM_RIGHT, -16, -16);
+    
+    // Create label for save button
+    lv_obj_t* saveLabel = lv_label_create(saveButton);
+    lv_label_set_text(saveLabel, "SAVE");
+    lv_obj_center(saveLabel);
+    
+    // Style the button and label
+    lv_obj_set_style_bg_color(saveButton, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(saveButton, LV_OPA_20, LV_PART_MAIN);
+    lv_obj_set_style_text_font(saveLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(saveLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+
+    // Add event handler
+    if (saveButton != NULL) {
+        lv_obj_add_event_cb(saveButton, saveButtonEventHandler, LV_EVENT_CLICKED, NULL);
+    }
 }
