@@ -881,7 +881,7 @@ void bitcoinNewsScreen()
 
     // BTC Network Difficulty Label
     lv_obj_t* btcNetworkDifficultyLabel = lv_label_create(btcHashrateDiffContainer);
-    lv_label_set_text_fmt(btcNetworkDifficultyLabel, "Difficulty: %d.%02d T", (int)(i2cData.api.networkDifficulty / 1e12), (int)(i2cData.api.networkDifficulty / 1e18) % 100);
+    lv_label_set_text_fmt(btcNetworkDifficultyLabel, "Difficulty: %d.%02d T", (int)(i2cData.api.networkDifficulty / 1e12), (int)(i2cData.api.networkDifficulty / 1e12) % 100);
     lv_obj_set_style_text_font(btcNetworkDifficultyLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(btcNetworkDifficultyLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_align(btcNetworkDifficultyLabel, LV_ALIGN_TOP_LEFT, 0, 56);
@@ -1034,6 +1034,28 @@ void bitcoinNewsScreen()
 
     screenObjs.apiUpdateTimer = lv_timer_create(updateMempoolAPIInfo, 3000, mempoolAPILabels);
 }
+static lv_obj_t * kb;
+static void ta_event_cb(lv_event_t * e);
+
+static void ta_event_cb(lv_event_t * e) {
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * ta = lv_event_get_target(e);
+
+    if(code == LV_EVENT_CLICKED || code == LV_EVENT_FOCUSED) {
+        if(kb != NULL) {
+            lv_keyboard_set_textarea(kb, ta);
+            lv_obj_clear_flag(kb, LV_OBJ_FLAG_HIDDEN);
+            // Disable animation for showing keyboard
+            lv_obj_set_style_anim_time(kb, 0, 0);
+        }
+    }
+    else if(code == LV_EVENT_READY || code == LV_EVENT_CANCEL || code == LV_EVENT_DEFOCUSED) {
+        LV_LOG_USER("Ready, current text: %s", lv_textarea_get_text(ta));
+        // Disable animation for hiding keyboard
+        lv_obj_set_style_anim_time(kb, 0, 0);
+        lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
+    }
+}
 
 void settingsScreen()
 {
@@ -1045,7 +1067,7 @@ void settingsScreen()
     lv_obj_set_style_bg_opa(settingsContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_opa(settingsContainer, LV_OPA_100, LV_PART_MAIN);
 
-     // BTC Price Label
+    // Settings Label
     lv_obj_t* settingsLabel = lv_label_create(settingsContainer);
     lv_label_set_text(settingsLabel, "SETTINGS");
     lv_obj_set_style_text_font(settingsLabel, &interMedium24, LV_PART_MAIN);
@@ -1053,4 +1075,30 @@ void settingsScreen()
     lv_obj_align(settingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
     lv_obj_clear_flag(settingsLabel, LV_OBJ_FLAG_SCROLLABLE);
 
+    // Wifi Text Area
+    lv_obj_t* wifiTextArea = lv_textarea_create(settingsContainer);
+    lv_textarea_set_one_line(wifiTextArea, true);
+    lv_textarea_set_text(wifiTextArea, "WIFI");
+    lv_obj_align(wifiTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
+    lv_obj_set_width(wifiTextArea, lv_pct(40));
+    lv_obj_add_event_cb(wifiTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(wifiTextArea, LV_OBJ_FLAG_SCROLLABLE);
+
+    kb = lv_keyboard_create(lv_scr_act());
+    lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 2);
+
+    // Disable animations
+    lv_obj_set_style_anim_time(kb, 0, 0);
+
+    // Remove button matrix press state animations
+    lv_obj_set_style_bg_color(kb, lv_color_hex(0x161f1b), LV_PART_ITEMS | LV_STATE_PRESSED);
+    lv_obj_set_style_text_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS | LV_STATE_PRESSED);
+
+    // Disable state transitions
+    lv_obj_remove_style_all(kb);  // Remove default styles
+    lv_obj_set_style_bg_opa(kb, LV_OPA_80, 0);
+    lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
+
+    lv_keyboard_set_textarea(kb, wifiTextArea);
+    lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
 }
