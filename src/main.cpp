@@ -188,6 +188,7 @@ void loop() {
     {
         //monitorHeapAllocation();
         printMemoryInfo();
+        showSettingsConfirmationOverlay();
        // lastHeapCheck = millis();
        lastHeapCheck = millis();
     }

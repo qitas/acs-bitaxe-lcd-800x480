@@ -69,20 +69,22 @@ static void saveButtonEventHandler(lv_event_t* e) {
 
         // Debug print
         Serial.println("Save button clicked!");
-        Serial.printf("Hostname: %s\n", hostname);
-        Serial.printf("WiFi SSID: %s\n", wifiSSID);
-        Serial.printf("WiFi Password: %s\n", wifiPassword);
+        Serial.printf("Hostname: %s (length: %d)\n", hostname, strlen(hostname));
+        Serial.printf("WiFi SSID: %s (length: %d)\n", wifiSSID, strlen(wifiSSID));
+        Serial.printf("WiFi Password: %s (length: %d)\n", wifiPassword, strlen(wifiPassword));
 
-        if (strlen(hostname) > 0 && strlen(wifiSSID) > 0 && strlen(wifiPassword) > 0)
+        // Check if ANY setting has changed and is valid
+        if ((hostname && strlen(hostname) > 0) || 
+            (wifiSSID && strlen(wifiSSID) > 0 && wifiPassword && strlen(wifiPassword) > 0))
         {
+            lvgl_port_lock(-1);  // Lock for LVGL operations
             settingsChanged = true;
+            showSettingsConfirmationOverlay();
+            lvgl_port_unlock();
+            Serial.println("Settings changed, showing overlay");
+        } else {
+            Serial.println("No valid settings changes detected");
         }
-
-        // TODO: Add your I2C sending code here
-        
-        // Show confirmation message
-        //lv_obj_t* mbox = lv_msgbox_create(NULL, "Settings", "Settings saved successfully", NULL, true);
-        //lv_obj_center(mbox);
     }
 }
 
@@ -1344,5 +1346,41 @@ void settingsScreen()
     // Add event handler
     if (saveButton != NULL) {
         lv_obj_add_event_cb(saveButton, saveButtonEventHandler, LV_EVENT_CLICKED, NULL);
+    }
+}
+
+void showSettingsConfirmationOverlay() {
+    static lv_obj_t* overlay = NULL;
+    
+    if (settingsChanged && !overlay) {
+        Serial.println("Creating overlay");
+        // Create semi-transparent overlay
+        overlay = lv_obj_create(lv_scr_act());
+        lv_obj_remove_style_all(overlay);
+        lv_obj_set_size(overlay, LV_HOR_RES, LV_VER_RES);
+        lv_obj_set_style_bg_color(overlay, lv_color_hex(0x000000), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(overlay, LV_OPA_50, LV_PART_MAIN);
+        lv_obj_set_style_radius(overlay, 0, LV_PART_MAIN);
+        
+        // Create confirmation container
+        lv_obj_t* confirmContainer = lv_obj_create(overlay);
+        lv_obj_set_size(confirmContainer, 400, 200);
+        lv_obj_center(confirmContainer);
+        lv_obj_set_style_bg_color(confirmContainer, lv_color_hex(0x161f1b), LV_PART_MAIN);
+        lv_obj_set_style_border_color(confirmContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+        lv_obj_set_style_border_width(confirmContainer, 2, LV_PART_MAIN);
+        lv_obj_set_style_radius(confirmContainer, 16, LV_PART_MAIN);
+        
+        // Add message
+        lv_obj_t* message = lv_label_create(confirmContainer);
+        lv_label_set_text(message, "Waiting to send settings...");
+        lv_obj_set_style_text_font(message, &interMedium24, LV_PART_MAIN);
+        lv_obj_set_style_text_color(message, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+        lv_obj_align(message, LV_ALIGN_CENTER, 0, 0);
+    } else if (!settingsChanged && overlay) {
+        Serial.println("Removing overlay");
+        // Remove overlay when settings are no longer being changed
+        lv_obj_del(overlay);
+        overlay = NULL;
     }
 }

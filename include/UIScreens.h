@@ -86,4 +86,4 @@ extern void initalizeOneScreen();
 extern void bitcoinNewsScreen();
 extern void activityScreen();
 extern void settingsScreen();
-
+extern void showSettingsConfirmationOverlay();

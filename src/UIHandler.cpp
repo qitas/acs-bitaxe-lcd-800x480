@@ -4,11 +4,17 @@
 #include <Arduino.h>
 #include "UIScreens.h"
 
+extern bool settingsChanged;
+
 ScreenObjects screenObjs = {0};
 void switchToScreen(ScreenType newScreen)
 {
     if (activeScreen == newScreen) {
         return; // Already on this screen
+    }
+    if (settingsChanged) {
+        showSettingsConfirmationOverlay();
+        return;
     }
 
     lvgl_port_lock(-1);  // Lock for thread safety
