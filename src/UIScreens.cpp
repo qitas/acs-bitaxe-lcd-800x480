@@ -1087,18 +1087,26 @@ void settingsScreen()
     kb = lv_keyboard_create(lv_scr_act());
     lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 2);
 
-    // Disable animations
+    // Remove all default styles
+    lv_obj_remove_style_all(kb);
+
+    // Set keyboard background
+    lv_obj_set_style_bg_color(kb, lv_color_hex(0x161f1b), LV_PART_MAIN);  // Dark background
+    lv_obj_set_style_bg_opa(kb, LV_OPA_80, LV_PART_MAIN);
+
+    // Style for buttons (single state only)
+    lv_obj_set_style_bg_color(kb, lv_color_hex(0x161f1b), LV_PART_ITEMS);  // Dark button background
+    lv_obj_set_style_text_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);  // Your theme color for text
+    lv_obj_set_style_border_width(kb, 2, LV_PART_ITEMS);
+    lv_obj_set_style_border_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);
+    lv_obj_set_style_radius(kb, 16, LV_PART_ITEMS);
+
+    // Disable ALL animations and transitions
     lv_obj_set_style_anim_time(kb, 0, 0);
+    lv_obj_clear_flag(kb, LV_OBJ_FLAG_SCROLL_CHAIN);
+    lv_obj_clear_flag(kb, LV_OBJ_FLAG_SCROLLABLE);
 
-    // Remove button matrix press state animations
-    lv_obj_set_style_bg_color(kb, lv_color_hex(0x161f1b), LV_PART_ITEMS | LV_STATE_PRESSED);
-    lv_obj_set_style_text_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS | LV_STATE_PRESSED);
-
-    // Disable state transitions
-    lv_obj_remove_style_all(kb);  // Remove default styles
-    lv_obj_set_style_bg_opa(kb, LV_OPA_80, 0);
     lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
-
     lv_keyboard_set_textarea(kb, wifiTextArea);
     lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
 }
