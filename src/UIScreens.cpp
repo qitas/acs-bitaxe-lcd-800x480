@@ -1088,27 +1088,64 @@ static void ta_event_cb(lv_event_t * e) {
     }
 }
 
+
+
 void settingsScreen()
 {
     activeScreen = activeScreenSettings;
 
-    lv_obj_t* settingsContainer = lv_obj_create(screenObjs.settingsMainContainer);
-    lv_obj_set_size(settingsContainer, 320, 192 );
-    lv_obj_align(settingsContainer, LV_ALIGN_TOP_LEFT, -16, -16);
-    lv_obj_set_style_bg_opa(settingsContainer, LV_OPA_0, LV_PART_MAIN);
-    lv_obj_set_style_border_opa(settingsContainer, LV_OPA_100, LV_PART_MAIN);
+    lv_obj_t * settingTabView = lv_tabview_create(screenObjs.settingsMainContainer, LV_DIR_BOTTOM, 72);
+    // Make tileview transparent
+    lv_obj_set_style_bg_opa(settingTabView, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(settingTabView, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_clear_flag(lv_tabview_get_content(settingTabView), LV_OBJ_FLAG_SCROLLABLE);
+    // Add scroll event callback to disable animations
 
-    // Settings Label
-    lv_obj_t* settingsLabel = lv_label_create(settingsContainer);
-    lv_label_set_text(settingsLabel, "NETWORK SETTINGS");
-    lv_obj_set_style_text_font(settingsLabel, &interMedium24, LV_PART_MAIN);
-    lv_obj_set_style_text_color(settingsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
-    lv_obj_align(settingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
-    lv_obj_clear_flag(settingsLabel, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_t * networkSettingsTab = lv_tabview_add_tab(settingTabView, "NETWORK");
+    lv_obj_t * miningSettingsTab = lv_tabview_add_tab(settingTabView, "MINING");
+    lv_obj_t * asicSettingsTab = lv_tabview_add_tab(settingTabView, "ASIC");
+
+    lv_obj_t * tab_btns = lv_tabview_get_tab_btns(settingTabView);
+    lv_obj_set_style_bg_color(tab_btns, lv_palette_darken(LV_PALETTE_GREY, 3), 0);
+    lv_obj_set_style_bg_opa(tab_btns, LV_OPA_0, LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_opa(tab_btns, LV_OPA_0, LV_PART_ITEMS | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(tab_btns, LV_OPA_30, LV_PART_MAIN | LV_STATE_CHECKED);
+    lv_obj_set_style_bg_opa(tab_btns, LV_OPA_0, LV_PART_MAIN | LV_STATE_DEFAULT);
+   
+
+
+    
+    lv_obj_set_style_border_color(tab_btns, lv_color_hex(0xA7F3D0), LV_PART_ITEMS | LV_STATE_CHECKED);
+    lv_obj_set_style_radius(tab_btns, 16, LV_PART_ITEMS);
+    // Style for both checked and unchecked states
+    lv_obj_set_style_text_font(tab_btns, &interMedium16_19px, LV_PART_ITEMS);  // Default state
+    lv_obj_set_style_text_font(tab_btns, &interMedium16_19px, LV_PART_ITEMS | LV_STATE_CHECKED);  // Checked state
+    lv_obj_set_style_text_color(tab_btns, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);  // Default state
+    lv_obj_set_style_text_color(tab_btns, lv_color_hex(0xA7F3D0), LV_PART_ITEMS | LV_STATE_CHECKED);  // Checked state
+    
+
+    // Make individual tile transparent (optional if tileview is already transparent)
+    lv_obj_set_style_bg_opa(networkSettingsTab, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(networkSettingsTab, LV_OPA_0, LV_PART_MAIN);
+
+    // Network Settings Container
+    lv_obj_t* networkSettingsContainer = lv_obj_create(networkSettingsTab);
+    lv_obj_set_size(networkSettingsContainer, 320, 224);
+    lv_obj_align(networkSettingsContainer, LV_ALIGN_TOP_LEFT, -16, -16);
+    lv_obj_set_style_bg_opa(networkSettingsContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(networkSettingsContainer, LV_OPA_100, LV_PART_MAIN);
+
+    // Network Settings Label
+    lv_obj_t* networkSettingsLabel = lv_label_create(networkSettingsContainer);
+    lv_label_set_text(networkSettingsLabel, "NETWORK SETTINGS");
+    lv_obj_set_style_text_font(networkSettingsLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(networkSettingsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(networkSettingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(networkSettingsLabel, LV_OBJ_FLAG_SCROLLABLE);
 
 
     // Hostname Text Area
-    lv_obj_t* hostnameTextArea = setTextAreaStyles(settingsContainer, "Hostname");
+    lv_obj_t* hostnameTextArea = setTextAreaStyles(networkSettingsContainer, "Hostname");
     lv_obj_align(hostnameTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
     lv_obj_set_width(hostnameTextArea, lv_pct(80));
     lv_obj_add_event_cb(hostnameTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
@@ -1116,7 +1153,7 @@ void settingsScreen()
     setCursorStyles(hostnameTextArea);
 
     // Wifi SSID Text Area
-    lv_obj_t* wifiTextArea = setTextAreaStyles(settingsContainer, "Network SSID");
+    lv_obj_t* wifiTextArea = setTextAreaStyles(networkSettingsContainer, "Network SSID");
     lv_textarea_set_max_length(wifiTextArea, MAX_SSID_LENGTH);
     lv_obj_align(wifiTextArea, LV_ALIGN_TOP_LEFT, 0, 80);
     lv_obj_set_width(wifiTextArea, lv_pct(80));
@@ -1124,17 +1161,89 @@ void settingsScreen()
     lv_obj_clear_flag(wifiTextArea, LV_OBJ_FLAG_SCROLLABLE);
     setCursorStyles(wifiTextArea);
 
+    // Wifi Password Text Area
+    lv_obj_t* wifiPasswordTextArea = setTextAreaStyles(networkSettingsContainer, "Network Password");
+    lv_textarea_set_password_mode(wifiPasswordTextArea, true);
+    lv_obj_align(wifiPasswordTextArea, LV_ALIGN_TOP_LEFT, 0, 144);
+    lv_obj_set_width(wifiPasswordTextArea, lv_pct(80));
+    lv_obj_add_event_cb(wifiPasswordTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(wifiPasswordTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(wifiPasswordTextArea);
+
+
+
+    // Mining Settings Container
+    lv_obj_t* miningSettingsContainer = lv_obj_create(miningSettingsTab);
+    lv_obj_set_size(miningSettingsContainer, 320, 224);
+    lv_obj_align(miningSettingsContainer, LV_ALIGN_TOP_RIGHT, 16, -16);
+    lv_obj_set_style_bg_opa(miningSettingsContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(miningSettingsContainer, LV_OPA_100, LV_PART_MAIN);
+
+    // Mining Settings Label
+    lv_obj_t* miningSettingsLabel = lv_label_create(miningSettingsContainer);
+    lv_label_set_text(miningSettingsLabel, "MINING SETTINGS");
+    lv_obj_set_style_text_font(miningSettingsLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(miningSettingsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(miningSettingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(miningSettingsLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    //  Stratum URL Text Area
+    lv_obj_t* stratumUrlTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum URL");
+    lv_obj_align(stratumUrlTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
+    lv_obj_set_width(stratumUrlTextArea, lv_pct(80));
+    lv_obj_add_event_cb(stratumUrlTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumUrlTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumUrlTextArea);
+
+    //Stratum Port Text Area
+    lv_obj_t* stratumPortTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum Port");
+    lv_obj_align(stratumPortTextArea, LV_ALIGN_TOP_LEFT, 0, 80);
+    lv_obj_set_width(stratumPortTextArea, lv_pct(80));
+    lv_obj_add_event_cb(stratumPortTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumPortTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumPortTextArea);
+
+    // Stratum User Text Area
+    lv_obj_t* stratumUserTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum User");
+    lv_obj_align(stratumUserTextArea, LV_ALIGN_TOP_LEFT, 0, 144);
+    lv_obj_set_width(stratumUserTextArea, lv_pct(80));
+    lv_obj_add_event_cb(stratumUserTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumUserTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumUserTextArea);
+
+    // Stratum Password Text Area
+    lv_obj_t* stratumPasswordTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum Password");
+    lv_obj_align(stratumPasswordTextArea, LV_ALIGN_TOP_LEFT, 0, 208);
+    lv_obj_set_width(stratumPasswordTextArea, lv_pct(80));
+    lv_obj_add_event_cb(stratumPasswordTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumPasswordTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumPasswordTextArea);
+
+    // Asic Settings Container
+    lv_obj_t* asicSettingsContainer = lv_obj_create(asicSettingsTab);
+    lv_obj_set_size(asicSettingsContainer, 320, 224);
+    lv_obj_align(asicSettingsContainer, LV_ALIGN_TOP_LEFT, 16, -16);
+    lv_obj_set_style_bg_opa(asicSettingsContainer, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(asicSettingsContainer, LV_OPA_100, LV_PART_MAIN);
+
+    // Asic Settings Label
+    lv_obj_t* asicSettingsLabel = lv_label_create(asicSettingsContainer);
+    lv_label_set_text(asicSettingsLabel, "ASIC SETTINGS");
+    lv_obj_set_style_text_font(asicSettingsLabel, &interMedium24, LV_PART_MAIN);
+    lv_obj_set_style_text_color(asicSettingsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_align(asicSettingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
+    lv_obj_clear_flag(asicSettingsLabel, LV_OBJ_FLAG_SCROLLABLE);
+
+    // Asic Frequency Dropdown
+
 
     kb = lv_keyboard_create(lv_scr_act());
     lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 2);
-
     // Remove all default styles
     lv_obj_remove_style_all(kb);
-
     // Set keyboard background
     lv_obj_set_style_bg_color(kb, lv_color_hex(0x161f1b), LV_PART_MAIN);  // Dark background
     lv_obj_set_style_bg_opa(kb, LV_OPA_80, LV_PART_MAIN);
-
     // Style for buttons (single state only)
     lv_obj_set_style_bg_color(kb, lv_color_hex(0x161f1b), LV_PART_ITEMS);  // Dark button background
     lv_obj_set_style_text_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);  // Your theme color for text
@@ -1145,19 +1254,11 @@ void settingsScreen()
     lv_obj_set_style_text_font(kb, &interMedium16_19px, LV_PART_ITEMS);
     // Symbols that Inter Font doesn't support
     lv_obj_set_style_text_font(kb, LV_FONT_DEFAULT, LV_PART_ITEMS | LV_STATE_CHECKED);
-
     // Disable ALL animations and transitions
     lv_obj_set_style_anim_time(kb, 0, 0);
     lv_obj_clear_flag(kb, LV_OBJ_FLAG_SCROLL_CHAIN);
     lv_obj_clear_flag(kb, LV_OBJ_FLAG_SCROLLABLE);
-
     lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_keyboard_set_textarea(kb, wifiTextArea);
     lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
-
-    // Set cursor styles
-    lv_obj_set_style_bg_color(wifiTextArea, lv_color_hex(0xA7F3D0), LV_PART_CURSOR | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_opa(wifiTextArea, LV_OPA_100, LV_PART_CURSOR | LV_STATE_FOCUSED);
-    lv_obj_set_style_border_width(wifiTextArea, 0, LV_PART_CURSOR | LV_STATE_FOCUSED);  // Remove border completely
-    lv_obj_set_style_bg_opa(wifiTextArea, LV_OPA_0, LV_PART_CURSOR);
 }
