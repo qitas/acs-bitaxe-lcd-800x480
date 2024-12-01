@@ -1036,6 +1036,37 @@ void bitcoinNewsScreen()
 }
 static lv_obj_t * kb;
 static void ta_event_cb(lv_event_t * e);
+static void setCursorStyles(lv_obj_t * ta);
+static lv_obj_t* setTextAreaStyles(lv_obj_t* parent, const char* placeholder);
+
+static lv_obj_t* setTextAreaStyles(lv_obj_t* parent, const char* placeholder)
+{
+    lv_obj_t* ta = lv_textarea_create(parent);
+    lv_textarea_set_one_line(ta, true);
+    lv_textarea_set_placeholder_text(ta, placeholder);
+    lv_obj_set_style_text_color(ta, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_text_font(ta, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_align(ta, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(ta, lv_color_hex(0x161f1b), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(ta, LV_OPA_80, LV_PART_MAIN);
+    lv_obj_set_style_border_width(ta, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(ta, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_obj_set_style_radius(ta, 16, LV_PART_MAIN);
+    lv_textarea_set_max_length(ta, 32); // Set Max Hostname Length Look through ESP Miner for this
+    lv_obj_align(ta, LV_ALIGN_TOP_LEFT, 0, 16);
+    lv_obj_set_width(ta, lv_pct(80));
+    lv_obj_add_event_cb(ta, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_set_style_text_color(ta, lv_color_hex(0xA7F3D0), LV_PART_CURSOR);
+    lv_obj_clear_flag(ta, LV_OBJ_FLAG_SCROLLABLE);
+    return ta;
+}
+
+static void setCursorStyles(lv_obj_t * ta)
+{
+    lv_obj_set_style_bg_color(ta, lv_color_hex(0xA7F3D0), LV_PART_CURSOR | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_opa(ta, LV_OPA_100, LV_PART_CURSOR | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_width(ta, 0, LV_PART_CURSOR | LV_STATE_FOCUSED);  // Remove border completely
+}
 
 static void ta_event_cb(lv_event_t * e) {
     lv_event_code_t code = lv_event_get_code(e);
@@ -1069,20 +1100,30 @@ void settingsScreen()
 
     // Settings Label
     lv_obj_t* settingsLabel = lv_label_create(settingsContainer);
-    lv_label_set_text(settingsLabel, "SETTINGS");
+    lv_label_set_text(settingsLabel, "NETWORK SETTINGS");
     lv_obj_set_style_text_font(settingsLabel, &interMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(settingsLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_obj_align(settingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
     lv_obj_clear_flag(settingsLabel, LV_OBJ_FLAG_SCROLLABLE);
 
-    // Wifi Text Area
-    lv_obj_t* wifiTextArea = lv_textarea_create(settingsContainer);
-    lv_textarea_set_one_line(wifiTextArea, true);
-    lv_textarea_set_text(wifiTextArea, "WIFI");
-    lv_obj_align(wifiTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
-    lv_obj_set_width(wifiTextArea, lv_pct(40));
+
+    // Hostname Text Area
+    lv_obj_t* hostnameTextArea = setTextAreaStyles(settingsContainer, "Hostname");
+    lv_obj_align(hostnameTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
+    lv_obj_set_width(hostnameTextArea, lv_pct(80));
+    lv_obj_add_event_cb(hostnameTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(hostnameTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(hostnameTextArea);
+
+    // Wifi SSID Text Area
+    lv_obj_t* wifiTextArea = setTextAreaStyles(settingsContainer, "Network SSID");
+    lv_textarea_set_max_length(wifiTextArea, MAX_SSID_LENGTH);
+    lv_obj_align(wifiTextArea, LV_ALIGN_TOP_LEFT, 0, 80);
+    lv_obj_set_width(wifiTextArea, lv_pct(80));
     lv_obj_add_event_cb(wifiTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
     lv_obj_clear_flag(wifiTextArea, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(wifiTextArea);
+
 
     kb = lv_keyboard_create(lv_scr_act());
     lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 2);
@@ -1099,7 +1140,11 @@ void settingsScreen()
     lv_obj_set_style_text_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);  // Your theme color for text
     lv_obj_set_style_border_width(kb, 2, LV_PART_ITEMS);
     lv_obj_set_style_border_color(kb, lv_color_hex(0xA7F3D0), LV_PART_ITEMS);
-    lv_obj_set_style_radius(kb, 16, LV_PART_ITEMS);
+    lv_obj_set_style_radius(kb, 24, LV_PART_ITEMS);
+    // Regular keys
+    lv_obj_set_style_text_font(kb, &interMedium16_19px, LV_PART_ITEMS);
+    // Symbols that Inter Font doesn't support
+    lv_obj_set_style_text_font(kb, LV_FONT_DEFAULT, LV_PART_ITEMS | LV_STATE_CHECKED);
 
     // Disable ALL animations and transitions
     lv_obj_set_style_anim_time(kb, 0, 0);
@@ -1109,4 +1154,10 @@ void settingsScreen()
     lv_obj_align(kb, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_keyboard_set_textarea(kb, wifiTextArea);
     lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
+
+    // Set cursor styles
+    lv_obj_set_style_bg_color(wifiTextArea, lv_color_hex(0xA7F3D0), LV_PART_CURSOR | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_opa(wifiTextArea, LV_OPA_100, LV_PART_CURSOR | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_width(wifiTextArea, 0, LV_PART_CURSOR | LV_STATE_FOCUSED);  // Remove border completely
+    lv_obj_set_style_bg_opa(wifiTextArea, LV_OPA_0, LV_PART_CURSOR);
 }
