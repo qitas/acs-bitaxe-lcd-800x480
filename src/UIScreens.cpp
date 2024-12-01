@@ -736,13 +736,11 @@ void hashrateGraph(lv_obj_t* parent)
     lv_chart_series_t* hashRateSeries = lv_chart_add_series(miningStatusHashRateChart, lv_color_hex(0xA7F3D0), LV_CHART_AXIS_PRIMARY_Y);
 
     // Only add initial points if we have valid data
-    if (i2cData.mining.hashrate > 0) 
-    {
+
         for(int i = 0; i < 50; i++) 
         {
             lv_chart_set_next_value(miningStatusHashRateChart, hashRateSeries, i2cData.mining.hashrate);
         }
-    }
 
     // Update timer to use actual hashrate
     screenObjs.chartUpdateTimer = lv_timer_create([](lv_timer_t* timer) 
