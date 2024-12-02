@@ -604,11 +604,12 @@ void onRequest()
 
     // Settings have changed - check and send each setting
     if (settingsTextAreas.hostnameTextArea) {
-        uint8_t len = strlen(lv_textarea_get_text(settingsTextAreas.hostnameTextArea));
+        const char* text = lv_textarea_get_text(settingsTextAreas.hostnameTextArea);
+        uint8_t len = strlen(text);
         if (len > 0) {
             Wire2.write(LVGL_REG_SETTINGS_HOSTNAME);
             Wire2.write(len);
-            Wire2.write((uint8_t*)settingsTextAreas.hostnameTextArea, len);
+            Wire2.write((uint8_t*)text, len);
         }
     }
 
