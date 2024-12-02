@@ -1229,8 +1229,8 @@ void settingsScreen()
 
     // Mining Settings Container
     lv_obj_t* miningSettingsContainer = lv_obj_create(miningSettingsTab);
-    lv_obj_set_size(miningSettingsContainer, 320, 224);
-    lv_obj_align(miningSettingsContainer, LV_ALIGN_TOP_RIGHT, 16, -16);
+    lv_obj_set_size(miningSettingsContainer, 672, 312);
+    lv_obj_align(miningSettingsContainer, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_bg_opa(miningSettingsContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_opa(miningSettingsContainer, LV_OPA_100, LV_PART_MAIN);
 
@@ -1242,42 +1242,74 @@ void settingsScreen()
     lv_obj_align(miningSettingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
     lv_obj_clear_flag(miningSettingsLabel, LV_OBJ_FLAG_SCROLLABLE);
 
-    //  Stratum URL Text Area
-    lv_obj_t* stratumUrlTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum URL");
-    lv_obj_align(stratumUrlTextArea, LV_ALIGN_TOP_LEFT, 0, 16);
-    lv_obj_set_width(stratumUrlTextArea, lv_pct(80));
-    lv_obj_add_event_cb(stratumUrlTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
-    lv_obj_clear_flag(stratumUrlTextArea, LV_OBJ_FLAG_SCROLLABLE);
-    setCursorStyles(stratumUrlTextArea);
+    //  Stratum URL Main Text Area
+    lv_obj_t* stratumUrlTextAreaMain = setTextAreaStyles(miningSettingsContainer, "Stratum URL Main");
+    lv_obj_align(stratumUrlTextAreaMain, LV_ALIGN_TOP_LEFT, 0, 16);
+    lv_obj_set_width(stratumUrlTextAreaMain, lv_pct(45));
+    lv_obj_add_event_cb(stratumUrlTextAreaMain, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumUrlTextAreaMain, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumUrlTextAreaMain);
 
-    //Stratum Port Text Area
-    lv_obj_t* stratumPortTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum Port");
-    lv_obj_align(stratumPortTextArea, LV_ALIGN_TOP_LEFT, 0, 80);
-    lv_obj_set_width(stratumPortTextArea, lv_pct(80));
-    lv_obj_add_event_cb(stratumPortTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
-    lv_obj_clear_flag(stratumPortTextArea, LV_OBJ_FLAG_SCROLLABLE);
-    setCursorStyles(stratumPortTextArea);
+    //Stratum Port Main Text Area
+    lv_obj_t* stratumPortTextAreaMain = setTextAreaStyles(miningSettingsContainer, "Stratum Port Main");
+    lv_obj_align(stratumPortTextAreaMain, LV_ALIGN_TOP_LEFT, 0, 80);
+    lv_obj_set_width(stratumPortTextAreaMain, lv_pct(45));
+    lv_obj_add_event_cb(stratumPortTextAreaMain, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumPortTextAreaMain, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumPortTextAreaMain);
 
-    // Stratum User Text Area
-    lv_obj_t* stratumUserTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum User");
-    lv_obj_align(stratumUserTextArea, LV_ALIGN_TOP_LEFT, 0, 144);
-    lv_obj_set_width(stratumUserTextArea, lv_pct(80));
-    lv_obj_add_event_cb(stratumUserTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
-    lv_obj_clear_flag(stratumUserTextArea, LV_OBJ_FLAG_SCROLLABLE);
-    setCursorStyles(stratumUserTextArea);
+    // Stratum User Main  Text Area
+    lv_obj_t* stratumUserTextAreaMain = setTextAreaStyles(miningSettingsContainer, "Stratum User Main");
+    lv_obj_align(stratumUserTextAreaMain, LV_ALIGN_TOP_LEFT, 0, 144);
+    lv_obj_set_width(stratumUserTextAreaMain, lv_pct(45));
+    lv_obj_add_event_cb(stratumUserTextAreaMain, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumUserTextAreaMain, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumUserTextAreaMain);
 
-    // Stratum Password Text Area
-    lv_obj_t* stratumPasswordTextArea = setTextAreaStyles(miningSettingsContainer, "Stratum Password");
-    lv_obj_align(stratumPasswordTextArea, LV_ALIGN_TOP_LEFT, 0, 208);
-    lv_obj_set_width(stratumPasswordTextArea, lv_pct(80));
-    lv_obj_add_event_cb(stratumPasswordTextArea, ta_event_cb, LV_EVENT_ALL, NULL);
-    lv_obj_clear_flag(stratumPasswordTextArea, LV_OBJ_FLAG_SCROLLABLE);
-    setCursorStyles(stratumPasswordTextArea);
+    // Stratum Password Main Text Area
+    lv_obj_t* stratumPasswordTextAreaMain = setTextAreaStyles(miningSettingsContainer, "Stratum Password Main");
+    lv_obj_align(stratumPasswordTextAreaMain, LV_ALIGN_TOP_LEFT, 0, 208);
+    lv_obj_set_width(stratumPasswordTextAreaMain, lv_pct(45));
+    lv_obj_add_event_cb(stratumPasswordTextAreaMain, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumPasswordTextAreaMain, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumPasswordTextAreaMain);
+
+    //  Stratum URL Backup Text Area
+    lv_obj_t* stratumUrlTextAreaBackup = setTextAreaStyles(miningSettingsContainer, "Stratum URL Backup");
+    lv_obj_align(stratumUrlTextAreaBackup, LV_ALIGN_TOP_RIGHT, 0, 16);
+    lv_obj_set_width(stratumUrlTextAreaBackup, lv_pct(45));
+    lv_obj_add_event_cb(stratumUrlTextAreaBackup, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumUrlTextAreaBackup, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumUrlTextAreaBackup);
+
+    //Stratum Port Backup Text Area
+    lv_obj_t* stratumPortTextAreaBackup = setTextAreaStyles(miningSettingsContainer, "Stratum Port Backup");
+    lv_obj_align(stratumPortTextAreaBackup, LV_ALIGN_TOP_RIGHT, 0, 80);
+    lv_obj_set_width(stratumPortTextAreaBackup, lv_pct(45));
+    lv_obj_add_event_cb(stratumPortTextAreaBackup, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumPortTextAreaBackup, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumPortTextAreaBackup);
+
+    // Stratum User Backup Text Area
+    lv_obj_t* stratumUserTextAreaBackup = setTextAreaStyles(miningSettingsContainer, "Stratum User Backup");
+    lv_obj_align(stratumUserTextAreaBackup, LV_ALIGN_TOP_RIGHT, 0, 144);
+    lv_obj_set_width(stratumUserTextAreaBackup, lv_pct(45));
+    lv_obj_add_event_cb(stratumUserTextAreaBackup, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumUserTextAreaBackup, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumUserTextAreaBackup);
+
+    // Stratum Password Backup Text Area
+    lv_obj_t* stratumPasswordTextAreaBackup = setTextAreaStyles(miningSettingsContainer, "Stratum Password Backup");
+    lv_obj_align(stratumPasswordTextAreaBackup, LV_ALIGN_TOP_RIGHT, 0, 208);
+    lv_obj_set_width(stratumPasswordTextAreaBackup, lv_pct(45));
+    lv_obj_add_event_cb(stratumPasswordTextAreaBackup, ta_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_clear_flag(stratumPasswordTextAreaBackup, LV_OBJ_FLAG_SCROLLABLE);
+    setCursorStyles(stratumPasswordTextAreaBackup);
 
     // Asic Settings Container
     lv_obj_t* asicSettingsContainer = lv_obj_create(asicSettingsTab);
-    lv_obj_set_size(asicSettingsContainer, 320, 224);
-    lv_obj_align(asicSettingsContainer, LV_ALIGN_TOP_LEFT, 16, -16);
+    lv_obj_set_size(asicSettingsContainer, 672, 312);
+    lv_obj_align(asicSettingsContainer, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_bg_opa(asicSettingsContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_opa(asicSettingsContainer, LV_OPA_100, LV_PART_MAIN);
 
