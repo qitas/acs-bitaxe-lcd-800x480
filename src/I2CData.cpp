@@ -25,6 +25,9 @@ uint8_t* i2cBuffer = nullptr;
 // Global variables for tracking request state
 static uint8_t currentSettingsReg = 0;
 
+// Add at the top with other globals
+static uint8_t responseBuffer[32] = {0};  // Pre-allocated buffer for quick responses
+static uint8_t responseLength = 3;        // Default length (register + 2 bytes)
 
 void initI2CBuffer() 
 {
@@ -599,59 +602,16 @@ void onReceive(int len)
     }
 }
 
-// This is called when the master requests data from the slave 
-// Not Implemented yet
-// I would like to be able to send wifi data to the master on request for an alternative to HTML page
-void onRequest() 
-{
-    if (!settingsChanged) {
-        Wire2.write(requestedRegister);  
-        Wire2.write(0x00);
-        Wire2.write(0x00);
-        return;
-    }
-
-    // Settings have changed - check and send each setting
-    if (settingsTextAreas.hostnameTextArea) {
-        const char* text = lv_textarea_get_text(settingsTextAreas.hostnameTextArea);
-        uint8_t len = strlen(text);
-        if (len > 0) {
-            Wire2.write(LVGL_REG_SETTINGS_HOSTNAME);
-            Wire2.write(len);
-            Wire2.write((uint8_t*)text, len);
-        }
-    }
-
-    if (settingsTextAreas.wifiTextArea) {
-        uint8_t len = strlen(lv_textarea_get_text(settingsTextAreas.wifiTextArea));
-        if (len > 0) {
-            Wire2.write(LVGL_REG_SETTINGS_WIFI_SSID);
-            Wire2.write(len);
-            Wire2.write((uint8_t*)settingsTextAreas.wifiTextArea, len);
-        }
-    }
-
-    if (settingsTextAreas.wifiPasswordTextArea) {
-        uint8_t len = strlen(lv_textarea_get_text(settingsTextAreas.wifiPasswordTextArea));
-        if (len > 0) {
-            Wire2.write(LVGL_REG_SETTINGS_WIFI_PASSWORD);
-            Wire2.write(len);
-            Wire2.write((uint8_t*)settingsTextAreas.wifiPasswordTextArea, len);
-        }
-    }
-
-    settingsChanged = false;  // Reset flag after sending
-    Serial.println("Sent settings");
-}
-
-// Initialize the I2C slave on Wire2 Since Wire is already used for the display touchscreen
-void initI2CSlave() 
-{
+// Modified initialization function
+void initI2CSlave() {
     Wire2.onReceive(onReceive);
     Wire2.onRequest(onRequest);
     Wire2.setPins(i2cSlaveSDA, i2cSlaveSCL);
     Wire2.setBufferSize(I2C_BUFFER_SIZE);
     Wire2.begin((uint8_t)i2cSlaveAddress);
+    
+    // Set clock speed to 400kHz (Fast mode)
+    Wire2.setClock(100000);
 }
 
 // Keep the clock time updated
@@ -706,6 +666,61 @@ void checkI2CHealth()
         if (i2cNeedsReset) 
         {
             resetI2C();
+        }
+    }
+}
+
+
+// Modified onRequest handler for faster response
+void onRequest() {
+    // Quickly prepare the default response
+    responseBuffer[0] = requestedRegister;
+    responseBuffer[1] = 0x00;
+    responseBuffer[2] = 0x00;
+    
+    // Send the pre-prepared response immediately
+    Wire2.write(responseBuffer, responseLength);
+    
+    Serial.printf("Sent register 0x%02X with length %d\n", requestedRegister, responseLength);
+    
+    // Only after sending, prepare the next response if settings changed
+    if (settingsChanged) {
+        switch (requestedRegister) {
+            case LVGL_REG_SETTINGS_HOSTNAME:
+                if (settingsTextAreas.hostnameTextArea) {
+                    const char* text = lv_textarea_get_text(settingsTextAreas.hostnameTextArea);
+                    prepareSettingsResponse(text, LVGL_REG_SETTINGS_HOSTNAME);
+                }
+                break;
+                
+            case LVGL_REG_SETTINGS_WIFI_SSID:
+                if (settingsTextAreas.wifiTextArea) {
+                    const char* text = lv_textarea_get_text(settingsTextAreas.wifiTextArea);
+                    prepareSettingsResponse(text, LVGL_REG_SETTINGS_WIFI_SSID);
+                }
+                break;
+                
+            case LVGL_REG_SETTINGS_WIFI_PASSWORD:
+                if (settingsTextAreas.wifiPasswordTextArea) {
+                    const char* text = lv_textarea_get_text(settingsTextAreas.wifiPasswordTextArea);
+                    prepareSettingsResponse(text, LVGL_REG_SETTINGS_WIFI_PASSWORD);
+                }
+                break;
+        }
+    }
+    
+    requestedRegister = 0;  // Reset for next request
+}
+
+// Helper function to prepare the next response
+void prepareSettingsResponse(const char* text, uint8_t reg) {
+    if (text) {
+        uint8_t len = strlen(text);
+        if (len > 0 && len < 30) {  // Leave room for register and length bytes
+            responseBuffer[0] = reg;
+            responseBuffer[1] = len;
+            memcpy(&responseBuffer[2], text, len);
+            responseLength = len + 2;
         }
     }
 }

@@ -178,3 +178,4 @@ extern uint32_t keepClockTime();
 extern void resetI2C();
 extern void checkI2CHealth();
 extern void initI2CBuffer();
+extern void prepareSettingsResponse(const char* text, uint8_t reg);
