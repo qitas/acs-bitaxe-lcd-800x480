@@ -512,10 +512,17 @@ const char* getRegisterName(uint8_t reg)
 // At the top of the file with other defines
 #define I2C_BUFFER_SIZE 512
 #define MIN_MESSAGE_LENGTH 2  // Register + Length bytes
+static uint8_t requestedRegister = 0;
 
 // Modified onReceive function
 void onReceive(int len) 
 {
+    if (len == 1) {
+        // This is likely a register request setup
+        requestedRegister = Wire2.read();
+        return;
+    }
+
     if (i2cBuffer == nullptr) 
     {
         initI2CBuffer();
@@ -598,7 +605,9 @@ void onReceive(int len)
 void onRequest() 
 {
     if (!settingsChanged) {
-        Wire2.write(0x00);  // No changes
+        Wire2.write(requestedRegister);  
+        Wire2.write(0x00);
+        Wire2.write(0x00);
         return;
     }
 
