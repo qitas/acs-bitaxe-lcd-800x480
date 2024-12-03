@@ -162,12 +162,13 @@ static void updateLabels(lv_timer_t* timer)
         lv_label_set_text_fmt(labels[9], "Rejected: %u", rejectedShares);
         lv_label_set_text_fmt(labels[10], "Temp: %d°C", (int)temp);
         lv_label_set_text_fmt(labels[11], "Fan: %d RPM", fanSpeed);
-        lv_label_set_text_fmt(labels[12], "ASIC: %d MHz", asicFreq);
-        lv_label_set_text_fmt(labels[13], "Uptime: %d:%02d:%02d", (uptime / 3600), (uptime % 3600) / 60, uptime % 60);
-        lv_label_set_text_fmt(labels[14], "Voltage: %d.%02d V", (int)(voltage / 1000), (int)(voltage / 10) % 100);
-        lv_label_set_text_fmt(labels[15], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100);
-        lv_label_set_text_fmt(labels[16], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
-        lv_label_set_text_fmt(labels[17], "Domain: %d mV", (int)domainVoltage);
+        lv_label_set_text_fmt(labels[12], "Fan: %d%%", (int)i2cData.monitoring.fanSpeedPercent);
+        lv_label_set_text_fmt(labels[13], "ASIC: %d MHz", asicFreq);
+        lv_label_set_text_fmt(labels[14], "Uptime: %d:%02d:%02d", (uptime / 3600), (uptime % 3600) / 60, uptime % 60);
+        lv_label_set_text_fmt(labels[15], "Voltage: %d.%02d V", (int)(voltage / 1000), (int)(voltage / 10) % 100);
+        lv_label_set_text_fmt(labels[16], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100);
+        lv_label_set_text_fmt(labels[17], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
+        lv_label_set_text_fmt(labels[18], "Domain: %d mV", (int)domainVoltage);
         
         lvgl_port_unlock();
     }
@@ -462,6 +463,7 @@ void activityScreen()
     Serial.println("Monitoring Container Created");
     lv_obj_set_style_bg_opa(monitoringContainer, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_border_width(monitoringContainer, 0, LV_PART_MAIN);
+    lv_obj_clear_flag(monitoringContainer, LV_OBJ_FLAG_SCROLLABLE);
     //lv_obj_set_style_border_color(monitoringContainer, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
 
     // Monitoring Container Label
@@ -485,19 +487,26 @@ void activityScreen()
     lv_label_set_text_fmt(fanSpeedLabel, "Fan: %d RPM", i2cData.monitoring.fanSpeed);
     lv_obj_align(fanSpeedLabel, LV_ALIGN_TOP_LEFT, 16, 32);
     Serial.println("Fan Speed Label Created");
+    // Fan Speed Percent Label
+    lv_obj_t* fanSpeedPercentLabel = lv_label_create(monitoringContainer);
+    lv_obj_set_style_text_font(fanSpeedPercentLabel, &interMedium16_19px, LV_PART_MAIN);
+    lv_obj_set_style_text_color(fanSpeedPercentLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
+    lv_label_set_text_fmt(fanSpeedPercentLabel, "Fan: %d%%", (int)i2cData.monitoring.fanSpeedPercent);
+    lv_obj_align(fanSpeedPercentLabel, LV_ALIGN_TOP_LEFT, 16, 56);
+    Serial.println("Fan Speed Percent Label Created");
     // asic Frequency Label
     lv_obj_t* asicFreqLabel = lv_label_create(monitoringContainer);
     lv_obj_set_style_text_font(asicFreqLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(asicFreqLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_label_set_text_fmt(asicFreqLabel, "ASIC: %d MHz", i2cData.monitoring.asicFrequency);
-    lv_obj_align(asicFreqLabel, LV_ALIGN_TOP_LEFT, 16, 56);
+    lv_obj_align(asicFreqLabel, LV_ALIGN_TOP_LEFT, 16, 80);
     Serial.println("ASIC Frequency Label Created");
     // uptime label
     lv_obj_t* uptimeLabel = lv_label_create(monitoringContainer);
     lv_obj_set_style_text_font(uptimeLabel, &interMedium16_19px, LV_PART_MAIN);
     lv_obj_set_style_text_color(uptimeLabel, lv_color_hex(0xA7F3D0), LV_PART_MAIN);
     lv_label_set_text_fmt(uptimeLabel, "Uptime: %d:%02d:%02d", (i2cData.monitoring.uptime / 3600), (i2cData.monitoring.uptime % 3600) / 60, i2cData.monitoring.uptime % 60);
-    lv_obj_align(uptimeLabel, LV_ALIGN_TOP_LEFT, 16, 80);
+    lv_obj_align(uptimeLabel, LV_ALIGN_TOP_LEFT, 16, 104);
     Serial.println("Uptime Label Created");
 
 
@@ -548,12 +557,12 @@ void activityScreen()
 
 
 
-     static lv_obj_t* allLabels[18] = 
+     static lv_obj_t* allLabels[19] = 
     {
         ssidLabel, ipLabel, wifiStatusLabel, poolUrlLabel,
         hashrateLabel, efficiencyLabel, 
         bestDiffLabel, sessionDiffLabel, acceptedSharesLabel, rejectedSharesLabel,
-        tempLabel, fanSpeedLabel, asicFreqLabel, uptimeLabel, voltageLabel, currentLabel, powerLabel, domainVoltageLabel
+        tempLabel, fanSpeedLabel, fanSpeedPercentLabel, asicFreqLabel, uptimeLabel, voltageLabel, currentLabel, powerLabel, domainVoltageLabel
     };
     screenObjs.labelUpdateTimer = lv_timer_create(updateLabels, 2000, allLabels);
 

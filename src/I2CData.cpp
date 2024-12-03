@@ -259,8 +259,15 @@ void handleMonitoringData(uint8_t* buffer, uint8_t len)
         }
         case LVGL_REG_FAN:
         {
-            memset(&i2cData.monitoring.fanSpeed, 0, sizeof(uint16_t));
-            memcpy(&i2cData.monitoring.fanSpeed, &buffer[2], __min(dataLen, MAX_UINT16_SIZE));
+            float fanStats[2];  // Array to hold RPM and percentage
+            memset(fanStats, 0, sizeof(float) * 2);
+            memcpy(fanStats, &buffer[2], __min(dataLen, sizeof(float) * 2));
+            i2cData.monitoring.fanSpeed = fanStats[0];
+            i2cData.monitoring.fanSpeedPercent = fanStats[1];
+            
+            Serial.printf("Fan RPM: %f, Fan Percent: %f%%\n", 
+                i2cData.monitoring.fanSpeed,
+                i2cData.monitoring.fanSpeedPercent);
             break;
         }
         case LVGL_REG_POWER_STATS:

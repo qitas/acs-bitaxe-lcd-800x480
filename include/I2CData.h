@@ -111,7 +111,8 @@ struct MonitoringData
 {
     float temperatures[8];    // Array for multiple temperature sensors For Hex model
     uint32_t asicFrequency;
-    uint16_t fanSpeed;
+    float fanSpeed;
+    float fanSpeedPercent;
     struct 
     {
         float voltage;
