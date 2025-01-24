@@ -4,6 +4,13 @@
 #include <esp_attr.h>
 #include "UIScreens.h"
 #include <lvgl.h>
+<<<<<<< Updated upstream
+=======
+#include "modelConfig.h"
+
+#if I2C == 1
+
+>>>>>>> Stashed changes
 // Unavailable Addresses : 20-27 30-3f, 5d These are used for touch screen
 // Unavailable Bitaxe Addresses : 0x40, 0x49, 0x4c, 0x3c -> This if for the OLED and has overlapping I2c. Need to get rid of this.
 
@@ -152,7 +159,11 @@ struct APIData
 };
 
 // Global data container
+<<<<<<< Updated upstream
 struct I2CDataContainer 
+=======
+struct IncomingDataContainer 
+>>>>>>> Stashed changes
 {
     NetworkData network;
     MiningData mining;
@@ -166,7 +177,11 @@ extern bool settingsChanged;
 // External declarations
 extern uint32_t byteCount;
 extern TwoWire Wire2;
+<<<<<<< Updated upstream
 extern PSRAM_ATTR I2CDataContainer i2cData;
+=======
+extern PSRAM_ATTR IncomingDataContainer IncomingData;
+>>>>>>> Stashed changes
 extern uint8_t* i2cBuffer;
 extern SettingsTextAreas settingsTextAreas;
 
@@ -179,4 +194,10 @@ extern uint32_t keepClockTime();
 extern void resetI2C();
 extern void checkI2CHealth();
 extern void initI2CBuffer();
+<<<<<<< Updated upstream
 extern void prepareSettingsResponse(const char* text, uint8_t reg);
+=======
+extern void prepareSettingsResponse(const char* text, uint8_t reg);
+
+#endif
+>>>>>>> Stashed changes
