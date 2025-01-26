@@ -20,13 +20,12 @@ The Device will scan for local networks. The list of networks is scrollable, and
 ### TIPS AND TRICKS
 - **WiFi name is not showing up on the list**
   
-Make sure your Network is compotible with 2.4GHz. The Bitaxe is not available with any other WiFi types, including 5Ghz
+Make sure your Network is compatible with 2.4GHz. The Bitaxe is not available with any other WiFi types, including 5Ghz
 
 
 ## Network Password
 ![image](https://github.com/user-attachments/assets/b440cd91-60ac-4024-918f-d9230dde43cb)
-On this screen, just type your password for your network. The Device will connect, and verify a connection before moving on to the next screen.
-
+On this screen, type your password for your network. The Device will connect, and verify a connection before moving on to the next screen.
 
 ### TIPS AND TRICKS
 - **WiFi Name Show up in the list, but won't connect**
@@ -40,9 +39,9 @@ Out of the box, the Bitaxe Touch UI provides easu setup to public-pool.io. All y
 
 ### TIPS AND TRICKS
 - **BTC Adress Does not verify**
-  Check your paddress for errors. Make sure there are no Spaces at the beginning or end of the address. Check  for commonly replaced characters (0 vs O, 5 vs S, etc.)
+  Check your address for errors. Make sure there are no Spaces at the beginning or end of the address. Check for commonly replaced characters (0 vs O, 5 vs S, etc.)
   If this still doesn't connect, make sure your Bitaxe is not too far away from your WiFi access point, and free from obstructions and interference.
-  If your Internet connection is weak, the Bitaxe will fail to recieve the required response from the API server to verify the address is a valid Bitcoin Address.
+  If your Internet connection is unstable, the Bitaxe will fail to receive the required response from the API server to verify the address is a valid Bitcoin Address.
 
 ## Quickly set up BTC Pauout address from your phone. 
 ![image](https://github.com/user-attachments/assets/867c1463-981d-48b9-b8f3-27c615577589)
@@ -59,4 +58,4 @@ Advanced Setup can still be completed on the webUI by connecting to the Bitaxe I
 
 # **_USER GUIDE_**
 After you have your new Bitaxe set up, check out the User Guide for a walkthrough of each interactive screen in the Touch Screen UI.
-**Link**
+
