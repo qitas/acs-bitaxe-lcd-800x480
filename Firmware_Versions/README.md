@@ -4,3 +4,8 @@
 Build Date: 1/15/25
 Changelogs:
 Initial Pre-order release version
+Supported Models:
+- Bitaxe Gamma
+- Bitaxe Ultra
+- BlockStream Jade Version
+
