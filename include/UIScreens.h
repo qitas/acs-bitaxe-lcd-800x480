@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lvgl.h>
+#include "wifiFeatures.h"
 
 #define SMOOTHING_WINDOW_SIZE 5
 
@@ -24,6 +25,7 @@ extern lv_obj_t* tabActivity;
 extern lv_obj_t* tabBitcoinNews;
 extern lv_obj_t* tabSettings;
 
+
 enum ScreenType 
 {
     activeScreenSplash,
@@ -31,7 +33,8 @@ enum ScreenType
     activeScreenMining,
     activeScreenActivity,
     activeScreenBitcoinNews,
-    activeScreenSettings
+    activeScreenSettings,
+    activeScreenInitStartup
 };
 
 struct ScreenObjects 
@@ -49,6 +52,7 @@ struct ScreenObjects
     lv_timer_t* statusBarUpdateTimer;
     lv_timer_t* clockTimer;
     lv_timer_t* apiUpdateTimer;
+
 };
 
 // Declare the struct type
@@ -56,24 +60,35 @@ struct SettingsTextAreas {
     lv_obj_t* hostnameTextArea;
     lv_obj_t* wifiTextArea;
     lv_obj_t* wifiPasswordTextArea;
-    //lv_obj_t* stratumUrlTextArea;
-    //lv_obj_t* stratumPortTextArea;
-    //lv_obj_t* stratumUserTextArea;
-    //lv_obj_t* stratumPasswordTextArea;
+    lv_obj_t* stratumUrlTextArea;
+    lv_obj_t* stratumPortTextArea;
+    lv_obj_t* stratumUserTextArea;
+    lv_obj_t* stratumPasswordTextArea;
+    lv_obj_t* stratumUrlTextAreaFallback;
+    lv_obj_t* stratumPortTextAreaFallback;
+    lv_obj_t* stratumUserTextAreaFallback;
+    lv_obj_t* stratumPasswordTextAreaFallback;
+    lv_obj_t* asicFrequencyTextArea;
+    lv_obj_t* asicVoltageTextArea;
 };
 
-// Declare as extern
-extern SettingsTextAreas settingsTextAreas;
 
+extern SettingsTextAreas settingsTextAreas;
 extern ScreenObjects screenObjs;
+extern WifiNetworkScan* storedNetworks;
+extern uint16_t* storedNetworkCount;
 
 // global variables
 extern ScreenType activeScreen;
 extern lv_timer_t* chartUpdateTimer;
 extern lv_timer_t* networkUpdateTimer;
 
+extern lv_obj_t* splashScreenContainer;
+
 extern float calculateMovingAverage(float newValue);
 extern void hashrateGraph(lv_obj_t* parent);
+
+
 
 // graph buffer
 extern float hashrateBuffer[SMOOTHING_WINDOW_SIZE];
@@ -87,3 +102,6 @@ extern void bitcoinNewsScreen();
 extern void activityScreen();
 extern void settingsScreen();
 extern void showSettingsConfirmationOverlay();
+extern void showOverheatOverlay();
+extern void showBlockFoundOverlay();
+extern void setupSettingsScreen();

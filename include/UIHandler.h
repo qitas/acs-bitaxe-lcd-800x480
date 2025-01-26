@@ -13,6 +13,11 @@ extern lv_obj_t* tabActivity;
 extern lv_obj_t* tabBitcoinNews;
 extern lv_obj_t* tabSettings;
 
+// Status Bar Objects
+extern lv_obj_t* statusBarObj;
+
+
+
 // Current active screen
 extern ScreenType activeScreen;
 
