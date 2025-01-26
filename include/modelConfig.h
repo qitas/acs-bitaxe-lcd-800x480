@@ -1,8 +1,8 @@
 // Define the model / interface available for the current build
 
-#define BitaxeUltra 1
+#define BitaxeUltra 0
 #define BitaxeSupra 0 
-#define BitaxeGamma 0
+#define BitaxeGamma 1
 
 #define BAPPORT 1
 #define I2C 0
