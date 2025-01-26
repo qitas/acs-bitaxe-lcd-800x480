@@ -1,10 +1,7 @@
 #pragma once
 
 #include <lvgl.h>
-<<<<<<< Updated upstream
-=======
 #include "wifiFeatures.h"
->>>>>>> Stashed changes
 
 #define SMOOTHING_WINDOW_SIZE 5
 
@@ -28,10 +25,7 @@ extern lv_obj_t* tabActivity;
 extern lv_obj_t* tabBitcoinNews;
 extern lv_obj_t* tabSettings;
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 enum ScreenType 
 {
     activeScreenSplash,
@@ -39,12 +33,8 @@ enum ScreenType
     activeScreenMining,
     activeScreenActivity,
     activeScreenBitcoinNews,
-<<<<<<< Updated upstream
-    activeScreenSettings
-=======
     activeScreenSettings,
     activeScreenInitStartup
->>>>>>> Stashed changes
 };
 
 struct ScreenObjects 
@@ -62,10 +52,7 @@ struct ScreenObjects
     lv_timer_t* statusBarUpdateTimer;
     lv_timer_t* clockTimer;
     lv_timer_t* apiUpdateTimer;
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 };
 
 // Declare the struct type
@@ -73,18 +60,6 @@ struct SettingsTextAreas {
     lv_obj_t* hostnameTextArea;
     lv_obj_t* wifiTextArea;
     lv_obj_t* wifiPasswordTextArea;
-<<<<<<< Updated upstream
-    //lv_obj_t* stratumUrlTextArea;
-    //lv_obj_t* stratumPortTextArea;
-    //lv_obj_t* stratumUserTextArea;
-    //lv_obj_t* stratumPasswordTextArea;
-};
-
-// Declare as extern
-extern SettingsTextAreas settingsTextAreas;
-
-extern ScreenObjects screenObjs;
-=======
     lv_obj_t* stratumUrlTextArea;
     lv_obj_t* stratumPortTextArea;
     lv_obj_t* stratumUserTextArea;
@@ -102,18 +77,12 @@ extern SettingsTextAreas settingsTextAreas;
 extern ScreenObjects screenObjs;
 extern WifiNetworkScan* storedNetworks;
 extern uint16_t* storedNetworkCount;
->>>>>>> Stashed changes
 
 // global variables
 extern ScreenType activeScreen;
 extern lv_timer_t* chartUpdateTimer;
 extern lv_timer_t* networkUpdateTimer;
 
-<<<<<<< Updated upstream
-extern float calculateMovingAverage(float newValue);
-extern void hashrateGraph(lv_obj_t* parent);
-
-=======
 extern lv_obj_t* splashScreenContainer;
 
 extern float calculateMovingAverage(float newValue);
@@ -121,7 +90,6 @@ extern void hashrateGraph(lv_obj_t* parent);
 
 
 
->>>>>>> Stashed changes
 // graph buffer
 extern float hashrateBuffer[SMOOTHING_WINDOW_SIZE];
 extern int bufferIndex;
@@ -134,9 +102,6 @@ extern void bitcoinNewsScreen();
 extern void activityScreen();
 extern void settingsScreen();
 extern void showSettingsConfirmationOverlay();
-<<<<<<< Updated upstream
-=======
 extern void showOverheatOverlay();
 extern void showBlockFoundOverlay();
 extern void setupSettingsScreen();
->>>>>>> Stashed changes

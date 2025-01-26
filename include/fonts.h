@@ -7,18 +7,11 @@
 
 extern lv_font_t interMedium16;
 extern lv_font_t interMedium16_19px;
-<<<<<<< Updated upstream
-extern lv_font_t interExtraBold56;
-extern lv_font_t interMedium24;
-extern lv_font_t interExtraBold32;
-
-=======
 
 extern lv_font_t interMedium24;
 extern lv_font_t interExtraBold32;
 extern lv_font_t interExtraBold56;
 extern lv_font_t interExtraBold144;
->>>>>>> Stashed changes
 
 
 #endif

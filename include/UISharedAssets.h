@@ -13,8 +13,6 @@ extern lv_style_t mainContainerBorder;
 extern lv_obj_t* mainContainerObj;
 
 extern lv_timer_t* statusBarTimer;
-<<<<<<< Updated upstream
-=======
 
 extern lv_obj_t* statusBarObj;
 extern lv_obj_t* wifiIcon;
@@ -23,4 +21,3 @@ extern lv_obj_t* cpuIcon;
 extern lv_obj_t* pwrIcon;
 extern lv_obj_t* btcPrice;
 
->>>>>>> Stashed changes

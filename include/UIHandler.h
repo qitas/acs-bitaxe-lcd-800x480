@@ -13,14 +13,11 @@ extern lv_obj_t* tabActivity;
 extern lv_obj_t* tabBitcoinNews;
 extern lv_obj_t* tabSettings;
 
-<<<<<<< Updated upstream
-=======
 // Status Bar Objects
 extern lv_obj_t* statusBarObj;
 
 
 
->>>>>>> Stashed changes
 // Current active screen
 extern ScreenType activeScreen;
 

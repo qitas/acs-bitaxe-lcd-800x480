@@ -3,9 +3,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-<<<<<<< Updated upstream
-=======
+.vscode/settings.json
 build/
 .vscode/
 sdkconfig.old
->>>>>>> Stashed changes

@@ -667,11 +667,7 @@
 #define LV_USE_GIF 0
 
 /*QR code library*/
-<<<<<<< Updated upstream
-#define LV_USE_QRCODE 0
-=======
 #define LV_USE_QRCODE 1
->>>>>>> Stashed changes
 
 /*FreeType library*/
 #define LV_USE_FREETYPE 0

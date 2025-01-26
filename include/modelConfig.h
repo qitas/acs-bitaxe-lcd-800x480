@@ -9,7 +9,7 @@
 
 #define ACSBitaxeTouch 1
 
-#define BlockStreamJade 0
+#define BlockStreamJade 1
 
 // Firmware version
 #define MajorVersion 0
