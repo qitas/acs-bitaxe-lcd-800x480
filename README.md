@@ -1,32 +1,38 @@
 # 800x480 Screen Add-On for ESP-Miner for Bitaxe Devices
 
-# As of 12-26-26, PlatformIO is not used on the main branch
-We have switch over to using ESP-IDF Directly, with Arduino Components on top. This allows much better compiler options with a proper SDK Config. This proved useful because Arduino Pre-compiled libraries were casuing many issues with memory initialization as the project grew bigger. 
+# Features
+The Display has a UI built around making the Bitaxe easier to setup for new users, as well as displaying useful data about both the bitaxe as well as the bitcoin network.
+## Clock App
+![clock](https://github.com/user-attachments/assets/6460f6f8-b876-4093-869d-65e22d126602)
+## BTC Network Page
+![btc](https://github.com/user-attachments/assets/c09b1477-a1ac-4a95-8ff1-c1095743bca2)
+## Live Hashrate Graph
+![graph](https://github.com/user-attachments/assets/883fb0fa-9656-4e1b-bc1e-83c6c7724c15)
+## Activity Screen
+![activity](https://github.com/user-attachments/assets/489f8fcc-ebb8-440c-8097-288d82179537)
+## Multiple Themes
+![themes](https://github.com/user-attachments/assets/72587bb3-01df-4dfb-8196-f8cf96fe109f)
+## Setting Screens
+![settings](https://github.com/user-attachments/assets/26890be8-e027-469e-b222-749325916e6a)
 
-## Based On 
+## Initial Setup Made Easy
+![initial setup](https://github.com/user-attachments/assets/c2dd6f02-b743-44c3-b04e-cb0f09b9aa46)
+
+## Based On [Wavshare ESP32S3 4.3" LCD](https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-4.3)
 ![image](https://github.com/user-attachments/assets/b7c3f45b-9023-491d-a716-e8a729b3063f)
 
-[Wavshare ESP32S3 4.3" LCD](https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-4.3)
+
 ## Hardware Changes neccessary 
-![Screenshot 2024-11-29 125242](https://github.com/user-attachments/assets/73940b4c-8c93-4794-bab6-f0de2b29ead9)
-![Screenshot 2024-11-29 125143](https://github.com/user-attachments/assets/140bacf1-e01c-4938-97af-2d2e1734db14)
-![Screenshot 2024-11-29 125108](https://github.com/user-attachments/assets/31cb1a4c-5ea1-484c-ad55-9e5e0d2f036f)
-![pxl_20241129_190656428_720](https://github.com/user-attachments/assets/bb1fdd5a-bf9c-4be9-9df6-5ddf2caee506)
+The Waveshare display does not have a serial connection, and non of the other connections would not suffice for communication.
+![Modified Example](https://github.com/user-attachments/assets/1794412b-16e4-4e2f-8d72-cd320f954c70)
 
-
-### It is nececssary to Isolate the I2C Connector from the I2C bus on the LCD PCB. This I2C is used for the touch screen interface, and cannot be properly set into slave mode. This is now also compatible with Serial Therough the BAP port using the same connection
-
-We Create a second I2C Bus dedicated for the communication between the Bitaxe and the LCD Driver. 
-Currently, We utilize Pin GPIO15 and 16 for this new Bus, however this requires cutting the current RS-485 traces present. It will be more simplified to use the unused GPIO 35 and 36 for future builds.
 
 ## Data Interface
+We modfify the I2C connector to connect to the ESP on the display via UART.
+Currently, We utilize Pin GPIO15 and 16 for this new Bus, We can do this by removing 3 resistors and 2 ICs for the I2c and RS-485>UART circuits
+A custom Register based scheme for keeping track of what data is being brodcasted.
 
-Currently Data is one way from the Bitaxe to the Display. Communication is done through i2C and uses a custom Register based scheme for keeping track of what data is being brodcasted.
-BAP Port uses the UART Protocol for 2 way Async Communication
-
-I2C Slave address is set too 0x50
-
-I2C implemntation in in I2CData.cpp
+See more in BAP.cpp 
 
 The current layout looks like this:
 - Byte 1: Register number
@@ -74,46 +80,37 @@ The current layout looks like this:
 - Remaing Block in Current Difficulty Period 0x66
 - Remaining Time in Current Difficulty Period 0x67
 
+### Settings Registers
+Network Hostname 0x90
+NEtwork SSID 0x91
+Network Password 0x92
+
+Pool Settings 0x93 - 0x9A
+Asic Voltage 0x9B
+Asic Frequency 0x9C
+Fan Speed 0x9D
+Auto Fan Speed 0x9E
+
+
+### Special Registers
+Restart 0xFE
+Startup Done 0xE0
+Overheat Mode 0xE1
+Found Block 0xE2
 
 ## Requirements
 
 ### VSCode
-### ~~[PlatformIO](https://platformio.org/)~~
-ESP IDF V5.1.4
 ### [LVGLv8.3](https://lvgl.io/)
 ### [ESP32_Display_Panel](https://github.com/espressif/esp-display-panel)
 ### [ESP32_IO_Expander](https://github.com/espressif/esp-io-expander)
 ### [ESP32 Arduino](https://github.com/espressif/arduino-esp32)
 ### [TimeLib](https://github.com/PaulStoffregen/Time)
 
-## SDK Config
-The SDK included in the repo should be setup correctly, however here are the guidlines for manual setup:
-### SPI Ram
-```
-CONFIG_FREERTOS_HZ=1000
-CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
-CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
-CONFIG_ESPTOOLPY_FLASHFREQ_120M=y [should align with PSRAM]
-CONFIG_SPIRAM_MODE_OCT=y
-CONFIG_IDF_EXPERIMENTAL_FEATURES=y and CONFIG_SPIRAM_SPEED_120M=y [should align with PSRAM]
-CONFIG_SPIRAM_FETCH_INSTRUCTIONS=y
-CONFIG_SPIRAM_RODATA=y
-CONFIG_ESP32S3_DATA_CACHE_LINE_64B=y
-CONFIG_COMPILER_OPTIMIZATION_PERF=y
-```
-### LVGL
-Copy the settings found in lv_conf.h into the sdk editor
-as well as 
-```
-#define LV_MEM_CUSTOM 1 or CONFIG_LV_MEM_CUSTOM=y
-#define LV_MEMCPY_MEMSET_STD 1 or CONFIG_LV_MEMCPY_MEMSET_STD=y
-#define LV_ATTRIBUTE_FAST_MEM IRAM_ATTR or CONFIG_LV_ATTRIBUTE_FAST_MEM=y
-```
-
-### ESP Display Panel Configurations
-Copy the settings found in ESP_Panel_Board_Custom.h
+## Library Configuration
+Libraries can be found in the managed compoenets firectory
 
 
 # Related Projects:
-### [ACS Bitaxe Hardware](https://github.com/Advanced-Crypto-Services/acs-bitaxe)
+### [ACS Bitaxe Hardware](https://github.com/Advanced-Crypto-Services/acs-esp-miner)
 ### [800x480 LCD Add-On](https://github.com/Advanced-Crypto-Services/acs-bitaxe-lcd-800x480)
