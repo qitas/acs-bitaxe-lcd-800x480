@@ -103,7 +103,28 @@ void initializeTheme(themePreset_t preset) {
             };
             break;
         #endif
-        
+        #if (ALTAIR == 1)
+        case THEME_ALTAIR:
+            currentTheme = (uiTheme_t){
+                .primaryColor = lv_color_hex(0xc28e0e),
+                .secondaryColor = lv_color_hex(0xfcb900),
+                .backgroundColor = lv_color_hex(0x111316),
+                .textColor = lv_color_hex(0xfcb900),
+                .borderColor = lv_color_hex(0xc28e0e),
+                .defaultOpacity = 80,
+                .backgroundOpacity = 40,
+                .fontExtraBold144 = &interExtraBold144,
+                .fontExtraBold56 = &interExtraBold56,
+                .fontExtraBold32 = &interExtraBold32,
+                .fontMedium24 = &interMedium24,
+                .fontMedium16 = &interMedium16_19px,
+                .background = "S:/UIBackgroundBITAXERED.png",
+                .logo1 = "S:/Logos.png",
+                .logo2 = "S:/altairLogo.png",
+                .themePreview = "S:/altairLogo.png",
+                .themePreset = THEME_ALTAIR
+            };
+        #endif
         default:
             currentTheme = defaultTheme;
             break;

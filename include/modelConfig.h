@@ -10,6 +10,7 @@
 #define ACSBitaxeTouch 1
 
 #define BlockStreamJade 1
+#define ALTAIR 1
 
 // Firmware version
 #define MajorVersion 0

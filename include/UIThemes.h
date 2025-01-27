@@ -11,6 +11,9 @@ typedef enum {
     THEME_BLOCKSTREAM_JADE = 2,
     THEME_BLOCKSTREAM_BLUE = 3
     #endif
+    #if (ALTAIR == 1)
+    THEME_ALTAIR = 4
+    #endif
 } themePreset_t;
 
 // Theme structure to hold all colors
