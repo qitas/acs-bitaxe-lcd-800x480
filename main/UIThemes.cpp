@@ -124,6 +124,7 @@ void initializeTheme(themePreset_t preset) {
                 .themePreview = "S:/altairLogo.png",
                 .themePreset = THEME_ALTAIR
             };
+            break;
         #endif
         default:
             currentTheme = defaultTheme;

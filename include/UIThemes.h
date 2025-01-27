@@ -9,7 +9,7 @@ typedef enum {
     
     #if (BlockStreamJade == 1)
     THEME_BLOCKSTREAM_JADE = 2,
-    THEME_BLOCKSTREAM_BLUE = 3
+    THEME_BLOCKSTREAM_BLUE = 3,
     #endif
     #if (ALTAIR == 1)
     THEME_ALTAIR = 4
