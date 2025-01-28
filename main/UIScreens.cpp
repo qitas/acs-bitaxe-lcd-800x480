@@ -2154,6 +2154,9 @@ lv_group_add_obj(radio_group, highPowerMode);
     #if (BlockStreamJade == 1)
     lv_dropdown_add_option(themeDropdown, "BLOCKSTREAM JADE\nBLOCKSTREAM BLUE", LV_DROPDOWN_POS_LAST);
     #endif
+    #if (SoloSatoshi == 1)
+    lv_dropdown_add_option(themeDropdown, "SOLO SATOSHI", LV_DROPDOWN_POS_LAST);
+    #endif
     #if (ALTAIR == 1)
     lv_dropdown_add_option(themeDropdown, "ALTAIR", LV_DROPDOWN_POS_LAST);
     #endif
@@ -2940,6 +2943,11 @@ static void themeDropdownEventHandler(lv_event_t* e) {
         }
         else if (strcmp(themeBuffer, "ACS DEFAULT") == 0) {
             initializeTheme(THEME_DEFAULT);
+        }
+        else if (strcmp(themeBuffer, "SOLO SATOSHI") == 0) {
+            #if (SoloSatoshi == 1)
+            initializeTheme(THEME_SOLO_SATOSHI);
+            #endif
         }
         else if (strcmp(themeBuffer, "ALTAIR") == 0) {
             #if (ALTAIR == 1)

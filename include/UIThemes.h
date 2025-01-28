@@ -11,8 +11,11 @@ typedef enum {
     THEME_BLOCKSTREAM_JADE = 2,
     THEME_BLOCKSTREAM_BLUE = 3,
     #endif
+    #if (SoloSatoshi == 1)
+    THEME_SOLO_SATOSHI = 4,
+    #endif
     #if (ALTAIR == 1)
-    THEME_ALTAIR = 4
+    THEME_ALTAIR = 5
     #endif
 } themePreset_t;
 
