@@ -571,6 +571,11 @@ static void rescanButtonEventHandler(lv_event_t* e) {
             //lv_obj_set_style_pad_bottom(btn, 24, LV_PART_MAIN);
             lv_obj_set_style_text_font(btn, theme->fontMedium24, LV_PART_MAIN); // Increase font size
             lv_obj_add_event_cb(btn, wifiListEventHandler, LV_EVENT_CLICKED, NULL);
+
+            // Get the image from the button and recolor it
+            lv_obj_t* img = lv_obj_get_child(btn, 0);  // First child is the image
+            lv_obj_set_style_img_recolor(img, theme->primaryColor, LV_PART_MAIN);
+            lv_obj_set_style_img_recolor_opa(img, LV_OPA_COVER, LV_PART_MAIN);
         }
     } else {
         // Add a message if no networks are found
@@ -661,6 +666,11 @@ void initSetupWifiScreen()
             //lv_obj_set_style_pad_bottom(btn, 24, LV_PART_MAIN);
             lv_obj_set_style_text_font(btn, theme->fontMedium24, LV_PART_MAIN); // Increase font size
             lv_obj_add_event_cb(btn, wifiListEventHandler, LV_EVENT_CLICKED, NULL);
+
+            // Get the image from the button and recolor it
+            lv_obj_t* img = lv_obj_get_child(btn, 0);  // First child is the image
+            lv_obj_set_style_img_recolor(img, theme->primaryColor, LV_PART_MAIN);
+            lv_obj_set_style_img_recolor_opa(img, LV_OPA_COVER, LV_PART_MAIN);
         }
     } else {
         // Add a message if no networks are found
