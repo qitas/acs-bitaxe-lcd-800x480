@@ -1,5 +1,6 @@
 #include "UIThemes.h"
 #include "fonts.h"
+#include "modelConfig.h"
 
 uiTheme_t currentTheme;
 

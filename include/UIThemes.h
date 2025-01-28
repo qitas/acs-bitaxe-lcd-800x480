@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lvgl.h"
-
+#include "modelConfig.h"
 // Theme presets
 typedef enum {
     THEME_DEFAULT = 0, 
