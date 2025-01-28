@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lvgl.h"
-
+#include "modelConfig.h"
 // Theme presets
 typedef enum {
     THEME_DEFAULT = 0, 
@@ -9,7 +9,13 @@ typedef enum {
     
     #if (BlockStreamJade == 1)
     THEME_BLOCKSTREAM_JADE = 2,
-    THEME_BLOCKSTREAM_BLUE = 3
+    THEME_BLOCKSTREAM_BLUE = 3,
+    #endif
+    #if (SoloSatoshi == 1)
+    THEME_SOLO_SATOSHI = 4,
+    #endif
+    #if (ALTAIR == 1)
+    THEME_ALTAIR = 5
     #endif
 } themePreset_t;
 

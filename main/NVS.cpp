@@ -22,8 +22,12 @@ void initializeNVS(void) {
 themePreset_t loadThemeFromNVS(void) {
     nvs_handle_t nvsHandle;
     esp_err_t err = nvs_open(NVS_NAMESPACE_THEMES, NVS_READONLY, &nvsHandle);
-    
+
+    #if (BlockStreamJade == 1)
     uint8_t themeValue = 2; // Make default theme the Jade Theme
+    #else
+    uint8_t themeValue = 0; // Make default theme the ACS Theme
+    #endif
     if (err == ESP_OK) {
         err = nvs_get_u8(nvsHandle, NVS_KEY_THEME, &themeValue);
         nvs_close(nvsHandle);

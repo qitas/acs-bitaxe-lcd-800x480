@@ -2150,10 +2150,15 @@ lv_group_add_obj(radio_group, highPowerMode);
     lv_obj_set_style_bg_color(themeDropdown, theme->primaryColor, LV_PART_SELECTED);
     lv_obj_set_style_text_color(themeDropdown, theme->backgroundColor, LV_PART_SELECTED);
 
-    #if (BlockStreamJade == 1)
-    lv_dropdown_set_options(themeDropdown, "ACS DEFAULT\nBLOCKSTREAM JADE\nBLOCKSTREAM BLUE\nBITAXE RED");
-    #else
     lv_dropdown_set_options(themeDropdown, "ACS DEFAULT\nBITAXE RED");
+    #if (BlockStreamJade == 1)
+    lv_dropdown_add_option(themeDropdown, "BLOCKSTREAM JADE\nBLOCKSTREAM BLUE", LV_DROPDOWN_POS_LAST);
+    #endif
+    #if (SoloSatoshi == 1)
+    lv_dropdown_add_option(themeDropdown, "SOLO SATOSHI", LV_DROPDOWN_POS_LAST);
+    #endif
+    #if (ALTAIR == 1)
+    lv_dropdown_add_option(themeDropdown, "ALTAIR", LV_DROPDOWN_POS_LAST);
     #endif
 
     // style list
@@ -2938,6 +2943,16 @@ static void themeDropdownEventHandler(lv_event_t* e) {
         }
         else if (strcmp(themeBuffer, "ACS DEFAULT") == 0) {
             initializeTheme(THEME_DEFAULT);
+        }
+        else if (strcmp(themeBuffer, "SOLO SATOSHI") == 0) {
+            #if (SoloSatoshi == 1)
+            initializeTheme(THEME_SOLO_SATOSHI);
+            #endif
+        }
+        else if (strcmp(themeBuffer, "ALTAIR") == 0) {
+            #if (ALTAIR == 1)
+            initializeTheme(THEME_ALTAIR);
+            #endif
         }
 
         uiTheme_t* theme = getCurrentTheme();
