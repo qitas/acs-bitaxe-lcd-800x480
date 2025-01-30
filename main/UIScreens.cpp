@@ -2133,6 +2133,19 @@ lv_group_add_obj(radio_group, highPowerMode);
 
     // Theme Dropdown
     themeDropdown = lv_dropdown_create(themeSettingsContainer);
+
+        // style list
+    lv_obj_t* themeDropdownList = lv_dropdown_get_list(themeDropdown);
+   
+    lv_obj_set_style_bg_color(themeDropdownList, theme->backgroundColor, LV_PART_MAIN);
+    lv_obj_set_style_border_color(themeDropdownList, theme->borderColor, LV_PART_MAIN );
+    lv_obj_set_style_text_color(themeDropdownList, theme->textColor, LV_PART_MAIN);
+    lv_obj_set_style_text_font(themeDropdownList, theme->fontMedium16, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(themeDropdownList, theme->primaryColor, LV_PART_SELECTED);
+    lv_obj_set_style_bg_color(themeDropdownList, theme->primaryColor, LV_STATE_CHECKED);
+    lv_obj_set_style_bg_color(themeDropdownList, theme->primaryColor, LV_PART_SELECTED | LV_STATE_CHECKED);
+    lv_obj_set_style_text_color(themeDropdownList, theme->backgroundColor, LV_PART_SELECTED | LV_STATE_CHECKED);
+
     //lv_obj_remove_style_all(modelDropdown);
     lv_obj_set_size(themeDropdown, 200, 48);
     lv_obj_align(themeDropdown, LV_ALIGN_TOP_LEFT, 0, 16);
@@ -2160,17 +2173,8 @@ lv_group_add_obj(radio_group, highPowerMode);
     #if (ALTAIR == 1)
     lv_dropdown_add_option(themeDropdown, "ALTAIR", LV_DROPDOWN_POS_LAST);
     #endif
+    lv_dropdown_add_option(themeDropdown, "", LV_DROPDOWN_POS_LAST);
 
-    // style list
-    lv_obj_t* themeDropdownList = lv_dropdown_get_list(themeDropdown);
-    lv_obj_set_style_bg_color(themeDropdownList, theme->backgroundColor, LV_PART_MAIN);
-    lv_obj_set_style_border_color(themeDropdownList, theme->borderColor, LV_PART_MAIN );
-    lv_obj_set_style_text_color(themeDropdownList, theme->textColor, LV_PART_MAIN);
-    lv_obj_set_style_text_font(themeDropdownList, theme->fontMedium16, LV_PART_MAIN);
-    lv_obj_set_style_bg_color(themeDropdownList, theme->primaryColor, LV_PART_SELECTED);
-    lv_obj_set_style_bg_color(themeDropdownList, theme->primaryColor, LV_STATE_CHECKED);
-    lv_obj_set_style_bg_color(themeDropdownList, theme->primaryColor, LV_PART_SELECTED | LV_STATE_CHECKED);
-    lv_obj_set_style_text_color(themeDropdownList, theme->backgroundColor, LV_PART_SELECTED | LV_STATE_CHECKED);
 
     lv_obj_add_event_cb(themeDropdown, themeDropdownEventHandler, LV_EVENT_VALUE_CHANGED, NULL);
 
