@@ -154,9 +154,9 @@ void initializeTheme(themePreset_t preset) {
         case THEME_SOLO_MINING_CO:
             currentTheme = (uiTheme_t){
                 .primaryColor = lv_color_hex(0xf15900),
-                .secondaryColor = lv_color_hex(0xf15900),
+                .secondaryColor = lv_color_hex(0xc5900F1),
                 .backgroundColor = lv_color_hex(0x111316),
-                .textColor = lv_color_hex(0xf15900),
+                .textColor = lv_color_hex(0xffffffff),
                 .borderColor = lv_color_hex(0xc5900F1),
                 .defaultOpacity = 80,
                 .backgroundOpacity = 40,
