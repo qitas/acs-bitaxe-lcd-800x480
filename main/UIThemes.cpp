@@ -150,6 +150,29 @@ void initializeTheme(themePreset_t preset) {
             };
             break;
         #endif
+        #if (SoloMiningCo == 1)
+        case THEME_SOLO_MINING_CO:
+            currentTheme = (uiTheme_t){
+                .primaryColor = lv_color_hex(0xf15900),
+                .secondaryColor = lv_color_hex(0xf15900),
+                .backgroundColor = lv_color_hex(0x111316),
+                .textColor = lv_color_hex(0xf15900),
+                .borderColor = lv_color_hex(0xc5900F1),
+                .defaultOpacity = 80,
+                .backgroundOpacity = 40,
+                .fontExtraBold144 = &interExtraBold144,
+                .fontExtraBold56 = &interExtraBold56,
+                .fontExtraBold32 = &interExtraBold32,
+                .fontMedium24 = &interMedium24,
+                .fontMedium16 = &interMedium16_19px,
+                .background = "S:/UIBackgroundBITAXERED.png",
+                .logo1 = "S:/Logos.png",
+                .logo2 = "S:/soloMiningCo.png",
+                .themePreview = "S:/soloMiningCo.png",
+                .themePreset = THEME_SOLO_MINING_CO
+            };
+            break;
+        #endif
         default:
             currentTheme = defaultTheme;
             break;

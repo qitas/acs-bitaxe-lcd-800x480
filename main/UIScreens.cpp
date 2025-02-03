@@ -2173,6 +2173,10 @@ lv_group_add_obj(radio_group, highPowerMode);
     #if (ALTAIR == 1)
     lv_dropdown_add_option(themeDropdown, "ALTAIR", LV_DROPDOWN_POS_LAST);
     #endif
+    #if (SoloMiningCo == 1)
+    lv_dropdown_add_option(themeDropdown, "SOLO MINING CO", LV_DROPDOWN_POS_LAST);
+    #endif
+    // Add spacing at the end of the list to make last option selectable
     lv_dropdown_add_option(themeDropdown, "", LV_DROPDOWN_POS_LAST);
 
 
@@ -2958,6 +2962,12 @@ static void themeDropdownEventHandler(lv_event_t* e) {
             initializeTheme(THEME_ALTAIR);
             #endif
         }
+        else if (strcmp(themeBuffer, "SOLO MINING CO") == 0) {
+            #if (SoloMiningCo == 1)
+            initializeTheme(THEME_SOLO_MINING_CO);
+            #endif
+        }
+
 
         uiTheme_t* theme = getCurrentTheme();
         if (theme) {
