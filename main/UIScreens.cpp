@@ -502,7 +502,7 @@ static void updateLabels(lv_timer_t* timer)
     uint32_t uptime = IncomingData.monitoring.uptime;
     float voltage = IncomingData.monitoring.powerStats.voltage;
     float power = IncomingData.monitoring.powerStats.power;
-    float current = (voltage != 0) ? power / voltage : 0;
+    float current = (voltage != 0) ? (power * 1000) / voltage : 0;
     float domainVoltage = IncomingData.monitoring.powerStats.domainVoltage;
     
     // Lock for LVGL operations
@@ -527,7 +527,8 @@ static void updateLabels(lv_timer_t* timer)
         lv_label_set_text_fmt(labels[13], "ASIC: %lu MHz", asicFreq);
         lv_label_set_text_fmt(labels[14], "Uptime: %lu:%02lu:%02lu", (uptime / 3600), (uptime % 3600) / 60, uptime % 60);
         lv_label_set_text_fmt(labels[15], "Voltage: %d.%02d V", (int)(voltage / 1000), (int)(voltage / 10) % 100);
-        lv_label_set_text_fmt(labels[16], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100);
+       // lv_label_set_text_fmt(labels[16], "Current: %d.%02d A", (int)(current / 1000), (int)(current / 10) % 100); // the TSP546 has incorrect current reading
+        lv_label_set_text_fmt(labels[16], "Current: %d.%02d A", (int)current, (int)(current * 100) % 100);
         lv_label_set_text_fmt(labels[17], "Power: %d.%02d W", (int)power, (int)(power * 100) % 100);
         lv_label_set_text_fmt(labels[18], "Domain: %d mV", (int)domainVoltage);
         
