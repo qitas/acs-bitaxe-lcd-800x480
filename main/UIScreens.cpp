@@ -1846,9 +1846,12 @@ void settingsScreen()
     lv_obj_clear_flag(themeSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_t * timeSettingsTab = lv_tabview_add_tab(settingTabView, "TIME");
     lv_obj_clear_flag(timeSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
+    #if (DEBUG_UI == 1)
     lv_obj_t * debugSettingsTab = lv_tabview_add_tab(settingTabView, "DEBUG");
     lv_obj_clear_flag(debugSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
+    #endif
     lv_obj_t * saveSettingsTab = lv_tabview_add_tab(settingTabView, "SAVE");
+
     lv_obj_clear_flag(saveSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t * tab_btns = lv_tabview_get_tab_btns(settingTabView);
@@ -2386,7 +2389,7 @@ lv_group_add_obj(radio_group, highPowerMode);
         lv_obj_set_style_img_recolor(img, theme->primaryColor, LV_PART_MAIN);
         lv_obj_set_style_img_recolor_opa(img, LV_OPA_COVER, LV_PART_MAIN);
     }
-
+    #if (DEBUG_UI == 1)
     // Debug setting container 
     debugSettingsContainer = lv_obj_create(debugSettingsTab);
     lv_obj_set_size(debugSettingsContainer, 672, 312);
@@ -2435,7 +2438,7 @@ lv_group_add_obj(radio_group, highPowerMode);
     lv_obj_set_style_text_color(blockFoundLabel, lv_color_hex(0xffffff), LV_PART_MAIN);
     lv_obj_align(blockFoundLabel, LV_ALIGN_CENTER, 0, 0);
     lv_obj_clear_flag(blockFoundLabel, LV_OBJ_FLAG_SCROLLABLE);
-
+    #endif
 
 
     // Save Tab Container

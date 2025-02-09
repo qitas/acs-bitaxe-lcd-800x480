@@ -1,10 +1,13 @@
 // Define the model / interface available for the current build
+// debug mode
+#define DEBUG_UI 1
 
 #define BitaxeUltra 0
 #define BitaxeSupra 0 
 #define BitaxeGamma 1
 
 #define BAPPORT 1
+
 #define I2C 0
 
 #define ACSBitaxeTouch 1
