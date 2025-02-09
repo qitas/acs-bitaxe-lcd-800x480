@@ -7,6 +7,7 @@ idf_component_register(
     "initialSetupScreen.cpp"
     "interExtraBold32.c"
     "interExtraBold56.c"
+    "interExtraBold72.c"
     "interExtraBold144.c"
     "interMedium16_19px (1).c"
     "interMedium24.c"

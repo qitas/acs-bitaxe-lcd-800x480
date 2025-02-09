@@ -60,7 +60,7 @@ void lvglTabIcons(lv_obj_t*parent)
     lv_obj_add_event_cb(tabSettings, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
     
     tabMining = lv_img_create(tab);
-    lv_img_set_src(tabMining, "S:/pickaxe.png");
+    lv_img_set_src(tabMining, "S:/activity.png");
     lv_obj_set_style_img_recolor(tabMining, theme->primaryColor, LV_PART_MAIN);
     lv_obj_set_style_img_recolor_opa(tabMining, LV_OPA_COVER, LV_PART_MAIN);
     lv_obj_set_style_bg_opa(tabMining, LV_OPA_0, LV_PART_MAIN);
@@ -75,7 +75,7 @@ void lvglTabIcons(lv_obj_t*parent)
     lv_obj_add_event_cb(tabMining, tabIconEventHandler, LV_EVENT_CLICKED, NULL);
     
     tabActivity = lv_img_create(tab);
-    lv_img_set_src(tabActivity, "S:/activity.png");
+    lv_img_set_src(tabActivity, "S:/pickaxe.png");
     lv_obj_set_style_img_recolor(tabActivity, theme->primaryColor, LV_PART_MAIN);
     lv_obj_set_style_img_recolor_opa(tabActivity, LV_OPA_COVER, LV_PART_MAIN);
     lv_obj_set_style_bg_opa(tabActivity, LV_OPA_0, LV_PART_MAIN);

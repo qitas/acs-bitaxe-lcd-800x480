@@ -33,6 +33,7 @@ typedef struct {
     uint8_t defaultOpacity;       // Default opacity for elements
     uint8_t backgroundOpacity;    // Background opacity
     lv_font_t* fontExtraBold144;
+    lv_font_t* fontExtraBold72;
     lv_font_t* fontExtraBold56;
     lv_font_t* fontExtraBold32;
     lv_font_t* fontMedium24;
