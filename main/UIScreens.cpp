@@ -2684,16 +2684,18 @@ void showOverheatOverlay()
         
         // Add message
         lv_obj_t* message = lv_label_create(confirmContainer);
-        lv_label_set_text(message, "OVERHEAT MODE TRIGGERED\nRESET ASIC SETTINGS");
-        lv_obj_set_style_text_font(message, theme->fontExtraBold32, LV_PART_MAIN);
+        lv_label_set_text(message, "OVERHEAT MODE\nRESET TO\nSAFE SETTINGS");
+        lv_obj_set_style_text_font(message, theme->fontExtraBold56, LV_PART_MAIN);
         lv_obj_set_style_text_align(message, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
         lv_obj_set_style_text_color(message, theme->textColor, LV_PART_MAIN);
-        lv_obj_align(message, LV_ALIGN_CENTER, 0, -56);
+        lv_obj_align(message, LV_ALIGN_TOP_MID, 0, 16);
 
-        // Create Model Dropdown
+         // not needed when mode is already known
+         #if (BitaxeUltra == 0 && BitaxeSupra == 0 && BitaxeGamma == 0)
         lv_obj_t* modelDropdown = lv_dropdown_create(confirmContainer);
         //lv_obj_remove_style_all(modelDropdown);
         lv_obj_set_size(modelDropdown, 200, 48);
+
         lv_obj_align(modelDropdown, LV_ALIGN_CENTER, 0, 48);
         lv_obj_set_style_text_align(modelDropdown, LV_TEXT_ALIGN_CENTER, LV_PART_SELECTED);
         
@@ -2719,6 +2721,7 @@ void showOverheatOverlay()
         lv_obj_set_style_bg_color(modelDropdownList, theme->primaryColor, LV_STATE_CHECKED);
         lv_obj_set_style_bg_color(modelDropdownList, theme->primaryColor, LV_PART_SELECTED | LV_STATE_CHECKED);
         lv_obj_set_style_text_color(modelDropdownList, theme->backgroundColor, LV_PART_SELECTED | LV_STATE_CHECKED);
+        #endif
 
         // Create save button
         lv_obj_t* saveButton = lv_btn_create(confirmContainer);
@@ -2741,6 +2744,7 @@ void showOverheatOverlay()
         if (saveButton != NULL) {
             lv_obj_add_event_cb(saveButton, resetAsicSettingsButtonEventHandler, LV_EVENT_CLICKED, NULL);
         }
+        
 
     } else if (!specialRegisters.overheatMode && overheatOverlay) {
         Serial.println("Removing overlay");
@@ -2758,15 +2762,16 @@ static void resetAsicSettingsButtonEventHandler(lv_event_t* e) {
     lv_obj_t* btn = lv_event_get_target(e);
     uiTheme_t* theme = getCurrentTheme();
     if(code == LV_EVENT_CLICKED) {
+        #if (BitaxeUltra == 0 && BitaxeSupra == 0 && BitaxeGamma == 0)
         // Get the dropdown object
         lv_obj_t* dropdown = lv_obj_get_parent(btn);  // Get parent container
         dropdown = lv_obj_get_child(dropdown, 1);     // Get the dropdown (adjust index if needed)
-        
         // Get selected option
         char modelBuffer[32];
         lv_dropdown_get_selected_str(dropdown, modelBuffer, sizeof(modelBuffer));
         
         Serial.printf("Selected model: %s\n", modelBuffer);
+        #endif
         lvgl_port_lock(-1);
         // Create popup message
         lv_obj_t* popup = lv_obj_create(lv_scr_act());
@@ -2801,7 +2806,7 @@ static void resetAsicSettingsButtonEventHandler(lv_event_t* e) {
             writeDataToBAP(&specialRegisters.overheatMode, 1, LVGL_FLAG_OVERHEAT_MODE);
             delay(5000);
         }
-
+        #if (BitaxeUltra == 0 && BitaxeSupra == 0 && BitaxeGamma == 0)
         // send data to BAP Voltage first then Frequency
         if (strcmp(modelBuffer, "Bitaxe Gama") == 0)
         {
@@ -2851,9 +2856,19 @@ static void resetAsicSettingsButtonEventHandler(lv_event_t* e) {
             delay(1000);
 
         }
+        #else
+        {
+            // send data to BAP Voltage first then Frequency
+            setNormalPowerPreset();
+            
+
+        }
+        #endif
+
+
 
         
-        delay(5000);
+        delay(2000);
         specialRegisters.restart = 1;
     }
 }
