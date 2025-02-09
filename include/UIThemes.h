@@ -17,7 +17,11 @@ typedef enum {
     #if (ALTAIR == 1)
     THEME_ALTAIR = 5
     #endif
+    #if (SoloMiningCo == 1)
+    THEME_SOLO_MINING_CO = 6
+    #endif
 } themePreset_t;
+
 
 // Theme structure to hold all colors
 typedef struct {
