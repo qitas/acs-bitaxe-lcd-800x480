@@ -501,8 +501,8 @@ static void updateLabels(lv_timer_t* timer)
     uint32_t asicFreq = IncomingData.monitoring.asicFrequency;
     uint32_t uptime = IncomingData.monitoring.uptime;
     float voltage = IncomingData.monitoring.powerStats.voltage;
-    float current = IncomingData.monitoring.powerStats.current;
     float power = IncomingData.monitoring.powerStats.power;
+    float current = (voltage != 0) ? power / voltage : 0;
     float domainVoltage = IncomingData.monitoring.powerStats.domainVoltage;
     
     // Lock for LVGL operations
@@ -1022,7 +1022,7 @@ void activityScreen()
     lv_obj_t* currentLabel = lv_label_create(powerContainer);
     lv_obj_set_style_text_font(currentLabel, theme->fontMedium16, LV_PART_MAIN);
     lv_obj_set_style_text_color(currentLabel, theme->textColor, LV_PART_MAIN);
-    lv_label_set_text_fmt(currentLabel, "Current: %d.%02d A", (int)(IncomingData.monitoring.powerStats.current / 1000), (int)(IncomingData.monitoring.powerStats.current / 10) % 100);
+    lv_label_set_text_fmt(currentLabel, "Current: 0 A");
     lv_obj_align(currentLabel, LV_ALIGN_TOP_LEFT, 16, 32);
     Serial.println("Current Label Created");
     // Power Label
@@ -2045,7 +2045,7 @@ void settingsScreen()
 
     // Mining Settings Label
     lv_obj_t* miningSettingsLabel = lv_label_create(miningSettingsContainer);
-    lv_label_set_text(miningSettingsLabel, "MINING SETTINGS");
+    lv_label_set_text(miningSettingsLabel, "ADVANCED MINING SETTINGS");
     lv_obj_set_style_text_font(miningSettingsLabel, theme->fontMedium24, LV_PART_MAIN);
     lv_obj_set_style_text_color(miningSettingsLabel, theme->textColor, LV_PART_MAIN);
     lv_obj_align(miningSettingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
