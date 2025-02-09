@@ -579,12 +579,36 @@ static void clockContainerEventCallback(lv_event_t* e)
         {
             clockContainerShown = true;
             blockClockContainerShown = false;
+
         }
         else if (!clockContainerShown && !blockClockContainerShown)
         {
             clockContainerShown = true;
             blockClockContainerShown = false;
         }
+
+        if (clockContainerShown)
+        {
+            lvgl_port_lock(10);
+            lv_obj_add_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(clockLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(dateLabel, LV_OBJ_FLAG_HIDDEN);
+            lvgl_port_unlock();
+        }
+
+        else if (blockClockContainerShown)
+        {
+            lvgl_port_lock(10);
+            lv_obj_clear_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(clockLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(dateLabel, LV_OBJ_FLAG_HIDDEN);
+            lvgl_port_unlock();
+        }
+
+            
+
     }
 }
 
@@ -641,7 +665,7 @@ void homeScreen()
     // create block clock in clock container, hidden by default
     blockClockLabel = lv_label_create(clockContainer);
     lv_label_set_text(blockClockLabel, "Block Height:\n --");
-    lv_obj_set_style_text_font(blockClockLabel, theme->fontExtraBold144, LV_PART_MAIN);
+    lv_obj_set_style_text_font(blockClockLabel, theme->fontExtraBold72, LV_PART_MAIN);
     lv_obj_set_style_text_color(blockClockLabel, theme->textColor, LV_PART_MAIN);
 
     lv_obj_align(blockClockLabel, LV_ALIGN_CENTER, 0, 0);
@@ -689,9 +713,12 @@ void homeScreen()
         // Lock for LVGL operations
         if (lvgl_port_lock(10)) 
         {  // 10ms timeout
-            lv_obj_add_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_clear_flag(clockLabel, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_clear_flag(dateLabel, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_add_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_add_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
             
+
 
             // Check if the time is before 2000, This is used to check if the time has been set
             if (now() < 946684800) 
@@ -711,33 +738,31 @@ void homeScreen()
         }
         else if (blockClockContainerShown)
         {
-
-            l{
             
+
+
             // Get values outside the lock
+            MempoolApiState* mempoolState = getMempoolState();
             uint32_t blockHeight = mempoolState->blockHeight;
             uint32_t blockToHalving = 1050000 - blockHeight;
 
 
-        uint8_t w = weekday();
-        uint16_t y = year();    
-        bool isAm = isAM();
-
         // Lock for LVGL operations
         if (lvgl_port_lock(10)) 
         {  // 10ms timeout
-            lv_obj_clear_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
-            
+            //lv_obj_clear_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+           // lv_obj_clear_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_add_flag(clockLabel, LV_OBJ_FLAG_HIDDEN);
+            //lv_obj_add_flag(dateLabel, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(blockClockLabel, "Block Height:\n %lu", blockHeight);
-            lv_label_set_text_fmt(halvingLabel, "Halving:\n %lu Blocks", blockToHalving);
+            lv_label_set_text_fmt(halvingLabel, "Halving In:\n %lu Blocks", blockToHalving);
             
 
             lvgl_port_unlock();
 
         }
         }
-        }
+        
 
     }, 1000, &clockLabel);
 }
