@@ -682,7 +682,7 @@ void homeScreen()
     lv_obj_set_style_text_color(halvingLabel, theme->textColor, LV_PART_MAIN);
     lv_obj_set_style_text_align(halvingLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
     lv_obj_set_style_text_opa(halvingLabel, LV_OPA_80, LV_PART_MAIN);
-    lv_obj_align(halvingLabel, LV_ALIGN_BOTTOM_MID, 0, 16);
+    lv_obj_align(halvingLabel, LV_ALIGN_BOTTOM_MID, 0, 24);
     lv_obj_add_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
     //lv_obj_set_style_border_width(dateLabel, 1, LV_PART_MAIN);
 
