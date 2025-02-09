@@ -2524,7 +2524,7 @@ lv_group_add_obj(radio_group, highPowerMode);
         
         // Style the button and label
         lv_obj_set_style_bg_color(saveButton, theme->primaryColor, LV_PART_MAIN);
-        lv_obj_set_style_bg_opa(saveButton, LV_OPA_20, LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(saveButton, LV_OPA_60, LV_PART_MAIN);
         lv_obj_set_style_text_font(saveLabel, theme->fontMedium16, LV_PART_MAIN);
         lv_obj_set_style_text_color(saveLabel, theme->textColor, LV_PART_MAIN);
 
