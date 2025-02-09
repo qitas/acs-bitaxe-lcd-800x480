@@ -9,18 +9,18 @@
 
 #define ACSBitaxeTouch 1
 
-#define BlockStreamJade 0
-#define SoloSatoshi 0
+#define BlockStreamJade 1
+#define SoloSatoshi 1
 #define ALTAIR 0
-#define SoloMiningCo 1
+#define SoloMiningCo 0
 
 // Firmware version
 #define MajorVersion 0
 #define MinorVersion 1
-#define PatchVersion 1
+#define PatchVersion 2
 #define VersionNote "Pre-Release"
 
 // Firmware build date
-#define BuildDate "01-15-2025"
+#define BuildDate "02-09-2025"
 
 
