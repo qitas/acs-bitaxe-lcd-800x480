@@ -96,35 +96,64 @@ static void finishSetup(const char* btcAddress)
             memset(BAPStratumPassMainBuffer, 0, BAP_STRATUM_PASS_MAIN_BUFFER_SIZE);
             memset(BAPStratumPortMainBuffer, 0, BAP_STRATUM_PORT_MAIN_BUFFER_SIZE);
             delay(20);
-            // set URL, USER, Password
+            memset(BAPStratumUrlFallbackBuffer, 0, BAP_STRATUM_URL_FALLBACK_BUFFER_SIZE);
+            memset(BAPStratumUserFallbackBuffer, 0, BAP_STRATUM_USER_FALLBACK_BUFFER_SIZE);
+            memset(BAPStratumPassFallbackBuffer, 0, BAP_STRATUM_PASS_FALLBACK_BUFFER_SIZE);
+            memset(BAPStratumPortFallbackBuffer, 0, BAP_STRATUM_PORT_FALLBACK_BUFFER_SIZE);
+            delay(20);
+            // set URL, USER, Password primary
             strcpy((char*)BAPStratumUrlMainBuffer, "public-pool.io");
             Serial0.printf("BAPStratumUrlMainBuffer: %s\n", (char*)BAPStratumUrlMainBuffer);
             snprintf((char*)BAPStratumUserMainBuffer, BAP_STRATUM_USER_MAIN_BUFFER_SIZE, "%s.ACSBitaxeTouch", btcAddress);
+            strcpy((char*)BAPStratumPortMainBuffer, "21496");
+            Serial0.printf("BAPStratumPortMainBuffer: %s\n", (char*)BAPStratumPortMainBuffer);
             Serial0.printf("BAPStratumUserMainBuffer: %s\n", (char*)BAPStratumUserMainBuffer);
             strcpy((char*)BAPStratumPassMainBuffer, "x");
             Serial0.printf("BAPStratumPassMainBuffer: %s\n", (char*)BAPStratumPassMainBuffer);
-            // Set port (ensure consistent endianness)
+
+            // set URL, USER, Password fallback
+            strcpy((char*)BAPStratumUrlFallbackBuffer, "solo.ckpool.org");
+            Serial0.printf("BAPStratumUrlFallbackBuffer: %s\n", (char*)BAPStratumUrlFallbackBuffer);
+            snprintf((char*)BAPStratumUserFallbackBuffer, BAP_STRATUM_USER_FALLBACK_BUFFER_SIZE, "%s.ACSBitaxeTouch", btcAddress);
+            Serial0.printf("BAPStratumUserFallbackBuffer: %s\n", (char*)BAPStratumUserFallbackBuffer);
+            strcpy((char*)BAPStratumPassFallbackBuffer, "x");
+            Serial0.printf("BAPStratumPassFallbackBuffer: %s\n", (char*)BAPStratumPassFallbackBuffer);
+            // Set port Primary (ensure consistent endianness)
             uint16_t port = 21496;  // Use uint16_t as ports are 16-bit values
+
             BAPStratumPortMainBuffer[0] = (port >> 8) & 0xFF;  // High byte
             BAPStratumPortMainBuffer[1] = port & 0xFF;         // Low byte
             writeDataToBAP(BAPStratumPortMainBuffer, sizeof(uint16_t), BAP_STRATUM_PORT_MAIN_BUFFER_REG);
             Serial0.printf("BAPStratumPortMainBuffer: %d\n", port);
+
+            // Set port Fallback (ensure consistent endianness)
+            uint16_t portFallback = 3333;  // Use uint16_t as ports are 16-bit values
+            BAPStratumPortFallbackBuffer[0] = (portFallback >> 8) & 0xFF;  // High byte
+            BAPStratumPortFallbackBuffer[1] = portFallback & 0xFF;         // Low byte
+            writeDataToBAP(BAPStratumPortFallbackBuffer, sizeof(uint16_t), BAP_STRATUM_PORT_FALLBACK_BUFFER_REG);
+            Serial0.printf("BAPStratumPortFallbackBuffer: %d\n", portFallback);
+
             // send Pool Settings to BAP
             // Public-Pool.io URL
             writeDataToBAP((uint8_t*)BAPStratumUrlMainBuffer, strlen((char*)BAPStratumUrlMainBuffer), BAP_STRATUM_URL_MAIN_BUFFER_REG);
-            //delay(500);
             // Public-Pool.io USER
             writeDataToBAP((uint8_t*)BAPStratumUserMainBuffer, strlen((char*)BAPStratumUserMainBuffer), BAP_STRATUM_USER_MAIN_BUFFER_REG);
-            //delay(500);
             // Public-Pool.io PASSWORD
             writeDataToBAP((uint8_t*)BAPStratumPassMainBuffer, strlen((char*)BAPStratumPassMainBuffer), BAP_STRATUM_PASS_MAIN_BUFFER_REG);
-            //delay(500); // TODO: Create better way to handle serial timing
             // Public-Pool.io PORT
             writeDataToBAP((uint8_t*)BAPStratumPortMainBuffer, sizeof(BAPStratumPortMainBuffer), BAP_STRATUM_PORT_MAIN_BUFFER_REG);
-            //delay(500); // TODO: Create better way to handle serial timing
+            // CK pool fallback URL
+            writeDataToBAP((uint8_t*)BAPStratumUrlFallbackBuffer, strlen((char*)BAPStratumUrlFallbackBuffer), BAP_STRATUM_URL_FALLBACK_BUFFER_REG);
+            // CK pool fallback USER
+            writeDataToBAP((uint8_t*)BAPStratumUserFallbackBuffer, strlen((char*)BAPStratumUserFallbackBuffer), BAP_STRATUM_USER_FALLBACK_BUFFER_REG);
+            // CK pool fallback PASSWORD
+            writeDataToBAP((uint8_t*)BAPStratumPassFallbackBuffer, strlen((char*)BAPStratumPassFallbackBuffer), BAP_STRATUM_PASS_FALLBACK_BUFFER_REG);
+            // CK pool fallback PORT
+            writeDataToBAP((uint8_t*)BAPStratumPortFallbackBuffer, sizeof(BAPStratumPortFallbackBuffer), BAP_STRATUM_PORT_FALLBACK_BUFFER_REG);
         }
         // set asic settings
             setNormalPowerPreset(); 
+
             writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
             writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
             writeDataToBAP(BAPAsicVoltageBuffer, 2, BAP_ASIC_VOLTAGE_BUFFER_REG);
