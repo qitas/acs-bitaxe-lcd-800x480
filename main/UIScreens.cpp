@@ -70,9 +70,16 @@ static lv_obj_t* customOffsetHoursTextArea;
 static lv_obj_t* timeSettingsContainer;
 static lv_obj_t* timeOffsetLabel;
 static lv_obj_t* customOffsetLabel;
-static lv_obj_t* debugSettingsContainer;
+static lv_obj_t* debugSettingsContainer;    
+
+static lv_obj_t* blockClockLabel;
+static lv_obj_t* halvingLabel;
+
+static bool clockContainerShown = true;
+static bool blockClockContainerShown = false;
 // Hashrate variables
 float minHashrateSeen = 250;  // Initialize to maximum possible float
+
 float maxHashrateSeen = 400;        // Initialize to minimum for positive values
 float hashrateBuffer[SMOOTHING_WINDOW_SIZE] = {0};
 int bufferIndex = 0;
@@ -559,6 +566,30 @@ void splashScreen()
     lvgl_port_unlock();
 }
 
+static void clockContainerEventCallback(lv_event_t* e)
+{
+    lv_obj_t* obj = lv_event_get_target(e);
+    if (lv_obj_has_flag(obj, LV_OBJ_FLAG_CLICKABLE))
+    {
+        Serial.println("Clock Container Clicked");
+        clockContainerShown = !clockContainerShown;
+        blockClockContainerShown = !blockClockContainerShown;
+
+        if (clockContainerShown && blockClockContainerShown)
+        {
+            clockContainerShown = true;
+            blockClockContainerShown = false;
+        }
+        else if (!clockContainerShown && !blockClockContainerShown)
+        {
+            clockContainerShown = true;
+            blockClockContainerShown = false;
+        }
+    }
+}
+
+
+
 void homeScreen() 
 {
     uiTheme_t* theme = getCurrentTheme();
@@ -607,15 +638,50 @@ void homeScreen()
     //lv_obj_set_style_border_width(dateLabel, 1, LV_PART_MAIN);
     //lv_obj_set_style_border_color(dateLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
 
+    // create block clock in clock container, hidden by default
+    blockClockLabel = lv_label_create(clockContainer);
+    lv_label_set_text(blockClockLabel, "Block Height:\n --");
+    lv_obj_set_style_text_font(blockClockLabel, theme->fontExtraBold144, LV_PART_MAIN);
+    lv_obj_set_style_text_color(blockClockLabel, theme->textColor, LV_PART_MAIN);
+
+    lv_obj_align(blockClockLabel, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_text_align(blockClockLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
+    lv_obj_add_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+    //lv_obj_set_style_border_width(clockLabel, 1, LV_PART_MAIN);
+
+    //lv_obj_set_style_border_color(clockLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
+
+    // Create the halving label
+    halvingLabel = lv_label_create(clockContainer);
+    lv_label_set_text(halvingLabel, "Syncing . . .");
+    lv_obj_set_style_text_font(halvingLabel, theme->fontExtraBold32, LV_PART_MAIN);
+    lv_obj_set_style_text_color(halvingLabel, theme->textColor, LV_PART_MAIN);
+    lv_obj_set_style_text_align(halvingLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
+    lv_obj_set_style_text_opa(halvingLabel, LV_OPA_80, LV_PART_MAIN);
+    lv_obj_align(halvingLabel, LV_ALIGN_BOTTOM_MID, 0, 16);
+    lv_obj_add_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
+    //lv_obj_set_style_border_width(dateLabel, 1, LV_PART_MAIN);
+
+
+    //lv_obj_set_style_border_color(dateLabel, lv_color_hex(0x00FF00), LV_PART_MAIN);
+
+
+    
+
     // Create the clock timer
     screenObjs.clockTimer = lv_timer_create([](lv_timer_t* timer) 
     {
-       // Get values outside the lock
-        uint8_t h = hourFormat12();
-        uint8_t m = minute();
-        uint8_t s = second();
-        uint8_t mo = month();
-        uint8_t d = day();
+        if (clockContainerShown)
+        {
+            
+            // Get values outside the lock
+            uint8_t h = hourFormat12();
+            uint8_t m = minute();
+            uint8_t s = second();
+            uint8_t mo = month();
+            uint8_t d = day();
+
+
         uint8_t w = weekday();
         uint16_t y = year();    
         bool isAm = isAM();
@@ -623,7 +689,10 @@ void homeScreen()
         // Lock for LVGL operations
         if (lvgl_port_lock(10)) 
         {  // 10ms timeout
+            lv_obj_add_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
             
+
             // Check if the time is before 2000, This is used to check if the time has been set
             if (now() < 946684800) 
             {
@@ -639,8 +708,40 @@ void homeScreen()
             
             lvgl_port_unlock();
         }
+        }
+        else if (blockClockContainerShown)
+        {
+
+            l{
+            
+            // Get values outside the lock
+            uint32_t blockHeight = mempoolState->blockHeight;
+            uint32_t blockToHalving = 1050000 - blockHeight;
+
+
+        uint8_t w = weekday();
+        uint16_t y = year();    
+        bool isAm = isAM();
+
+        // Lock for LVGL operations
+        if (lvgl_port_lock(10)) 
+        {  // 10ms timeout
+            lv_obj_clear_flag(blockClockLabel, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(halvingLabel, LV_OBJ_FLAG_HIDDEN);
+            
+            lv_label_set_text_fmt(blockClockLabel, "Block Height:\n %lu", blockHeight);
+            lv_label_set_text_fmt(halvingLabel, "Halving:\n %lu Blocks", blockToHalving);
+            
+
+            lvgl_port_unlock();
+
+        }
+        }
+        }
+
     }, 1000, &clockLabel);
 }
+
 
 void activityScreen() 
 {
