@@ -583,7 +583,9 @@ void homeScreen()
     lv_obj_clear_flag(clockContainer, LV_OBJ_FLAG_SCROLLABLE);
     //lv_obj_set_style_border_width(clockContainer, 1, LV_PART_MAIN);
     //lv_obj_set_style_border_color(clockContainer, lv_color_hex(0x00FF00), LV_PART_MAIN);
-
+    lv_obj_add_flag(clockContainer, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(clockContainer, clockContainerEventCallback, LV_EVENT_CLICKED, NULL);
+    
     // Create the clock label
     clockLabel = lv_label_create(clockContainer);
     lv_label_set_text(clockLabel, "-- : --");

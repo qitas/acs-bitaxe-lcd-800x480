@@ -9,9 +9,16 @@
 
 #define ACSBitaxeTouch 1
 
+<<<<<<< Updated upstream
 #define BlockStreamJade 0
 #define SoloSatoshi 1
 #define ALTAIR 0
+=======
+#define BlockStreamJade 1
+#define SoloSatoshi 1
+#define ALTAIR 0
+#define SoloMiningCo 0
+>>>>>>> Stashed changes
 
 // Firmware version
 #define MajorVersion 0
