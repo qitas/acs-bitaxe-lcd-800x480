@@ -1,6 +1,6 @@
 // Define the model / interface available for the current build
 // debug mode
-#define DEBUG_UI 1
+#define DEBUG_UI 0
 
 #define BitaxeUltra 0
 #define BitaxeSupra 0 

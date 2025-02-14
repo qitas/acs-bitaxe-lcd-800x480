@@ -172,7 +172,7 @@ void setHighPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = 0x01; // Auto Fan Speed
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
-                uint16_t voltageNumber = 1170;  // Convert string to number
+                uint16_t voltageNumber = 1150;  // Convert string to number
                 uint8_t voltageBytes[2] = {
                     (uint8_t)(voltageNumber >> 8),    // High byte
                     (uint8_t)(voltageNumber & 0xFF)   // Low byte
@@ -181,7 +181,7 @@ void setHighPowerPreset()
 
                 // asic freq
                 
-                uint16_t freqNumber = 750;  // Convert string to number
+                uint16_t freqNumber = 700;  // Convert string to number
                 uint8_t freqBytes[2] = {
                     (uint8_t)(freqNumber >> 8),    // High byte
                     (uint8_t)(freqNumber & 0xFF)   // Low byte
