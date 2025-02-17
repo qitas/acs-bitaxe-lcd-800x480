@@ -394,6 +394,7 @@ static void saveButtonEventHandler(lv_event_t* e) {
         ESP_LOGI("Power Mode", "Writing ASIC Voltage to BAP");
         ESP_LOGI("Power Mode", "BAPAsicVoltageBuffer: %d", *BAPAsicVoltageBuffer);
         writeDataToBAP(BAPAsicVoltageBuffer, BAP_ASIC_VOLTAGE_BUFFER_SIZE, BAP_ASIC_VOLTAGE_BUFFER_REG);
+        saveSettingsToNVSasString(NVS_KEY_ASIC_CURRENT_VOLTAGE, (const char*)BAPAsicVoltageBuffer, 2);
         delay(10);
        }
         // ASIC Frequency
@@ -424,6 +425,7 @@ static void saveButtonEventHandler(lv_event_t* e) {
         ESP_LOGI("Power Mode", "Writing ASIC Frequency to BAP");
         ESP_LOGI("Power Mode", "BAPAsicFreqBuffer: %d", BAPAsicFreqBuffer[1]);
         writeDataToBAP(BAPAsicFreqBuffer, BAP_ASIC_FREQ_BUFFER_SIZE, BAP_ASIC_FREQ_BUFFER_REG);
+        saveSettingsToNVSasString(NVS_KEY_ASIC_CURRENT_FREQ, (const char*)BAPAsicFreqBuffer, 2);
         delay(10);
        }
        // Fan Speed
@@ -432,6 +434,7 @@ static void saveButtonEventHandler(lv_event_t* e) {
         ESP_LOGI("Power Mode", "Writing Fan Speed to BAP");
         ESP_LOGI("Power Mode", "BAPFanSpeedBuffer: %d", BAPFanSpeedBuffer[1]);
         writeDataToBAP(BAPFanSpeedBuffer, BAP_FAN_SPEED_BUFFER_SIZE, BAP_FAN_SPEED_BUFFER_REG);
+        saveSettingsToNVSasString(NVS_KEY_ASIC_CURRENT_FAN_SPEED, (const char*)BAPFanSpeedBuffer, 2);
         delay(10);
        }
        // Auto Fan Speed
@@ -439,6 +442,7 @@ static void saveButtonEventHandler(lv_event_t* e) {
         ESP_LOGI("Power Mode", "Writing Auto Fan Speed to BAP");
         ESP_LOGI("Power Mode", "BAPAutoFanSpeedBuffer[1]: %d", BAPAutoFanSpeedBuffer[1]);
         writeDataToBAP(BAPAutoFanSpeedBuffer, BAP_AUTO_FAN_SPEED_BUFFER_SIZE, BAP_AUTO_FAN_SPEED_BUFFER_REG);
+        saveSettingsToNVSasString(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, (const char*)BAPAutoFanSpeedBuffer, 2);
         delay(10);
        }
 

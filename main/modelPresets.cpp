@@ -2,6 +2,7 @@
 #include "BAP.h"
 #include "I2CData.h"
 #include "modelConfig.h"
+#include "NVS.h"
 
 void setLowPowerPreset() 
 {
@@ -39,6 +40,7 @@ void setLowPowerPreset()
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
                 //writeDataToBAP(freqBytes, 2, BAP_ASIC_FREQ_BUFFER_REG);
                 delay(10);
+
        
                 //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
@@ -74,6 +76,7 @@ void setLowPowerPreset()
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
                 //writeDataToBAP(freqBytes, 2, BAP_ASIC_FREQ_BUFFER_REG);
                 delay(10);
+
        
                 //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
@@ -116,6 +119,8 @@ void setNormalPowerPreset()
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
                 //writeDataToBAP(freqBytes, 2, BAP_ASIC_FREQ_BUFFER_REG);
                 delay(10);
+
+
                 //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
     #elif (BitaxeUltra == 1 && BAPPORT == 1)
@@ -151,6 +156,8 @@ void setNormalPowerPreset()
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
                 //writeDataToBAP(freqBytes, 2, BAP_ASIC_FREQ_BUFFER_REG);
                 delay(10);
+
+
                 //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
 
@@ -187,6 +194,7 @@ void setHighPowerPreset()
                     (uint8_t)(freqNumber & 0xFF)   // Low byte
                 };
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
+
     #elif (BitaxeUltra == 1 && BAPPORT == 1)
     Serial.println("High Power Mode Selected");
                 // fan speed

@@ -22,13 +22,10 @@
 #define NVS_KEY_TIME_OFFSET_HOURS "timeOffsetHours"
 #define NVS_KEY_TIME_OFFSET_MINUTES "timeOffsetMinutes"
 
-#define NVS_KEY_ASIC_FREQ_LOW "asicFreqLow"
-#define NVS_KEY_ASIC_FREQ_MED "asicFreqMed"
-#define NVS_KEY_ASIC_FREQ_HIGH "asicFreqHigh"
-
-#define NVS_KEY_ASIC_FAN_VOLTAGE_LOW "asicFanVoltageLow"
-#define NVS_KEY_ASIC_FAN_VOLTAGE_MED "asicFanVoltageMed"
-#define NVS_KEY_ASIC_FAN_VOLTAGE_HIGH "asicFanVoltageHigh"
+#define NVS_KEY_ASIC_CURRENT_FREQ "asicCurrentFreq"
+#define NVS_KEY_ASIC_CURRENT_VOLTAGE "asicCurrentVoltage"
+#define NVS_KEY_ASIC_CURRENT_FAN_SPEED "asicCurrentFanSpeed"
+#define NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED "asicCurrentAutoFanSpeed"
 
 extern void initializeNVS(void);
 extern themePreset_t loadThemeFromNVS(void);
