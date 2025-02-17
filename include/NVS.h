@@ -34,5 +34,7 @@ extern bool isFirstBoot(void);
 extern void setFirstBootComplete(void);
 extern void saveSettingsToNVSasString(const char* key, const char* value, size_t size);
 extern void loadSettingsFromNVSasString(const char* key, char* value, size_t size);
+extern void saveSettingsToNVSasU16(const char* key, uint16_t value);
+extern uint16_t loadSettingsFromNVSasU16(const char* key);
 extern void factoryResetNVS(void);
 
