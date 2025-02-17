@@ -24,6 +24,7 @@
 #include "esp_event.h"
 #include <WiFi.h>
 #include <WebServer.h>
+#include "modelPresets.h"
 
 
 #include <lvgl.h>
@@ -257,6 +258,7 @@ extern "C" void app_main()
     }
 
     espTime();
+    readCurrentPresetSettingsFromNVS();
     //main loop
     while (true)
     {
