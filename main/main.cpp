@@ -239,8 +239,7 @@ extern "C" void app_main()
     */
    initalizeOneScreen();
    switchToScreen(activeScreenHome);
-   
-    //initI2CSlave();
+   readCurrentPresetSettingsFromNVS();
     
     Serial0.println("LVGL porting example end");
 
@@ -258,7 +257,7 @@ extern "C" void app_main()
     }
 
     espTime();
-    readCurrentPresetSettingsFromNVS();
+
     //main loop
     while (true)
     {

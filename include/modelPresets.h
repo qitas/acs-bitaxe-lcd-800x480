@@ -4,6 +4,7 @@
 #include "I2CData.h"
 #include "modelConfig.h"
 
+
 extern uint16_t currentPresetFrequency;
 extern uint16_t currentPresetVoltage;
 extern uint8_t currentPresetFanSpeed;
@@ -23,3 +24,5 @@ extern void setNormalPowerPreset();
 extern void setHighPowerPreset();
 
 extern void readCurrentPresetSettingsFromNVS();
+extern void presetAutoTune();
+extern bool isValidPresetPair(uint16_t freq, uint16_t voltage);

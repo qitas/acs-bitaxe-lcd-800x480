@@ -45,6 +45,13 @@ static const uint8_t autoFanModeNormalPower = 0;
 static const uint8_t autoFanModeHighPower = 1;
 #endif
 
+// preset autotuning
+uint16_t frequencyOffset = 0;
+uint16_t voltageOffset = 0;
+uint16_t fanSpeedOffset = 0; 
+
+bool autoTuneEndabled = false; 
+
 void setLowPowerPreset() 
 {
  Serial.println("Low Power Mode Selected");
@@ -304,4 +311,44 @@ void readCurrentPresetSettingsFromNVS() {
     currentPresetAutoFanMode = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED);
     delay(10);
     ESP_LOGI("ASIC", "Current Preset Auto Fan Mode: %d", currentPresetAutoFanMode);
+}
+
+bool isValidPresetPair(uint16_t freq, uint16_t voltage) {
+    return ((freq == freqLowPower && voltage == voltageLowPower) ||
+            (freq == freqNormalPower && voltage == voltageNormalPower) ||
+            (freq == freqHighPower && voltage == voltageHighPower));
+}
+
+
+void presetAutoTune()
+{
+    // check that autotuning is enabled
+
+
+    float domainVoltage = IncomingData.monitoring.powerStats.domainVoltage;
+    float power = IncomingData.monitoring.powerStats.power;
+    float hashrate = IncomingData.mining.hashrate;
+    uint32_t fanSpeed = IncomingData.monitoring.fanSpeed;
+    uint32_t asicFreq = IncomingData.monitoring.asicFrequency;
+    
+    // Check that temp, freq, and voltage are within spec (This tells us the bitaxe is running)
+    if (hashrate == 0 || asicFreq == 0 || domainVoltage == 0)
+    {
+        ESP_LOGE("Preset", "Missing Autotune Variable V: %.2f Freq: %lu Hashrate: %.2f", domainVoltage, asicFreq, hashrate);
+        return;
+    }
+    // check that the preset is set correctly in NVS compared to known preset values 
+    if (isValidPresetPair(currentPresetFrequency, currentPresetVoltage) == false)
+    {
+         ESP_LOGE("Preset", "Preset does not match");
+         return;
+    }
+
+
+
+
+// check current temp, power, and fan speed to see what needs to be adjusted
+
+// set adjusted fan speed, voltage, and frequency based on current temps and power usage
+
 }
