@@ -291,24 +291,17 @@ void setHighPowerPreset()
 }
 
 void readCurrentPresetSettingsFromNVS() {
-    char currentPresetFrequencyString[16];
-    char currentPresetVoltageString[16];
-    char currentPresetFanSpeedString[16];
-    char currentPresetAutoFanModeString[16];
-    loadSettingsFromNVSasString(NVS_KEY_ASIC_CURRENT_FREQ, currentPresetFrequencyString , sizeof(currentPresetFrequencyString));
-    currentPresetFrequency = atoi(currentPresetFrequencyString);
-    delay(10);
+
+    currentPresetFrequency = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ);
     ESP_LOGI("ASIC", "Current Preset Frequency: %d", currentPresetFrequency);
-    loadSettingsFromNVSasString(NVS_KEY_ASIC_CURRENT_VOLTAGE, currentPresetVoltageString , sizeof(currentPresetVoltageString));
-    currentPresetVoltage = atoi(currentPresetVoltageString);
+    delay(10);
+    currentPresetVoltage = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_VOLTAGE);
     delay(10);
     ESP_LOGI("ASIC", "Current Preset Voltage: %d", currentPresetVoltage);
-    loadSettingsFromNVSasString(NVS_KEY_ASIC_CURRENT_FAN_SPEED, currentPresetFanSpeedString , sizeof(currentPresetFanSpeedString));
-    currentPresetFanSpeed = atoi(currentPresetFanSpeedString);
+    currentPresetFanSpeed = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_FAN_SPEED);
     delay(10);
     ESP_LOGI("ASIC", "Current Preset Fan Speed: %d", currentPresetFanSpeed);
-    loadSettingsFromNVSasString(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, currentPresetAutoFanModeString , sizeof(currentPresetAutoFanModeString));
-    currentPresetAutoFanMode = atoi(currentPresetAutoFanModeString);
+    currentPresetAutoFanMode = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED);
     delay(10);
     ESP_LOGI("ASIC", "Current Preset Auto Fan Mode: %d", currentPresetAutoFanMode);
 }

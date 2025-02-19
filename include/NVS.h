@@ -19,13 +19,13 @@
 #define NVS_KEY_WIFI_SSID2 "wifiSSID2"
 #define NVS_KEY_WIFI_PASSWORD2 "wifiPassword2"
 #define NVS_KEY_BTC_ADDRESS "btcAddress"
-#define NVS_KEY_TIME_OFFSET_HOURS "timeOffsetHours"
-#define NVS_KEY_TIME_OFFSET_MINUTES "timeOffsetMinutes"
+#define NVS_KEY_TIME_OFFSET_HOURS "timeOffsetH"
+#define NVS_KEY_TIME_OFFSET_MINUTES "timeOffsetM"
 
-#define NVS_KEY_ASIC_CURRENT_FREQ "asicCurrentFreq"
-#define NVS_KEY_ASIC_CURRENT_VOLTAGE "asicCurrentVoltage"
-#define NVS_KEY_ASIC_CURRENT_FAN_SPEED "asicCurrentFanSpeed"
-#define NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED "asicCurrentAutoFanSpeed"
+#define NVS_KEY_ASIC_CURRENT_FREQ "currentFq"
+#define NVS_KEY_ASIC_CURRENT_VOLTAGE "currentV"
+#define NVS_KEY_ASIC_CURRENT_FAN_SPEED "currentFSp"
+#define NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED "currentAFSp"
 
 extern void initializeNVS(void);
 extern themePreset_t loadThemeFromNVS(void);
