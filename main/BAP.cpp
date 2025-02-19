@@ -388,6 +388,12 @@ void handleMonitoringDataSerial(uint8_t* buffer, uint8_t len)
             memcpy(&IncomingData.monitoring.uptime, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
             break;  
         }
+        case LVGL_REG_TARGET_VOLTAGE:
+        {
+            memset(&IncomingData.monitoring.targetDomainVoltage, 0, MAX_UINT32_SIZE);
+            memcpy(&IncomingData.monitoring.targetDomainVoltage, &buffer[2], __min(dataLen, MAX_UINT16_SIZE));
+            break;
+        }
         default:
         {   
             Serial.printf("Warning: Unknown monitoring register 0x%02X with length %d\n", reg, dataLen);

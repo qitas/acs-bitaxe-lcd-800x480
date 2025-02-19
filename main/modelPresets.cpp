@@ -330,6 +330,7 @@ void presetAutoTune()
     float hashrate = IncomingData.mining.hashrate;
     uint32_t fanSpeed = IncomingData.monitoring.fanSpeed;
     uint32_t asicFreq = IncomingData.monitoring.asicFrequency;
+    float asicTemp = IncomingData.monitoring.temperatures[0];
     
     // Check that temp, freq, and voltage are within spec (This tells us the bitaxe is running)
     if (hashrate == 0 || asicFreq == 0 || domainVoltage == 0)
@@ -344,11 +345,19 @@ void presetAutoTune()
          return;
     }
 
-
-
-
-// check current temp, power, and fan speed to see what needs to be adjusted
-
+    
+// check current temp to see if it is within good operating conditions
+    if (asicTemp >= 56 && asicTemp <= 65 )
+    {
+        ESP_LOGI("Preset", "Asic Temps good. Temp: %.2f", asicTemp);
+        return;
+    }
 // set adjusted fan speed, voltage, and frequency based on current temps and power usage
+    #if (BitaxeGamma == 1)
+    if(asicTemp >=65)
+    {
+        
+    }
 
+    #endif
 }
