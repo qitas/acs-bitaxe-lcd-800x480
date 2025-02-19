@@ -328,9 +328,10 @@ void presetAutoTune()
     float domainVoltage = IncomingData.monitoring.powerStats.domainVoltage;
     float power = IncomingData.monitoring.powerStats.power;
     float hashrate = IncomingData.mining.hashrate;
-    uint32_t fanSpeed = IncomingData.monitoring.fanSpeed;
+    uint32_t fanSpeedPercent = IncomingData.monitoring.fanSpeedPercent;
     uint32_t asicFreq = IncomingData.monitoring.asicFrequency;
     float asicTemp = IncomingData.monitoring.temperatures[0];
+    uint16_t targetVoltage = IncomingData.monitoring.targetDomainVoltage;
     
     // Check that temp, freq, and voltage are within spec (This tells us the bitaxe is running)
     if (hashrate == 0 || asicFreq == 0 || domainVoltage == 0)
@@ -354,9 +355,34 @@ void presetAutoTune()
     }
 // set adjusted fan speed, voltage, and frequency based on current temps and power usage
     #if (BitaxeGamma == 1)
+    ESP_LOGI("Preset", "Target V %.2u Target F %.2lu", targetVoltage, asicFreq);
     if(asicTemp >=65)
     {
+        // Try increasing fan speed first on lower settings
+        ESP_LOGI("Preset", "Asic Temps hot. Reducing clock speed Temp: %.2f", asicTemp);
+        if(fanSpeedPercent <= 38 && currentPresetAutoFanMode == 0)
+        {   
+            memset(BAPFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
+            BAPFanSpeedBuffer[0] = 0x00;
+            BAPFanSpeedBuffer[1] = fanSpeedPercent + 1;
+            writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
+            ESP_LOGI("Preset", "Increasing Fan Speed to %lu", fanSpeedPercent + 1);
+            return;
+        }
         
+        if(currentPresetFrequency * .9 >= asicFreq )
+        {
+                memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
+                uint16_t freqNumber = asicFreq * .98; 
+                uint8_t freqBytes[2] = 
+                {
+                    (uint8_t)(freqNumber >> 8),    // High byte
+                    (uint8_t)(freqNumber & 0xFF)   // Low byte
+                };
+                memcpy(BAPAsicFreqBuffer, freqBytes, 2);
+                ESP_LOGI("Preset", "Increasing decreasing frequency to %u", freqNumber);
+        }
+                
     }
 
     #endif
