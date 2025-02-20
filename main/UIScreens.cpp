@@ -2446,6 +2446,9 @@ lv_obj_set_style_text_font(offsetFanSpeedVariableLabel, theme->fontMedium24, LV_
 lv_obj_set_style_text_color(offsetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(offsetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
 
+
+
+
 static lv_obj_t* autoTuneLabels[6];  // Array to hold all autotune labels
 autoTuneLabels[0] = targetVoltageVariableLabel;
 autoTuneLabels[1] = targetFrequencyVariableLabel;
