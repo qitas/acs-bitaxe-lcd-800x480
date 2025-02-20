@@ -157,7 +157,7 @@ void readDataFromBAP()
                 Serial.printf("%02X ", BAPReadBuffer[i]);
             }
         }
-        else if (reg >= 0x40 && reg <= 0x45) 
+        else if (reg >= 0x40 && reg <= 0x46) 
         {
             handleMonitoringDataSerial(BAPReadBuffer, dataLen);
             Serial0.printf("Monitoring Data Received for register 0x%02X", reg);

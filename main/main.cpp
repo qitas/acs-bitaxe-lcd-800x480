@@ -307,6 +307,14 @@ extern "C" void app_main()
             lastFlagCheck = millis();
         
     }
+        
+    static uint32_t lastAutoTuneCheck = 0;
+    if (millis() - lastAutoTuneCheck > 10000)
+    {
+    presetAutoTune();
+    lastAutoTuneCheck = millis();
     }
-    // Do your own thing
+
+    }
+
 }

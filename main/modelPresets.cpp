@@ -4,10 +4,14 @@
 #include "modelConfig.h"
 #include "NVS.h"
 
+#define minPresetTemp  60
+#define maxPresetTemp  65 
+
 uint16_t currentPresetFrequency = 0;
 uint16_t currentPresetVoltage = 0;
 uint8_t currentPresetFanSpeed = 0;
 bool currentPresetAutoFanMode = false;
+
 
 #if (BitaxeGamma == 1)
 const uint16_t voltageLowPower = 1030;
@@ -322,6 +326,7 @@ bool isValidPresetPair(uint16_t freq, uint16_t voltage) {
 
 void presetAutoTune()
 {
+
     // check that autotuning is enabled
 
 
@@ -339,6 +344,7 @@ void presetAutoTune()
         ESP_LOGE("Preset", "Missing Autotune Variable V: %.2f Freq: %lu Hashrate: %.2f", domainVoltage, asicFreq, hashrate);
         return;
     }
+    ESP_LOGI("Preset", "Target V %.2u Target F %.2lu", targetVoltage, asicFreq);
     // check that the preset is set correctly in NVS compared to known preset values 
     if (isValidPresetPair(currentPresetFrequency, currentPresetVoltage) == false)
     {
@@ -348,41 +354,68 @@ void presetAutoTune()
 
     
 // check current temp to see if it is within good operating conditions
-    if (asicTemp >= 56 && asicTemp <= 65 )
+    if (asicTemp >= minPresetTemp && asicTemp <= maxPresetTemp )
     {
         ESP_LOGI("Preset", "Asic Temps good. Temp: %.2f", asicTemp);
         return;
     }
 // set adjusted fan speed, voltage, and frequency based on current temps and power usage
     #if (BitaxeGamma == 1)
-    ESP_LOGI("Preset", "Target V %.2u Target F %.2lu", targetVoltage, asicFreq);
-    if(asicTemp >=65)
+    
+    if(asicTemp >= maxPresetTemp)
     {
         // Try increasing fan speed first on lower settings
-        ESP_LOGI("Preset", "Asic Temps hot. Reducing clock speed Temp: %.2f", asicTemp);
+        ESP_LOGI("Preset", "Asic Temps hot. Tweaking Settings Temp: %.2f", asicTemp);
         if(fanSpeedPercent <= 38 && currentPresetAutoFanMode == 0)
         {   
             memset(BAPFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
             BAPFanSpeedBuffer[0] = 0x00;
             BAPFanSpeedBuffer[1] = fanSpeedPercent + 1;
+            delay(10);
             writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
             ESP_LOGI("Preset", "Increasing Fan Speed to %lu", fanSpeedPercent + 1);
             return;
         }
         
-        if(currentPresetFrequency * .9 >= asicFreq )
+        if(currentPresetFrequency * .9 <= asicFreq )
         {
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
-                uint16_t freqNumber = asicFreq * .98; 
+                uint16_t freqNumber = (asicFreq * 98) / 100;  // Integer math for 2% reduction
                 uint8_t freqBytes[2] = 
                 {
                     (uint8_t)(freqNumber >> 8),    // High byte
                     (uint8_t)(freqNumber & 0xFF)   // Low byte
                 };
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
-                ESP_LOGI("Preset", "Increasing decreasing frequency to %u", freqNumber);
-        }
+                delay(10);
+                writeDataToBAP(BAPAsicFreqBuffer, 2 ,BAP_ASIC_FREQ_BUFFER_REG);
+                ESP_LOGI("Preset", "Decreasing frequency to %u", freqNumber);
                 
+        }
+        if (currentPresetVoltage *.95 <= targetVoltage)
+        {
+                memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
+                // Reduce voltage by 0.5% (multiply by 0.995)
+                uint16_t newVoltage = (targetVoltage * 995) / 1000;  // Integer math to avoid floating point
+                uint8_t voltageBytes[2] = {
+                    (uint8_t)(newVoltage >> 8),    // High byte
+                    (uint8_t)(newVoltage & 0xFF)   // Low byte
+                };
+                memcpy(BAPAsicVoltageBuffer, voltageBytes, 2);
+                delay(10);
+                writeDataToBAP(BAPAsicVoltageBuffer, 2 ,BAP_ASIC_VOLTAGE_BUFFER_REG);
+                ESP_LOGI("Preset", "Decreasing voltage to %u", newVoltage);
+
+        } 
+        else
+        {
+            ESP_LOGE("Preset", "nothing left to tweak. Change targets");
+        }
+    }
+    if(asicTemp <= minPresetTemp)
+    {
+        // decrease fan speed first to a certain point
+
     }
 
     #endif
