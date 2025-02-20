@@ -366,7 +366,7 @@ void presetAutoTune()
     {
         // Try increasing fan speed first on lower settings
         ESP_LOGI("Preset", "Asic Temps hot. Tweaking Settings Temp: %.2f", asicTemp);
-        if(fanSpeedPercent <= 38 && currentPresetAutoFanMode == 0)
+        if(fanSpeedPercent <= currentPresetFanSpeed + 5 && currentPresetAutoFanMode == 0)
         {   
             memset(BAPFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
             BAPFanSpeedBuffer[0] = 0x00;
@@ -413,9 +413,54 @@ void presetAutoTune()
         }
     }
     if(asicTemp <= minPresetTemp)
-    {
-        // decrease fan speed first to a certain point
+      {
+        // Try decreasing fan speed for noise first
+        ESP_LOGI("Preset", "Asic Temp Overhead. Tweaking Settings Temp: %.2f", asicTemp);
+        if(fanSpeedPercent >= currentPresetFanSpeed - 5 && currentPresetAutoFanMode == 0)
+        {   
+            memset(BAPFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
+            BAPFanSpeedBuffer[0] = 0x00;
+            BAPFanSpeedBuffer[1] = fanSpeedPercent - 1;
+            delay(10);
+            writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
+            ESP_LOGI("Preset", "Decreasingg Fan Speed to %lu", fanSpeedPercent - 1);
+            return;
+        }
+        
+        if(currentPresetFrequency * 1.1 >= asicFreq )
+        {
+                memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
+                uint16_t freqNumber = (asicFreq * 102) / 100;  // Integer math for 2% addition
+                uint8_t freqBytes[2] = 
+                {
+                    (uint8_t)(freqNumber >> 8),    // High byte
+                    (uint8_t)(freqNumber & 0xFF)   // Low byte
+                };
+                memcpy(BAPAsicFreqBuffer, freqBytes, 2);
+                delay(10);
+                writeDataToBAP(BAPAsicFreqBuffer, 2 ,BAP_ASIC_FREQ_BUFFER_REG);
+                ESP_LOGI("Preset", "Increasing frequency to %u", freqNumber);
+                
+        }
+        if (currentPresetVoltage *1.05 >= targetVoltage)
+        {
+                memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
+                // Reduce voltage by 0.5% (multiply by 0.995)
+                uint16_t newVoltage = (targetVoltage * 1005) / 1000;  // Integer math to avoid floating point
+                uint8_t voltageBytes[2] = {
+                    (uint8_t)(newVoltage >> 8),    // High byte
+                    (uint8_t)(newVoltage & 0xFF)   // Low byte
+                };
+                memcpy(BAPAsicVoltageBuffer, voltageBytes, 2);
+                delay(10);
+                writeDataToBAP(BAPAsicVoltageBuffer, 2 ,BAP_ASIC_VOLTAGE_BUFFER_REG);
+                ESP_LOGI("Preset", "Increasing voltage to %u", newVoltage);
 
+        } 
+        else
+        {
+            ESP_LOGE("Preset", "nothing left to tweak. Change targets");
+        }
     }
 
     #endif
