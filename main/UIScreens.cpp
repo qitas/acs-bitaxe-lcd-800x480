@@ -1845,8 +1845,10 @@ void settingsScreen()
     lv_obj_clear_flag(networkSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_t * miningSettingsTab = lv_tabview_add_tab(settingTabView, "MINING");
     lv_obj_clear_flag(miningSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_t * asicSettingsTab = lv_tabview_add_tab(settingTabView, "ASIC");
+    lv_obj_t * asicSettingsTab = lv_tabview_add_tab(settingTabView, "PRESET");
     lv_obj_clear_flag(asicSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_t * autoTuneSettingsTab = lv_tabview_add_tab(settingTabView, "TUNE");
+    lv_obj_clear_flag(autoTuneSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_t * themeSettingsTab = lv_tabview_add_tab(settingTabView, "THEME");
     lv_obj_clear_flag(themeSettingsTab, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_t * timeSettingsTab = lv_tabview_add_tab(settingTabView, "TIME");
@@ -2249,7 +2251,143 @@ lv_group_add_obj(radio_group, lowPowerMode);
 lv_group_add_obj(radio_group, normalPowerMode);
 lv_group_add_obj(radio_group, highPowerMode);
 
-// ... rest of existing code ...
+// Autotune Settings Container
+lv_obj_t* autoTuneSettingsContainer = lv_obj_create(autoTuneSettingsTab);
+lv_obj_set_size(autoTuneSettingsContainer, 672, 312);
+lv_obj_align(autoTuneSettingsContainer, LV_ALIGN_CENTER, 0, 0);
+lv_obj_set_style_bg_opa(autoTuneSettingsContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(autoTuneSettingsContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(autoTuneSettingsContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+
+// Target frequency, voltage, and fan speed
+lv_obj_t* targetVoltageContainer = lv_obj_create(autoTuneSettingsContainer);
+lv_obj_set_size(targetVoltageContainer, 208, 136);
+lv_obj_align(targetVoltageContainer, LV_ALIGN_TOP_LEFT, 0, 0);
+lv_obj_set_style_bg_opa(targetVoltageContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(targetVoltageContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(targetVoltageContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+//targetVoltageLabel
+lv_obj_t* targetVoltageLabel = lv_label_create(targetVoltageContainer);
+lv_label_set_text(targetVoltageLabel, "TARGET VOLT");
+lv_obj_set_style_text_font(targetVoltageLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(targetVoltageLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(targetVoltageLabel, LV_ALIGN_TOP_MID, 0, -16); 
+
+//targetVoltageVariableLabel
+lv_obj_t* targetVoltageVariableLabel = lv_label_create(targetVoltageContainer);
+lv_label_set_text(targetVoltageVariableLabel, "1250mV");
+lv_obj_set_style_text_font(targetVoltageVariableLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(targetVoltageVariableLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(targetVoltageVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
+
+lv_obj_t* targetFrequencyContainer = lv_obj_create(autoTuneSettingsContainer);
+lv_obj_set_size(targetFrequencyContainer, 208, 136);
+lv_obj_align(targetFrequencyContainer, LV_ALIGN_TOP_LEFT, 210, 0);
+lv_obj_set_style_bg_opa(targetFrequencyContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(targetFrequencyContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(targetFrequencyContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+//targetFrequencyLabel
+lv_obj_t* targetFrequencyLabel = lv_label_create(targetFrequencyContainer);
+lv_label_set_text(targetFrequencyLabel, "TARGET FREQ");
+lv_obj_set_style_text_font(targetFrequencyLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(targetFrequencyLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(targetFrequencyLabel, LV_ALIGN_TOP_MID, 0, -16); 
+
+//targetFrequencyVariableLabel
+lv_obj_t* targetFrequencyVariableLabel = lv_label_create(targetFrequencyContainer);
+lv_label_set_text(targetFrequencyVariableLabel, "490 MHz");
+lv_obj_set_style_text_font(targetFrequencyVariableLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(targetFrequencyVariableLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(targetFrequencyVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
+
+lv_obj_t* targetFanSpeedContainer = lv_obj_create(autoTuneSettingsContainer);
+lv_obj_set_size(targetFanSpeedContainer, 208, 136);
+lv_obj_align(targetFanSpeedContainer, LV_ALIGN_TOP_LEFT, 420, 0);
+lv_obj_set_style_bg_opa(targetFanSpeedContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(targetFanSpeedContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(targetFanSpeedContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+//targetFanSpeedLabel
+lv_obj_t* targetFanSpeedLabel = lv_label_create(targetFanSpeedContainer);
+lv_label_set_text(targetFanSpeedLabel, "TARGET FAN");
+lv_obj_set_style_text_font(targetFanSpeedLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(targetFanSpeedLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(targetFanSpeedLabel, LV_ALIGN_TOP_MID, 0, -16); 
+
+//targetFanSpeedVariableLabel
+lv_obj_t* targetFanSpeedVariableLabel = lv_label_create(targetFanSpeedContainer);
+lv_label_set_text(targetFanSpeedVariableLabel, "35%");
+lv_obj_set_style_text_font(targetFanSpeedVariableLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(targetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(targetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
+
+
+// current offset
+lv_obj_t* offestVoltageContainer = lv_obj_create(autoTuneSettingsContainer);
+lv_obj_set_size(offestVoltageContainer, 208, 136);
+lv_obj_align(offestVoltageContainer, LV_ALIGN_TOP_LEFT, 0, 136);
+lv_obj_set_style_bg_opa(offestVoltageContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(offestVoltageContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(offestVoltageContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+//offsetVoltageLabel
+lv_obj_t* offsetVoltageLabel = lv_label_create(offestVoltageContainer);
+lv_label_set_text(offsetVoltageLabel, "OFFSET VOLT");
+lv_obj_set_style_text_font(offsetVoltageLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(offsetVoltageLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(offsetVoltageLabel, LV_ALIGN_TOP_MID, 0, -16); 
+
+//offsetVoltageVariableLabel
+lv_obj_t* offsetVoltageVariableLabel = lv_label_create(offestVoltageContainer);
+lv_label_set_text(offsetVoltageVariableLabel, "-120mV");
+lv_obj_set_style_text_font(offsetVoltageVariableLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(offsetVoltageVariableLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(offsetVoltageVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
+
+lv_obj_t* offsetFrequencyContainer = lv_obj_create(autoTuneSettingsContainer);
+lv_obj_set_size(offsetFrequencyContainer, 208, 136);
+lv_obj_align(offsetFrequencyContainer, LV_ALIGN_TOP_LEFT, 210, 136);
+lv_obj_set_style_bg_opa(offsetFrequencyContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(offsetFrequencyContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(offsetFrequencyContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+//offsetFrequencyLabel
+lv_obj_t* offsetFrequencyLabel = lv_label_create(offsetFrequencyContainer);
+lv_label_set_text(offsetFrequencyLabel, "OFFSET FREQ");
+lv_obj_set_style_text_font(offsetFrequencyLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(offsetFrequencyLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(offsetFrequencyLabel, LV_ALIGN_TOP_MID, 0, -16); 
+
+//offsetFrequencyVariableLabel
+lv_obj_t* offsetFrequencyVariableLabel = lv_label_create(offsetFrequencyContainer);
+lv_label_set_text(offsetFrequencyVariableLabel, "-20 MHz");
+lv_obj_set_style_text_font(offsetFrequencyVariableLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(offsetFrequencyVariableLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(offsetFrequencyVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
+
+lv_obj_t* offsetFanSpeedContainer = lv_obj_create(autoTuneSettingsContainer);
+lv_obj_set_size(offsetFanSpeedContainer, 208, 136);
+lv_obj_align(offsetFanSpeedContainer, LV_ALIGN_TOP_LEFT, 420, 136);
+lv_obj_set_style_bg_opa(offsetFanSpeedContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_set_style_border_opa(offsetFanSpeedContainer, LV_OPA_0, LV_PART_MAIN);
+lv_obj_clear_flag(offsetFanSpeedContainer, LV_OBJ_FLAG_SCROLLABLE);
+
+//offsetFanSpeedLabel
+lv_obj_t* offsetFanSpeedLabel = lv_label_create(offsetFanSpeedContainer);
+lv_label_set_text(offsetFanSpeedLabel, "OFFSET FAN");
+lv_obj_set_style_text_font(offsetFanSpeedLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(offsetFanSpeedLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(offsetFanSpeedLabel, LV_ALIGN_TOP_MID, 0, -16); 
+
+//offsetFanSpeedVariableLabel
+lv_obj_t* offsetFanSpeedVariableLabel = lv_label_create(offsetFanSpeedContainer);
+lv_label_set_text(offsetFanSpeedVariableLabel, "3%");
+lv_obj_set_style_text_font(offsetFanSpeedVariableLabel, theme->fontMedium24, LV_PART_MAIN);
+lv_obj_set_style_text_color(offsetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_align(offsetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
 
 
     // Theme Settings Container
@@ -2260,13 +2398,6 @@ lv_group_add_obj(radio_group, highPowerMode);
     lv_obj_set_style_border_opa(themeSettingsContainer, LV_OPA_0, LV_PART_MAIN);
 
 
-    // Theme Settings Label
-    lv_obj_t* themeSettingsLabel = lv_label_create(themeSettingsContainer);
-    lv_label_set_text(themeSettingsLabel, "Change Theme");
-    lv_obj_set_style_text_font(themeSettingsLabel, theme->fontMedium24, LV_PART_MAIN);
-    lv_obj_set_style_text_color(themeSettingsLabel, theme->textColor, LV_PART_MAIN);
-    lv_obj_align(themeSettingsLabel, LV_ALIGN_TOP_LEFT, 0, -16);
-    lv_obj_clear_flag(themeSettingsLabel, LV_OBJ_FLAG_SCROLLABLE);
 
     // Theme Dropdown
     themeDropdown = lv_dropdown_create(themeSettingsContainer);

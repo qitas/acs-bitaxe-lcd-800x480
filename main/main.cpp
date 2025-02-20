@@ -310,7 +310,7 @@ extern "C" void app_main()
         
     static uint32_t lastAutoTuneCheck = 0;
     static bool firstAutoTune = true;
-    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 120000 : 10000))  // 2 min for first run, 10 sec after
+    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 120000 : 10000))  // 2 min for first check so bitaxe stabilizes, 10 sec after
     {
         presetAutoTune();
         lastAutoTuneCheck = millis();
