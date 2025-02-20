@@ -18,6 +18,10 @@ extern const uint16_t freqLowPower;
 extern const uint16_t freqNormalPower;
 extern const uint16_t freqHighPower;
 
+extern uint16_t frequencyOffset;
+extern uint16_t voltageOffset;
+extern uint16_t fanSpeedOffset; 
+
 
 extern void setLowPowerPreset();
 extern void setNormalPowerPreset();

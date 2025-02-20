@@ -71,6 +71,15 @@ static lv_obj_t* timeSettingsContainer;
 static lv_obj_t* timeOffsetLabel;
 static lv_obj_t* customOffsetLabel;
 static lv_obj_t* debugSettingsContainer;    
+static lv_obj_t* targetVoltageVariableLabel;
+static lv_obj_t* targetFrequencyVariableLabel;
+static lv_obj_t* targetFanSpeedVariableLabel;
+static lv_obj_t* offsetVoltageVariableLabel;
+static lv_obj_t* offsetFrequencyVariableLabel;
+static lv_obj_t* offsetFanSpeedVariableLabel;
+
+
+
 
 static lv_obj_t* blockClockLabel;
 static lv_obj_t* halvingLabel;
@@ -130,6 +139,54 @@ lv_obj_t* timeZoneDropdown = nullptr;
 static void themeDropdownEventHandler(lv_event_t* e);
 
 static void factoryResetButtonEventHandler(lv_event_t* e);
+
+static void updateAutoTuneLabels(lv_timer_t* timer) 
+{
+    // Get values outside the lock
+    uint16_t target_voltage = currentPresetVoltage;
+    uint16_t target_freq = currentPresetFrequency;
+    uint8_t target_fan = currentPresetFanSpeed;
+    int16_t offset_voltage = IncomingData.monitoring.targetDomainVoltage - target_voltage;
+    int16_t offset_freq = IncomingData.monitoring.asicFrequency - target_freq;
+    int16_t offset_fan = IncomingData.monitoring.fanSpeedPercent - target_fan;
+    bool auto_fan = currentPresetAutoFanMode;
+    
+    
+    // Lock for LVGL operations
+    if (lvgl_port_lock(10)) 
+    {  // 10ms timeout
+        lv_obj_t** labels = (lv_obj_t**)timer->user_data;
+        
+        // Batch all LVGL operations together
+        lv_label_set_text_fmt(labels[0], "%d mV", target_voltage);
+        lv_label_set_text_fmt(labels[1], "%d MHz", target_freq);
+        if(auto_fan == 0)
+        { 
+            lv_label_set_text_fmt(labels[2], "%d%%", target_fan);
+        }
+        else
+        {
+            lv_label_set_text(labels[2], "AUTO FANSPEED");
+        }
+        
+        // Format offsets with signs
+        lv_label_set_text_fmt(labels[3], "%s%d mV", 
+            offset_voltage >= 0 ? "+" : "", offset_voltage);
+        lv_label_set_text_fmt(labels[4], "%s%d MHz", 
+            offset_freq >= 0 ? "+" : "", offset_freq);
+        if(auto_fan == 0)
+        {
+        lv_label_set_text_fmt(labels[5], "%s%d%%", 
+            offset_fan >= 0 ? "+" : "", offset_fan);
+        }
+        else
+        {
+            lv_label_set_text(labels[5], "AUTO FANSPEED");
+        }
+        
+        lvgl_port_unlock();
+    }
+}
 
 static void factoryResetButtonEventHandler(lv_event_t* e) {
     Serial0.println("Factory Reset Button Clicked");
@@ -2276,7 +2333,7 @@ lv_obj_set_style_text_color(targetVoltageLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(targetVoltageLabel, LV_ALIGN_TOP_MID, 0, -16); 
 
 //targetVoltageVariableLabel
-lv_obj_t* targetVoltageVariableLabel = lv_label_create(targetVoltageContainer);
+targetVoltageVariableLabel = lv_label_create(targetVoltageContainer);
 lv_label_set_text(targetVoltageVariableLabel, "1250mV");
 lv_obj_set_style_text_font(targetVoltageVariableLabel, theme->fontMedium24, LV_PART_MAIN);
 lv_obj_set_style_text_color(targetVoltageVariableLabel, theme->textColor, LV_PART_MAIN);
@@ -2297,7 +2354,7 @@ lv_obj_set_style_text_color(targetFrequencyLabel, theme->textColor, LV_PART_MAIN
 lv_obj_align(targetFrequencyLabel, LV_ALIGN_TOP_MID, 0, -16); 
 
 //targetFrequencyVariableLabel
-lv_obj_t* targetFrequencyVariableLabel = lv_label_create(targetFrequencyContainer);
+targetFrequencyVariableLabel = lv_label_create(targetFrequencyContainer);
 lv_label_set_text(targetFrequencyVariableLabel, "490 MHz");
 lv_obj_set_style_text_font(targetFrequencyVariableLabel, theme->fontMedium24, LV_PART_MAIN);
 lv_obj_set_style_text_color(targetFrequencyVariableLabel, theme->textColor, LV_PART_MAIN);
@@ -2318,7 +2375,7 @@ lv_obj_set_style_text_color(targetFanSpeedLabel, theme->textColor, LV_PART_MAIN)
 lv_obj_align(targetFanSpeedLabel, LV_ALIGN_TOP_MID, 0, -16); 
 
 //targetFanSpeedVariableLabel
-lv_obj_t* targetFanSpeedVariableLabel = lv_label_create(targetFanSpeedContainer);
+targetFanSpeedVariableLabel = lv_label_create(targetFanSpeedContainer);
 lv_label_set_text(targetFanSpeedVariableLabel, "35%");
 lv_obj_set_style_text_font(targetFanSpeedVariableLabel, theme->fontMedium24, LV_PART_MAIN);
 lv_obj_set_style_text_color(targetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
@@ -2341,7 +2398,7 @@ lv_obj_set_style_text_color(offsetVoltageLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(offsetVoltageLabel, LV_ALIGN_TOP_MID, 0, -16); 
 
 //offsetVoltageVariableLabel
-lv_obj_t* offsetVoltageVariableLabel = lv_label_create(offestVoltageContainer);
+offsetVoltageVariableLabel = lv_label_create(offestVoltageContainer);
 lv_label_set_text(offsetVoltageVariableLabel, "-120mV");
 lv_obj_set_style_text_font(offsetVoltageVariableLabel, theme->fontMedium24, LV_PART_MAIN);
 lv_obj_set_style_text_color(offsetVoltageVariableLabel, theme->textColor, LV_PART_MAIN);
@@ -2362,7 +2419,7 @@ lv_obj_set_style_text_color(offsetFrequencyLabel, theme->textColor, LV_PART_MAIN
 lv_obj_align(offsetFrequencyLabel, LV_ALIGN_TOP_MID, 0, -16); 
 
 //offsetFrequencyVariableLabel
-lv_obj_t* offsetFrequencyVariableLabel = lv_label_create(offsetFrequencyContainer);
+offsetFrequencyVariableLabel = lv_label_create(offsetFrequencyContainer);
 lv_label_set_text(offsetFrequencyVariableLabel, "-20 MHz");
 lv_obj_set_style_text_font(offsetFrequencyVariableLabel, theme->fontMedium24, LV_PART_MAIN);
 lv_obj_set_style_text_color(offsetFrequencyVariableLabel, theme->textColor, LV_PART_MAIN);
@@ -2383,11 +2440,22 @@ lv_obj_set_style_text_color(offsetFanSpeedLabel, theme->textColor, LV_PART_MAIN)
 lv_obj_align(offsetFanSpeedLabel, LV_ALIGN_TOP_MID, 0, -16); 
 
 //offsetFanSpeedVariableLabel
-lv_obj_t* offsetFanSpeedVariableLabel = lv_label_create(offsetFanSpeedContainer);
+offsetFanSpeedVariableLabel = lv_label_create(offsetFanSpeedContainer);
 lv_label_set_text(offsetFanSpeedVariableLabel, "3%");
 lv_obj_set_style_text_font(offsetFanSpeedVariableLabel, theme->fontMedium24, LV_PART_MAIN);
 lv_obj_set_style_text_color(offsetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(offsetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
+
+static lv_obj_t* autoTuneLabels[6];  // Array to hold all autotune labels
+autoTuneLabels[0] = targetVoltageVariableLabel;
+autoTuneLabels[1] = targetFrequencyVariableLabel;
+autoTuneLabels[2] = targetFanSpeedVariableLabel;
+autoTuneLabels[3] = offsetVoltageVariableLabel;
+autoTuneLabels[4] = offsetFrequencyVariableLabel;
+autoTuneLabels[5] = offsetFanSpeedVariableLabel;
+
+// Create timer for autotune settings updates
+screenObjs.autoTuneSettingsTimer = lv_timer_create(updateAutoTuneLabels, 1000, autoTuneLabels);
 
 
     // Theme Settings Container
