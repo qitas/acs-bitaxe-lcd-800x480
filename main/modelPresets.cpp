@@ -32,21 +32,21 @@ const uint8_t autoFanModeHighPower = 1;
 #endif
 
 #if (BitaxeUltra == 1)
-static const uint16_t voltageLowPower = 1130;
-static const uint16_t voltageNormalPower = 1190;
-static const uint16_t voltageHighPower = 1250;
+const uint16_t voltageLowPower = 1130;
+const uint16_t voltageNormalPower = 1190;
+const uint16_t voltageHighPower = 1250;
 
-static const uint16_t freqLowPower = 420;
-static const uint16_t freqNormalPower = 490;
-static const uint16_t freqHighPower = 625;
+const uint16_t freqLowPower = 420;
+const uint16_t freqNormalPower = 490;
+const uint16_t freqHighPower = 625;
 
-static const uint8_t fanSpeedLowPower = 27;
-static const uint8_t fanSpeedNormalPower = 35;
-static const uint8_t fanSpeedHighPower = 0;
+const uint8_t fanSpeedLowPower = 27;
+const uint8_t fanSpeedNormalPower = 35;
+const uint8_t fanSpeedHighPower = 0;
 
-static const uint8_t autoFanModeLowPower = 0;
-static const uint8_t autoFanModeNormalPower = 0;
-static const uint8_t autoFanModeHighPower = 1;
+const uint8_t autoFanModeLowPower = 0;
+const uint8_t autoFanModeNormalPower = 0;
+const uint8_t autoFanModeHighPower = 1;
 #endif
 
 // preset autotuning
@@ -360,7 +360,7 @@ void presetAutoTune()
         return;
     }
 // set adjusted fan speed, voltage, and frequency based on current temps and power usage
-    #if (BitaxeGamma == 1)
+    #if (BitaxeGamma == 1 || BitaxeUltra == 1)
     
     if(asicTemp >= maxPresetTemp)
     {

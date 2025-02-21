@@ -2,9 +2,9 @@
 // debug mode
 #define DEBUG_UI 0
 
-#define BitaxeUltra 0
+#define BitaxeUltra 1
 #define BitaxeSupra 0 
-#define BitaxeGamma 1
+#define BitaxeGamma 0
 
 #define BAPPORT 1
 
@@ -19,11 +19,11 @@
 
 // Firmware version
 #define MajorVersion 0
-#define MinorVersion 1
-#define PatchVersion 2
+#define MinorVersion 2
+#define PatchVersion 1
 #define VersionNote "Pre-Release"
 
 // Firmware build date
-#define BuildDate "02-09-2025"
+#define BuildDate "02-19-2025"
 
 
