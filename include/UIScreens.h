@@ -52,6 +52,7 @@ struct ScreenObjects
     lv_timer_t* statusBarUpdateTimer;
     lv_timer_t* clockTimer;
     lv_timer_t* apiUpdateTimer;
+    lv_timer_t* autoTuneSettingsTimer;
 
 };
 
@@ -82,6 +83,7 @@ extern uint16_t* storedNetworkCount;
 extern ScreenType activeScreen;
 extern lv_timer_t* chartUpdateTimer;
 extern lv_timer_t* networkUpdateTimer;
+extern lv_timer_t* autoTuneSettingsTimer;
 
 extern lv_obj_t* splashScreenContainer;
 

@@ -18,6 +18,7 @@ ScreenObjects screenObjs = {
     .statusBarUpdateTimer = nullptr,
     .clockTimer = nullptr,
     .apiUpdateTimer = nullptr,
+    .autoTuneSettingsTimer = nullptr,
     
 };
 

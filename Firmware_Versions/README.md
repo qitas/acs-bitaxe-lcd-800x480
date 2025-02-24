@@ -22,3 +22,9 @@ Changelogs:
 - Simplified Overheat mode screen
 - Amp draw was corrected due to incorrect data coming from the TSP chip on newer models
 - Save settings button tweaked for bettwe visibility
+
+## Version .0.2.1-Prerelease
+Build Date: 2/19/25
+
+Changelogs:
+- Adding new Auto Underclock and overclock functions for ACS Bitaxe Touch models

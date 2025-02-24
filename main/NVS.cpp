@@ -97,8 +97,7 @@ void saveSettingsToNVSasString(const char* key, const char* value, size_t size) 
         }
         nvs_close(nvsHandle);
     }
-    Serial0.printf("saveSettingsToNVSasString: %s\n", key);
-    Serial0.printf("saveSettingsToNVSasString: %s\n", value);
+    ESP_LOGI("NVS", "saveSettingsToNVSasString: %s: %s", key, value);
 }
 
 void loadSettingsFromNVSasString(const char* key, char* value, size_t size) {
@@ -112,8 +111,53 @@ void loadSettingsFromNVSasString(const char* key, char* value, size_t size) {
         err = nvs_get_str(nvsHandle, key, value, &size);
         nvs_close(nvsHandle);
     }
-    Serial0.printf("loadSettingsFromNVSasString: %s\n", key);
-    Serial0.printf("loadSettingsFromNVSasString: %s\n", value);
+    ESP_LOGI("NVS", "loadSettingsFromNVSasString: %s: %s", key, value);
+}
+
+void saveSettingsToNVSasU16(const char* key, uint16_t value) {
+    nvs_handle_t nvsHandle;
+    esp_err_t err = nvs_open(NVS_NAMESPACE_SETTINGS, NVS_READWRITE, &nvsHandle);
+    ESP_LOGI("NVS", "Attempting to save U16 %s: %d", key, value);
+
+    if (err == ESP_OK) {
+        err = nvs_set_u16(nvsHandle, key, value);
+        if (err == ESP_OK) {
+            err = nvs_commit(nvsHandle);
+            if (err != ESP_OK) {
+                ESP_LOGE("NVS", "Failed to commit: %s", esp_err_to_name(err));
+            }
+        } else {
+            ESP_LOGE("NVS", "Failed to set U16: %s", esp_err_to_name(err));
+        }
+        nvs_close(nvsHandle);
+        
+        // Verify the save
+        uint16_t verify = loadSettingsFromNVSasU16(key);
+        if (verify != value) {
+            ESP_LOGE("NVS", "Verification failed. Saved: %d, Read: %d", value, verify);
+        }
+    } else {
+        ESP_LOGE("NVS", "Failed to open NVS handle: %s", esp_err_to_name(err));
+    }
+}
+
+uint16_t loadSettingsFromNVSasU16(const char* key) {
+    nvs_handle_t nvsHandle;
+    esp_err_t err = nvs_open(NVS_NAMESPACE_SETTINGS, NVS_READONLY, &nvsHandle);
+    
+    uint16_t result = 0;
+    
+    if (err == ESP_OK) {
+        err = nvs_get_u16(nvsHandle, key, &result);
+        if (err != ESP_OK) {
+            ESP_LOGE("NVS", "Failed to read U16: %s", esp_err_to_name(err));
+        }
+        nvs_close(nvsHandle);
+    } else {
+        ESP_LOGE("NVS", "Failed to open NVS handle: %s", esp_err_to_name(err));
+    }
+    ESP_LOGI("NVS", "Loading U16 %s: %d", key, result);
+    return result;
 }
 
 void factoryResetNVS(void) {

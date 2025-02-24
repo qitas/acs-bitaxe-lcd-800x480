@@ -19,16 +19,13 @@
 #define NVS_KEY_WIFI_SSID2 "wifiSSID2"
 #define NVS_KEY_WIFI_PASSWORD2 "wifiPassword2"
 #define NVS_KEY_BTC_ADDRESS "btcAddress"
-#define NVS_KEY_TIME_OFFSET_HOURS "timeOffsetHours"
-#define NVS_KEY_TIME_OFFSET_MINUTES "timeOffsetMinutes"
+#define NVS_KEY_TIME_OFFSET_HOURS "timeOffsetH"
+#define NVS_KEY_TIME_OFFSET_MINUTES "timeOffsetM"
 
-#define NVS_KEY_ASIC_FREQ_LOW "asicFreqLow"
-#define NVS_KEY_ASIC_FREQ_MED "asicFreqMed"
-#define NVS_KEY_ASIC_FREQ_HIGH "asicFreqHigh"
-
-#define NVS_KEY_ASIC_FAN_VOLTAGE_LOW "asicFanVoltageLow"
-#define NVS_KEY_ASIC_FAN_VOLTAGE_MED "asicFanVoltageMed"
-#define NVS_KEY_ASIC_FAN_VOLTAGE_HIGH "asicFanVoltageHigh"
+#define NVS_KEY_ASIC_CURRENT_FREQ "currentFq"
+#define NVS_KEY_ASIC_CURRENT_VOLTAGE "currentV"
+#define NVS_KEY_ASIC_CURRENT_FAN_SPEED "currentFSp"
+#define NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED "currentAFSp"
 
 extern void initializeNVS(void);
 extern themePreset_t loadThemeFromNVS(void);
@@ -37,5 +34,7 @@ extern bool isFirstBoot(void);
 extern void setFirstBootComplete(void);
 extern void saveSettingsToNVSasString(const char* key, const char* value, size_t size);
 extern void loadSettingsFromNVSasString(const char* key, char* value, size_t size);
+extern void saveSettingsToNVSasU16(const char* key, uint16_t value);
+extern uint16_t loadSettingsFromNVSasU16(const char* key);
 extern void factoryResetNVS(void);
 
