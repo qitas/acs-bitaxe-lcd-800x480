@@ -96,6 +96,8 @@ extern "C" void app_main()
      */
     Serial0.println("Initialize IO expander");
     /* Initialize IO expander */
+
+    /*
     ESP_IOExpander *expander = new ESP_IOExpander_CH422G((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
     // ESP_IOExpander *expander = new ESP_IOExpander_CH422G(I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS_000);
     expander->init();
@@ -112,7 +114,7 @@ extern "C" void app_main()
     digitalWrite(GPIO_INPUT_IO_4, LOW);
     
     expander->multiDigitalWrite(TP_RST | LCD_RST, HIGH);
-    
+    */
     //initialization end
     
     //Initialize Panel
@@ -128,7 +130,7 @@ extern "C" void app_main()
     panel->begin();
     delay (20);
   Serial0.println("Initialize LVGL");
-    lvgl_port_init(panel->getLcd(), panel->getTouch());
+    lvgl_port_init(panel->getLcd(), nullptr);
 
     lv_img_cache_set_size(LV_IMG_CACHE_DEF_SIZE);
     
