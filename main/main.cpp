@@ -88,7 +88,8 @@ extern "C" void app_main()
     Serial0.println("BAP Initialized");
     delay(20);
  //Initialize IO Expander
-    pinMode(GPIO_INPUT_IO_4, OUTPUT);
+    pinMode(GPIO_INPUT_IO_4, OUTPUT); /// ctp irq
+    
     /**
      * These development boards require the use of an IO expander to configure the screen,
      * so it needs to be initialized in advance and registered with the panel for use.
@@ -96,7 +97,33 @@ extern "C" void app_main()
      */
     Serial0.println("Initialize IO expander");
     /* Initialize IO expander */
+    
+    // IO Expander for Waveshare lcd
+
+    /*
     ESP_IOExpander *expander = new ESP_IOExpander_CH422G((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
+    // ESP_IOExpander *expander = new ESP_IOExpander_CH422G(I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS_000);
+    expander->init();
+    expander->begin();
+    expander->multiPinMode(TP_RST | LCD_BL | LCD_RST | SD_CS | USB_SEL, OUTPUT);
+    expander->multiDigitalWrite(TP_RST | LCD_BL | LCD_RST, HIGH);
+    
+    
+    
+    //gt911 initialization, must be added, otherwise the touch screen will not be recognized  
+    //initialization begin
+    expander->multiDigitalWrite(TP_RST | LCD_RST, LOW);
+    
+    digitalWrite(GPIO_INPUT_IO_4, LOW);
+    
+    expander->multiDigitalWrite(TP_RST | LCD_RST, HIGH);
+    
+    //initialization end
+    */
+
+    // IO Expander for ACS lcd
+
+     ESP_IOExpander *expander = new ESP_IOExpander_TCA95xx_8bit((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
     // ESP_IOExpander *expander = new ESP_IOExpander_CH422G(I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS_000);
     expander->init();
     expander->begin();
@@ -257,6 +284,8 @@ extern "C" void app_main()
     }
 
     espTime();
+
+    //expander->multiDigitalWrite(TP_RST | LCD_RST, LOW);
 
     //main loop
     while (true)
