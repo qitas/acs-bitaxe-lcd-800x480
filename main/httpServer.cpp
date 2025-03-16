@@ -104,10 +104,15 @@ static void handleOTA() {
                         setupServer->send(500, "text/plain", "SPIFFS Update Begin Failed");
                         return;
                     }
-                    Serial0.println("SPIFFS update started");
+                    ESP_LOGI("OTA", "SPIFFS update started");
                 } 
                 // LCD firmware update
                 else {
+                    // Check if filename contains "lcdfirmware"
+                    if (filename_lower.find("lcdfirmware") == std::string::npos) {
+                        setupServer->send(400, "text/plain", "Invalid firmware file. Filename must contain 'lcdfirmware'");
+                        return;
+                    }
                     isSpiffsUpdate = false;
                     otaPartition = esp_ota_get_next_update_partition(NULL);
                     if (!otaPartition) {
@@ -118,7 +123,7 @@ static void handleOTA() {
                         setupServer->send(500, "text/plain", "OTA Begin Failed");
                         return;
                     }
-                    Serial0.println("Firmware update started");
+                    ESP_LOGI("OTA", "Firmware update started");
                 }
             }
             break;
