@@ -95,53 +95,47 @@ extern "C" void app_main()
      * so it needs to be initialized in advance and registered with the panel for use.
      *
      */
-    Serial0.println("Initialize IO expander");
+    ESP_LOGI("IO_EXPANDER", "Initialize IO expander");
     /* Initialize IO expander */
     
-    // IO Expander for Waveshare lcd
+    ESP_IOExpander *expander = nullptr;
+    esp_err_t err;
 
-    /*
-    ESP_IOExpander *expander = new ESP_IOExpander_CH422G((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
-    // ESP_IOExpander *expander = new ESP_IOExpander_CH422G(I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS_000);
+    // First try Waveshare IO expander (CH422G)
+    ESP_LOGI("IO_EXPANDER", "Trying Waveshare CH422G expander...");
+    expander = new ESP_IOExpander_CH422G((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
     expander->init();
-    expander->begin();
-    expander->multiPinMode(TP_RST | LCD_BL | LCD_RST | SD_CS | USB_SEL, OUTPUT);
-    expander->multiDigitalWrite(TP_RST | LCD_BL | LCD_RST, HIGH);
-    
-    
-    
-    //gt911 initialization, must be added, otherwise the touch screen will not be recognized  
-    //initialization begin
-    expander->multiDigitalWrite(TP_RST | LCD_RST, LOW);
-    
-    digitalWrite(GPIO_INPUT_IO_4, LOW);
-    
-    expander->multiDigitalWrite(TP_RST | LCD_RST, HIGH);
-    
-    //initialization end
-    */
+    if (expander->begin() != ESP_OK) {
+        ESP_LOGI("IO_EXPANDER", "CH422G expander failed - trying ACS expander");
+        delete expander;
+        
+        // Try ACS IO Expander (TCA95xx)
+        expander = new ESP_IOExpander_TCA95xx_8bit((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
+        expander->init();
+        if (expander->begin() != ESP_OK) {
+            ESP_LOGE("IO_EXPANDER", "ACS TCA95xx expander failed");
+            delete expander;
+            expander = nullptr;
+        } else {
+            ESP_LOGI("IO_EXPANDER", "ACS TCA95xx expander initialized successfully");
+        }
+    } else {
+        ESP_LOGI("IO_EXPANDER", "CH422G expander initialized successfully");
+    }
 
-    // IO Expander for ACS lcd
+    if (expander != nullptr) {
+        expander->multiPinMode(TP_RST | LCD_BL | LCD_RST | SD_CS | USB_SEL, OUTPUT);
+        expander->multiDigitalWrite(TP_RST | LCD_BL | LCD_RST, HIGH);
+        
+        //gt911 initialization
+        expander->multiDigitalWrite(TP_RST | LCD_RST, LOW);
+        digitalWrite(GPIO_INPUT_IO_4, LOW);
+        expander->multiDigitalWrite(TP_RST | LCD_RST, HIGH);
+    } else {
+        ESP_LOGE("IO_EXPANDER", "Failed to initialize any IO expander");
+        // Handle the case where no IO expander is available
+    }
 
-     ESP_IOExpander *expander = new ESP_IOExpander_TCA95xx_8bit((i2c_port_t)I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS, I2C_MASTER_SCL_IO, I2C_MASTER_SDA_IO);
-    // ESP_IOExpander *expander = new ESP_IOExpander_CH422G(I2C_MASTER_NUM, ESP_IO_EXPANDER_I2C_CH422G_ADDRESS_000);
-    expander->init();
-    expander->begin();
-    expander->multiPinMode(TP_RST | LCD_BL | LCD_RST | SD_CS | USB_SEL, OUTPUT);
-    expander->multiDigitalWrite(TP_RST | LCD_BL | LCD_RST, HIGH);
-    
-    
-    
-    //gt911 initialization, must be added, otherwise the touch screen will not be recognized  
-    //initialization begin
-    expander->multiDigitalWrite(TP_RST | LCD_RST, LOW);
-    
-    digitalWrite(GPIO_INPUT_IO_4, LOW);
-    
-    expander->multiDigitalWrite(TP_RST | LCD_RST, HIGH);
-    
-    //initialization end
-    
     //Initialize Panel
     Serial.println("Initialize panel device");
     ESP_Panel *panel = new ESP_Panel();
