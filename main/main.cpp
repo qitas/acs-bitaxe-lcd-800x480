@@ -42,6 +42,7 @@
 #include "esp_netif.h"
 #include "esp_event.h"
 #include "esp_sntp.h"
+#include "driver/ledc.h"
 
 
 #define TP_RST 1
@@ -50,7 +51,9 @@
 #define SD_CS 4
 #define USB_SEL 5
 
+#define ACS_BLPWM 6
 
+void setBrightness(uint8_t value);
 
 void printMemoryInfo() 
 {
@@ -67,6 +70,15 @@ void printMemoryInfo()
     Serial0.printf("Total Free: %u bytes\n", info.total_free_bytes);
     Serial0.printf("Total Allocated: %u bytes\n", info.total_allocated_bytes);
 }
+
+
+void setBrightness(uint8_t value) {
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, value));
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0));
+    ESP_LOGI("Backlight", "Set brightness to %d", value);
+}
+
+bool backlightPWM = false;
 
 extern "C" void app_main()
 {
@@ -118,9 +130,12 @@ extern "C" void app_main()
             expander = nullptr;
         } else {
             ESP_LOGI("IO_EXPANDER", "ACS TCA95xx expander initialized successfully");
+            pinMode(ACS_BLPWM, OUTPUT); /// ACS Bitaxe Touch LCD can adjust backlight brightneses
+            backlightPWM = true;
         }
     } else {
         ESP_LOGI("IO_EXPANDER", "CH422G expander initialized successfully");
+        backlightPWM = false;
     }
 
     if (expander != nullptr) {
@@ -135,7 +150,29 @@ extern "C" void app_main()
         ESP_LOGE("IO_EXPANDER", "Failed to initialize any IO expander");
         // Handle the case where no IO expander is available
     }
+if (backlightPWM) {
+    // Configure LEDC timer
+    ledc_timer_config_t bkPWMConfig = {
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .duty_resolution = LEDC_TIMER_8_BIT,
+        .timer_num = LEDC_TIMER_0,
+        .freq_hz = 100000,
+        .clk_cfg = LEDC_AUTO_CLK
+    };
+    ESP_ERROR_CHECK(ledc_timer_config(&bkPWMConfig));
 
+    // Configure LEDC channel
+    ledc_channel_config_t bkPWMChannelConfig = {
+        .gpio_num = ACS_BLPWM,
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .channel = LEDC_CHANNEL_0,
+        .timer_sel = LEDC_TIMER_0,
+        .duty = 255,  // Start at full brightness
+        .hpoint = 0
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&bkPWMChannelConfig));
+    ESP_LOGI("Backlight", "PWM initialized");
+}
     //Initialize Panel
     Serial.println("Initialize panel device");
     ESP_Panel *panel = new ESP_Panel();
@@ -279,7 +316,27 @@ extern "C" void app_main()
 
     espTime();
 
-    //expander->multiDigitalWrite(TP_RST | LCD_RST, LOW);
+    // One-time sweep test (if that's what you want)
+    if (backlightPWM) {
+        // Sweep up
+        for (uint8_t i = 1; i <= 254; i++) {
+            setBrightness(i);
+            ESP_LOGI("Backlight", "PWM Value: %d", i);
+            vTaskDelay(pdMS_TO_TICKS(50));
+        }
+        
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        
+        // Sweep down
+        for (uint8_t i = 254; i >= 1; i--) {
+            setBrightness(i);
+            ESP_LOGI("Backlight", "PWM Value: %d", i);
+            vTaskDelay(pdMS_TO_TICKS(50));
+        }
+        
+        // Set final brightness
+        setBrightness(25);  // Or whatever final brightness you want
+    }
 
     //main loop
     while (true)
