@@ -82,48 +82,53 @@ static void handleOTA() {
 
     switch (upload.status) {
         case UPLOAD_FILE_START:
-            Serial0.printf("Update: %s\n", upload.filename.c_str());
+            ESP_LOGI("OTA", "Update starting: %s", upload.filename.c_str());
             
-            // Check if this is a SPIFFS update
+            // Reset handle at the start of each upload
+            otaHandle = 0;
+            otaPartition = nullptr;
+            isSpiffsUpdate = false;
+
             {
                 std::string filename_lower = upload.filename.c_str();
                 std::transform(filename_lower.begin(), filename_lower.end(), filename_lower.begin(), ::tolower);
                 if (filename_lower.find("spiffs") != std::string::npos) {
                     isSpiffsUpdate = true;
-                    // Get SPIFFS partition info
                     const esp_partition_t* spiffsPartition = esp_partition_find_first(
                         ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, NULL);
                     if (!spiffsPartition) {
+                        ESP_LOGE("OTA", "SPIFFS partition not found");
                         setupServer->send(500, "text/plain", "SPIFFS Partition not found");
                         return;
                     }
                     
-                    // Start SPIFFS update
                     if (!Update.begin(spiffsPartition->size, U_SPIFFS)) {
-                        Update.printError(Serial0);
+                        ESP_LOGE("OTA", "SPIFFS update begin failed: %s", Update.errorString());
                         setupServer->send(500, "text/plain", "SPIFFS Update Begin Failed");
                         return;
                     }
-                    ESP_LOGI("OTA", "SPIFFS update started");
+                    ESP_LOGI("OTA", "SPIFFS update started successfully");
                 } 
-                // LCD firmware update
-                else {
-                    // Check if filename contains "lcdfirmware"
-                    if (filename_lower.find("lcdfirmware") == std::string::npos) {
-                        setupServer->send(400, "text/plain", "Invalid firmware file. Filename must contain 'lcdfirmware'");
-                        return;
-                    }
+                else if (filename_lower.find("lcdfirmware") != std::string::npos) {
                     isSpiffsUpdate = false;
                     otaPartition = esp_ota_get_next_update_partition(NULL);
                     if (!otaPartition) {
+                        ESP_LOGE("OTA", "Failed to find next OTA partition");
                         setupServer->send(500, "text/plain", "OTA Partition not found");
                         return;
                     }
-                    if (esp_ota_begin(otaPartition, OTA_SIZE_UNKNOWN, &otaHandle) != ESP_OK) {
+                    esp_err_t err = esp_ota_begin(otaPartition, OTA_SIZE_UNKNOWN, &otaHandle);
+                    if (err != ESP_OK) {
+                        ESP_LOGE("OTA", "OTA begin failed: %d", err);
                         setupServer->send(500, "text/plain", "OTA Begin Failed");
                         return;
                     }
-                    ESP_LOGI("OTA", "Firmware update started");
+                    ESP_LOGI("OTA", "Firmware update started with handle: %lu", otaHandle);
+                }
+                else {
+                    ESP_LOGE("OTA", "Invalid firmware file name: %s", upload.filename.c_str());
+                    setupServer->send(500, "text/plain", "Invalid firmware file. Filename must contain 'spiffs' or 'lcdfirmware'");
+                    return;
                 }
             }
             break;
@@ -208,12 +213,21 @@ static void handleOTAPage() {
         ".btn:hover { background-color: #45a049; }"
         ".section-description { color: #21ccab; margin-bottom: 20px; font-size: 0.9em; }"
         "</style>"
+        "<script>"
+        "function showUpdateMessage(formElement) {"
+        "   if(confirm('Start firmware update? Device will restart when complete.')) {"
+        "      alert('Update started. Please wait until the device restarts.');"
+        "      return true;"
+        "   }"
+        "   return false;"
+        "}"
+        "</script>"
         "</head><body>"
         "<div class='container'>"
         "<div class='section'>"
         "<h1>LCD Firmware Update</h1>"
         "<p class='section-description'>Upload your lcdFirmware.bin file to update the LCD firmware</p>"
-        "<form method='POST' action='/update' enctype='multipart/form-data'>"
+        "<form method='POST' action='/update' enctype='multipart/form-data' onsubmit='return showUpdateMessage(this);'>"
         "<input type='file' name='image' accept='.bin'><br>"
         "<button type='submit' class='btn'>Update LCD Firmware</button>"
         "</form>"
@@ -221,7 +235,7 @@ static void handleOTAPage() {
         "<div class='section'>"
         "<h1>SPIFFS Update</h1>"
         "<p class='section-description'>Upload your spiffs.bin file to update the SPIFFS filesystem</p>"
-        "<form method='POST' action='/update' enctype='multipart/form-data'>"
+        "<form method='POST' action='/update' enctype='multipart/form-data' onsubmit='return showUpdateMessage(this);'>"
         "<input type='file' name='image' accept='.bin'><br>"
         "<button type='submit' class='btn'>Update SPIFFS</button>"
         "</form>"
