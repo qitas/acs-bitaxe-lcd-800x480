@@ -625,7 +625,7 @@ void splashScreen()
     lv_obj_t* logos = lv_img_create(splashScreenContainer);
     lv_img_set_src(logos, theme->logo1);
 
-    lv_obj_align(logos, LV_ALIGN_BOTTOM_MID, 0, -100);
+    lv_obj_align(logos, LV_ALIGN_BOTTOM_MID, 0, -88);
     lvgl_port_unlock();
 }
 
