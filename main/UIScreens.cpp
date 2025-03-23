@@ -2515,6 +2515,9 @@ screenObjs.autoTuneSettingsTimer = lv_timer_create(updateAutoTuneLabels, 1000, a
     #if (SoloMiningCo == 1)
     lv_dropdown_add_option(themeDropdown, "SOLO MINING CO", LV_DROPDOWN_POS_LAST);
     #endif
+    #if (BTCMagazine == 1)
+    lv_dropdown_add_option(themeDropdown, "BTCMAGAZINE", LV_DROPDOWN_POS_LAST);
+    #endif
     // Add spacing at the end of the list to make last option selectable
     lv_dropdown_add_option(themeDropdown, "", LV_DROPDOWN_POS_LAST);
 
@@ -3319,6 +3322,11 @@ static void themeDropdownEventHandler(lv_event_t* e) {
         else if (strcmp(themeBuffer, "SOLO MINING CO") == 0) {
             #if (SoloMiningCo == 1)
             initializeTheme(THEME_SOLO_MINING_CO);
+            #endif
+        }
+        else if (strcmp(themeBuffer, "BTCMAGAZINE") == 0) {
+            #if (BTCMagazine == 1)
+            initializeTheme(THEME_BTCMAGAZINE);
             #endif
         }
 

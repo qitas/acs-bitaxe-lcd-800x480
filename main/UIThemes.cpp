@@ -179,6 +179,31 @@ void initializeTheme(themePreset_t preset) {
             };
             break;
         #endif
+        #if (BTCMagazine == 1)
+        case THEME_BTCMAGAZINE:
+            currentTheme = (uiTheme_t){
+                .primaryColor = lv_color_hex(0xff9500),
+                .secondaryColor = lv_color_hex(0xff9500),
+                .backgroundColor = lv_color_hex(0x111316),
+                .textColor = lv_color_hex(0xffffff),
+                .borderColor = lv_color_hex(0xff9500),
+                .defaultOpacity = 80,
+                .backgroundOpacity = 40,
+                .fontExtraBold144 = &interExtraBold144,
+                .fontExtraBold72 = &interExtraBold72,
+                .fontExtraBold56 = &interExtraBold56,
+                .fontExtraBold32 = &interExtraBold32,
+                .fontMedium24 = &interMedium24,
+                .fontMedium16 = &interMedium16_19px,
+                .background = "S:/UIBackgroundBITAXERED.png",
+                .logo1 = "S:/Logos.png",
+                .logo2 = "S:/btcMagazineLogo.png",
+                .themePreview = "S:/btcMagazineLogo.png",
+                .themePreset = THEME_BTCMAGAZINE
+            };
+            break;
+        #endif
+                
         default:
             currentTheme = defaultTheme;
             break;

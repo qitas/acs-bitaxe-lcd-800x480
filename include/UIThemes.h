@@ -20,6 +20,9 @@ typedef enum {
     #if (SoloMiningCo == 1)
     THEME_SOLO_MINING_CO = 6
     #endif
+    #if (BTCMagazine == 1)
+    THEME_BTCMAGAZINE = 7
+    #endif
 } themePreset_t;
 
 

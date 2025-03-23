@@ -12,10 +12,11 @@
 
 #define ACSBitaxeTouch 1
 
-#define BlockStreamJade 0
-#define SoloSatoshi 0
+#define BlockStreamJade 1
+#define SoloSatoshi 1
 #define ALTAIR 0
 #define SoloMiningCo 0
+#define BTCMagazine 1
 
 // Firmware version
 #define MajorVersion 0
