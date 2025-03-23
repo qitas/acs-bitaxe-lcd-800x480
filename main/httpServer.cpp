@@ -94,7 +94,7 @@ static void handleOTA() {
             {
                 std::string filename_lower = upload.filename.c_str();
                 std::transform(filename_lower.begin(), filename_lower.end(), filename_lower.begin(), ::tolower);
-                if (filename_lower.find("spiffs") != std::string::npos) {
+                if (filename_lower.find("uithemes") != std::string::npos) {
                     isSpiffsUpdate = true;
                     const esp_partition_t* spiffsPartition = esp_partition_find_first(
                         ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, NULL);
@@ -165,7 +165,7 @@ static void handleOTA() {
                     return;
                 }
                 Serial0.println("SPIFFS update complete");
-                setupServer->send(200, "text/plain", "SPIFFS Update Success! Rebooting...");
+                setupServer->send(200, "text/plain", "UI Assets have been updated! Rebooting...");
                 delay(1000);
                 ESP.restart();
             } else {
@@ -176,7 +176,7 @@ static void handleOTA() {
                 }
                 otaHandle = 0;
                 Serial0.println("Firmware update complete");
-                setupServer->send(200, "text/plain", "Firmware Update Success! Rebooting...");
+                setupServer->send(200, "text/plain", "Firmware has been updated! Rebooting...");
                 delay(1000);
                 ESP.restart();
             }
@@ -232,18 +232,18 @@ static void handleOTAPage() {
         "<div class='container'>"
         "<div class='section'>"
         "<h1>LCD Firmware Update</h1>"
-        "<p class='section-description'>Upload your lcdFirmware.bin file to update the LCD firmware</p>"
+        "<p class='section-description'>Upload your lcdfirmware_BitaxeTouch_vx_x_x.bin file to update the LCD firmware</p>"
         "<form method='POST' action='/update' enctype='multipart/form-data' onsubmit='return showUpdateMessage(this);'>"
         "<input type='file' name='image' accept='.bin'><br>"
         "<button type='submit' class='btn'>Update LCD Firmware</button>"
         "</form>"
         "</div>"
         "<div class='section'>"
-        "<h1>SPIFFS Update</h1>"
-        "<p class='section-description'>Upload your spiffs.bin file to update the SPIFFS filesystem</p>"
+        "<h1>UI Assets Update</h1>"
+        "<p class='section-description'>Upload your uithemes_BitaxeTouch_vx_x_x.bin file to update the UI assets</p>"
         "<form method='POST' action='/update' enctype='multipart/form-data' onsubmit='return showUpdateMessage(this);'>"
         "<input type='file' name='image' accept='.bin'><br>"
-        "<button type='submit' class='btn'>Update SPIFFS</button>"
+        "<button type='submit' class='btn'>Update UI Assets</button>"
         "</form>"
         "</div>"
         "<div style='margin-top: 30px; text-align: center;'>"
