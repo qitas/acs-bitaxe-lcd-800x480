@@ -79,15 +79,17 @@ static void handleOTA() {
     static esp_ota_handle_t otaHandle = 0;
     static const esp_partition_t* otaPartition = nullptr;
     static bool isSpiffsUpdate = false;
+    static bool uploadRejected = false;
 
     switch (upload.status) {
         case UPLOAD_FILE_START:
             ESP_LOGI("OTA", "Update starting: %s", upload.filename.c_str());
             
-            // Reset handle at the start of each upload
+            // Reset all flags at the start of each upload
             otaHandle = 0;
             otaPartition = nullptr;
             isSpiffsUpdate = false;
+            uploadRejected = false;
 
             {
                 std::string filename_lower = upload.filename.c_str();
@@ -128,12 +130,16 @@ static void handleOTA() {
                 else {
                     ESP_LOGE("OTA", "Invalid firmware file name: %s", upload.filename.c_str());
                     setupServer->send(500, "text/plain", "Invalid firmware file. Filename must contain 'spiffs' or 'lcdfirmware'");
+                    uploadRejected = true;
                     return;
                 }
             }
             break;
 
         case UPLOAD_FILE_WRITE:
+            if (uploadRejected) {
+                return;
+            }
             if (isSpiffsUpdate) {
                 if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
                     Update.printError(Serial0);
