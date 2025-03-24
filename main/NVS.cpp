@@ -23,7 +23,9 @@ themePreset_t loadThemeFromNVS(void) {
     nvs_handle_t nvsHandle;
     esp_err_t err = nvs_open(NVS_NAMESPACE_THEMES, NVS_READONLY, &nvsHandle);
 
-    #if (BlockStreamJade == 1)
+    #if (BTCMagazine == 1)
+    uint8_t themeValue = 7; // Make default theme the BTCMagazine Theme
+    #elif (BlockStreamJade == 1)
     uint8_t themeValue = 2; // Make default theme the Jade Theme
     #elif (SoloSatoshi == 1)    
     uint8_t themeValue = 4; // Make default theme the SoloSatoshi Theme
@@ -34,6 +36,7 @@ themePreset_t loadThemeFromNVS(void) {
     #else
     uint8_t themeValue = 0; // Make default theme the ACS Theme
     #endif
+
 
 
 
