@@ -7,6 +7,7 @@
 #include <NVS.h>
 #include "BAP.h"
 #include "I2CData.h"
+#include "Clock.h"
 #define MAX_NETWORKS 20
 #define MAX_SSID_SCAN_LENGTH 33
 
@@ -107,6 +108,7 @@ void reconnectWifi() {
             
             if (WiFi.status() == WL_CONNECTED) {
                 ESP_LOGI(TAG, "WiFi reconnected successfully");
+                espTime();
             } else {
                 ESP_LOGI(TAG, "WiFi reconnection failed");
             }
