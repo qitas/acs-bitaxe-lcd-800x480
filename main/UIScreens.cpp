@@ -2879,7 +2879,7 @@ void showOverheatOverlay()
     uiTheme_t* theme = getCurrentTheme();
     static lv_obj_t* overheatOverlay = NULL;
     
-    if (specialRegisters.overheatMode && !overheatOverlay) {
+    if (confirmedOverheatMode && !overheatOverlay) {
         lvgl_port_lock(-1);
         Serial.println("Creating overlay");
         // Create semi-transparent overlay
@@ -2963,7 +2963,7 @@ void showOverheatOverlay()
         }
         
 
-    } else if (!specialRegisters.overheatMode && overheatOverlay) {
+    } else if (!confirmedOverheatMode && overheatOverlay) {
         Serial.println("Removing overlay");
         // Remove overlay when settings are no longer being changed
         lv_obj_del(overheatOverlay);
@@ -3506,12 +3506,14 @@ static void overheatModeButtonEventHandler(lv_event_t* e) {
     // Toggle Overheat mode
    specialRegisters.overheatMode = 1;                       
    ESP_LOGI("Overheat Mode", "Overheat mode enabled");
+   confirmedOverheatMode = true;
 }
 
 static void blockFoundButtonEventHandler(lv_event_t* e) {
     // Toggle Block Found
     specialRegisters.foundBlock = 1;
     ESP_LOGI("Block Found", "Block Found");
+    confirmedFoundBlock = true;
 }
 
 void showBlockFoundOverlay() {
@@ -3522,7 +3524,7 @@ void showBlockFoundOverlay() {
     static lv_obj_t* blockFoundOverlay = NULL;
 
    // create overlay
-    if (specialRegisters.foundBlock && !blockFoundOverlay) 
+    if (confirmedFoundBlock && !blockFoundOverlay) 
     {
         lvgl_port_lock(-1);
         Serial.println("Creating overlay");
@@ -3619,7 +3621,7 @@ void showBlockFoundOverlay() {
         lv_obj_set_style_text_align(mempoolAddressLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
         lvgl_port_unlock();
     }
-    else if (!specialRegisters.foundBlock && blockFoundOverlay) 
+    else if (!confirmedFoundBlock && blockFoundOverlay) 
     {
         Serial.println("Removing overlay");
         // Remove overlay when settings are no longer being changed

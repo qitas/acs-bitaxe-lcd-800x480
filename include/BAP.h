@@ -252,6 +252,9 @@ struct IncomingDataContainer
     APIData api;
 };
 
+extern bool confirmedOverheatMode;
+extern bool confirmedFoundBlock;
+
 // External declarations
 
 extern PSRAM_ATTR IncomingDataContainer IncomingData;

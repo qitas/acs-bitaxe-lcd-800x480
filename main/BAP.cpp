@@ -22,6 +22,12 @@ uint8_t* BAPAutoFanSpeedBuffer = nullptr;
 SpecialRegisters specialRegisters = {0};
 IncomingDataContainer PSRAM_ATTR IncomingData = {0};
 
+#define FLAG_CONFIRMATION_COUNT 3 
+uint8_t overheatModeCounter = 0;
+uint8_t foundBlockCounter = 0;
+bool confirmedOverheatMode = false;
+bool confirmedFoundBlock = false;
+
 #define __min(a,b) ((a)<(b)?(a):(b))
 
 void initializeBAPBuffers()
@@ -666,14 +672,46 @@ void handleFlagsDataSerial(uint8_t* buffer, uint8_t len)
         }
         case LVGL_FLAG_OVERHEAT_MODE:
         {
-            specialRegisters.overheatMode = buffer[2];
-            Serial.printf("Overheat Mode flag received: %d\n", specialRegisters.overheatMode);
+            specialRegisters.overheatMode = buffer[2];  // Keep raw incoming data
+            bool currentFlag = buffer[2];
+            
+            if (currentFlag) {
+                overheatModeCounter++;
+                if (overheatModeCounter >= FLAG_CONFIRMATION_COUNT && !confirmedOverheatMode) {
+                    confirmedOverheatMode = true;
+                    ESP_LOGI("BAP", "Overheat Mode confirmed after %d consecutive readings", FLAG_CONFIRMATION_COUNT);
+                }
+            } else {
+                overheatModeCounter = 0;
+                if (confirmedOverheatMode) {
+                    confirmedOverheatMode = false;
+                    ESP_LOGI("BAP", "Overheat Mode cleared");
+                }
+            }
+            ESP_LOGD("BAP", "Overheat Mode reading: %d, counter: %d, confirmed: %d", 
+                     currentFlag, overheatModeCounter, confirmedOverheatMode);
             break;
         }
         case LVGL_FLAG_FOUND_BLOCK:
         {
-            specialRegisters.foundBlock = buffer[2];
-            Serial.printf("Found Block flag received: %d\n", specialRegisters.foundBlock);
+            specialRegisters.foundBlock = buffer[2];  // Keep raw incoming data
+            bool currentFlag = buffer[2];
+            
+            if (currentFlag) {
+                foundBlockCounter++;
+                if (foundBlockCounter >= FLAG_CONFIRMATION_COUNT && !confirmedFoundBlock) {
+                    confirmedFoundBlock = true;
+                    ESP_LOGI("BAP", "Found Block confirmed after %d consecutive readings", FLAG_CONFIRMATION_COUNT);
+                }
+            } else {
+                foundBlockCounter = 0;
+                if (confirmedFoundBlock) {
+                    confirmedFoundBlock = false;
+                    ESP_LOGI("BAP", "Found Block cleared");
+                }
+            }
+            ESP_LOGD("BAP", "Found Block reading: %d, counter: %d, confirmed: %d", 
+                     currentFlag, foundBlockCounter, confirmedFoundBlock);
             break;
         }
         default:
