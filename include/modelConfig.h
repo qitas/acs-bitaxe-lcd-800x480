@@ -2,9 +2,9 @@
 // debug mode
 #define DEBUG_UI 0
 
-#define BitaxeUltra 1
+#define BitaxeUltra 0
 #define BitaxeSupra 0 
-#define BitaxeGamma 0
+#define BitaxeGamma 1
 
 #define BAPPORT 1
 
