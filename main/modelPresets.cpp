@@ -24,11 +24,11 @@ const uint16_t freqHighPower = 700;
 
 const uint8_t fanSpeedLowPower = 27;
 const uint8_t fanSpeedNormalPower = 35;
-const uint8_t fanSpeedHighPower = 0;
+const uint8_t fanSpeedHighPower = 80;
 
 const uint8_t autoFanModeLowPower = 0;
 const uint8_t autoFanModeNormalPower = 0;
-const uint8_t autoFanModeHighPower = 1;
+const uint8_t autoFanModeHighPower = 0;
 #endif
 
 #if (BitaxeUltra == 1)
@@ -42,11 +42,11 @@ const uint16_t freqHighPower = 625;
 
 const uint8_t fanSpeedLowPower = 27;
 const uint8_t fanSpeedNormalPower = 35;
-const uint8_t fanSpeedHighPower = 0;
+const uint8_t fanSpeedHighPower = 80;
 
 const uint8_t autoFanModeLowPower = 0;
 const uint8_t autoFanModeNormalPower = 0;
-const uint8_t autoFanModeHighPower = 1;
+const uint8_t autoFanModeHighPower = 0;
 #endif
 
 // preset autotuning
