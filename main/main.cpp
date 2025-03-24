@@ -326,9 +326,9 @@ extern "C" void app_main()
         lastAutoTuneCheck = millis();
         firstAutoTune = false;
     }
-
+    reconnectWifi();
     }
 
-    reconnectWifi();
+   
 
 }

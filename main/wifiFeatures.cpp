@@ -84,7 +84,8 @@ void reconnectWifi() {
      static char wifiPassword1[MAX_SSID_LENGTH];
     
     if (WiFi.status() != WL_CONNECTED && (millis() - lastWifiCheck > 30000)) {  // Check every 30 seconds
-        ESP_LOGW(TAG, "WiFi connection lost, attempting to reconnect...");
+        Serial0.println("WiFi connection lost, attempting to reconnect...");
+        ESP_LOGI(TAG, "WiFi connection lost, attempting to reconnect...");
         
         char wifiSSID1[MAX_SSID_LENGTH];
         char wifiPassword1[MAX_SSID_LENGTH];
@@ -107,7 +108,7 @@ void reconnectWifi() {
             if (WiFi.status() == WL_CONNECTED) {
                 ESP_LOGI(TAG, "WiFi reconnected successfully");
             } else {
-                ESP_LOGW(TAG, "WiFi reconnection failed");
+                ESP_LOGI(TAG, "WiFi reconnection failed");
             }
         }
         lastWifiCheck = millis();
