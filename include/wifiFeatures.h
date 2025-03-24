@@ -13,3 +13,4 @@ struct WifiNetworkScan {
 
 void inistialiseWifiScanBuffers();
 void listNetworks();
+void reconnectWifi();

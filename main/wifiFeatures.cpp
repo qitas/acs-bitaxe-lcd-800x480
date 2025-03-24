@@ -3,7 +3,10 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <esp_heap_caps.h>
-
+#include <esp_log.h>
+#include <NVS.h>
+#include "BAP.h"
+#include "I2CData.h"
 #define MAX_NETWORKS 20
 #define MAX_SSID_SCAN_LENGTH 33
 
@@ -72,4 +75,41 @@ void listNetworks() {
 
     Serial0.printf("Free heap: %lu\n", ESP.getFreeHeap());
     Serial0.printf("Minimum free heap: %lu\n", ESP.getMinFreeHeap());
+}
+
+void reconnectWifi() {
+     static uint32_t lastWifiCheck = 0;
+     const char* TAG = "WiFi";
+     static char wifiSSID1[MAX_SSID_LENGTH];
+     static char wifiPassword1[MAX_SSID_LENGTH];
+    
+    if (WiFi.status() != WL_CONNECTED && (millis() - lastWifiCheck > 30000)) {  // Check every 30 seconds
+        ESP_LOGW(TAG, "WiFi connection lost, attempting to reconnect...");
+        
+        char wifiSSID1[MAX_SSID_LENGTH];
+        char wifiPassword1[MAX_SSID_LENGTH];
+        
+        // Load credentials from NVS
+        loadSettingsFromNVSasString(NVS_KEY_WIFI_SSID1, wifiSSID1, MAX_SSID_LENGTH);
+        loadSettingsFromNVSasString(NVS_KEY_WIFI_PASSWORD1, wifiPassword1, MAX_SSID_LENGTH);
+        
+        if (strlen(wifiSSID1) > 0 && strlen(wifiPassword1) > 0) {
+            WiFi.disconnect();
+            delay(10);
+            WiFi.begin(wifiSSID1, wifiPassword1);
+            
+            // Wait briefly for connection
+            unsigned long startTime = millis();
+            while (WiFi.status() != WL_CONNECTED && (millis() - startTime < 5000)) {
+                delay(100);
+            }
+            
+            if (WiFi.status() == WL_CONNECTED) {
+                ESP_LOGI(TAG, "WiFi reconnected successfully");
+            } else {
+                ESP_LOGW(TAG, "WiFi reconnection failed");
+            }
+        }
+        lastWifiCheck = millis();
+    }
 }
