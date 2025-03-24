@@ -511,6 +511,17 @@ static void saveButtonEventHandler(lv_event_t* e) {
         
 }
 
+static void autotuneSwitchEventHandler(lv_event_t* e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t* obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        bool isChecked = lv_obj_has_state(obj, LV_STATE_CHECKED);
+        autoTuneEnabled = isChecked;
+        ESP_LOGI("Autotune", "Switch state changed to: %s", isChecked ? "On" : "Off");
+    }
+}
+
 // This is used because Timelib day function is having issues
 const char* customDayStr(uint8_t day)
 { 
@@ -2446,7 +2457,18 @@ lv_obj_set_style_text_font(offsetFanSpeedVariableLabel, theme->fontMedium24, LV_
 lv_obj_set_style_text_color(offsetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(offsetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
 
+// create a switch to toggle autotune
+lv_obj_t* autotuneSwitch = lv_switch_create(autoTuneSettingsContainer);
+lv_obj_align(autotuneSwitch, LV_ALIGN_BOTTOM_RIGHT, 0, 16); 
 
+// Apply theme styling
+lv_obj_set_style_bg_color(autotuneSwitch, theme->primaryColor, LV_PART_INDICATOR | LV_STATE_CHECKED);
+lv_obj_set_style_bg_color(autotuneSwitch, theme->backgroundColor, LV_PART_MAIN);
+lv_obj_set_style_border_color(autotuneSwitch, theme->borderColor, LV_PART_MAIN);
+lv_obj_set_style_border_width(autotuneSwitch, 2, LV_PART_MAIN);
+
+lv_obj_add_event_cb(autotuneSwitch, autotuneSwitchEventHandler, LV_EVENT_ALL, NULL);
+lv_obj_add_flag(autotuneSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
 
 static lv_obj_t* autoTuneLabels[6];  // Array to hold all autotune labels
@@ -2889,6 +2911,7 @@ void showOverheatOverlay()
         lv_obj_set_style_bg_color(overheatOverlay, theme->backgroundColor, LV_PART_MAIN);
         lv_obj_set_style_bg_opa(overheatOverlay, LV_OPA_50, LV_PART_MAIN);
         lv_obj_set_style_radius(overheatOverlay, 0, LV_PART_MAIN);
+        lv_obj_clear_flag(overheatOverlay, LV_OBJ_FLAG_SCROLLABLE);
         
         // Create confirmation container
         lv_obj_t* confirmContainer = lv_obj_create(overheatOverlay);
@@ -2898,6 +2921,7 @@ void showOverheatOverlay()
         lv_obj_set_style_border_color(confirmContainer, theme->borderColor, LV_PART_MAIN);
         lv_obj_set_style_border_width(confirmContainer, 2, LV_PART_MAIN);
         lv_obj_set_style_radius(confirmContainer, 16, LV_PART_MAIN);
+        lv_obj_clear_flag(confirmContainer, LV_OBJ_FLAG_SCROLLABLE);
         
         // Add message
         lv_obj_t* message = lv_label_create(confirmContainer);

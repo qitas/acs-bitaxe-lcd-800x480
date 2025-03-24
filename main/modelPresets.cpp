@@ -7,10 +7,14 @@
 #define minPresetTemp  60
 #define maxPresetTemp  65 
 
+bool autoTuneEnabled = true;
 uint16_t currentPresetFrequency = 0;
 uint16_t currentPresetVoltage = 0;
 uint8_t currentPresetFanSpeed = 0;
 bool currentPresetAutoFanMode = false;
+uint16_t autotuneTempLowTarget = 0;
+uint16_t autotuneTempHighTarget = 0;
+
 
 
 #if (BitaxeGamma == 1)
@@ -54,7 +58,6 @@ uint16_t frequencyOffset = 0;
 uint16_t voltageOffset = 0;
 uint16_t fanSpeedOffset = 0; 
 
-bool autoTuneEndabled = false; 
 
 void setLowPowerPreset() 
 {
@@ -315,6 +318,9 @@ void readCurrentPresetSettingsFromNVS() {
     currentPresetAutoFanMode = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED);
     delay(10);
     ESP_LOGI("ASIC", "Current Preset Auto Fan Mode: %d", currentPresetAutoFanMode);
+    autoTuneEnabled = loadSettingsFromNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED);
+    delay(10);
+    ESP_LOGI("ASIC", "Current Preset Auto Tune Enabled: %d", autoTuneEnabled);
 }
 
 bool isValidPresetPair(uint16_t freq, uint16_t voltage) {
@@ -328,7 +334,11 @@ void presetAutoTune()
 {
 
     // check that autotuning is enabled
-
+    if(autoTuneEnabled == 0)
+    {
+        ESP_LOGI("ASIC", "Autotuning is disabled");
+        return;
+    }
 
     float domainVoltage = IncomingData.monitoring.powerStats.domainVoltage;
     float power = IncomingData.monitoring.powerStats.power;
@@ -345,12 +355,15 @@ void presetAutoTune()
         return;
     }
     ESP_LOGI("Preset", "Target V %.2u Target F %.2lu", targetVoltage, asicFreq);
+
+    /*
     // check that the preset is set correctly in NVS compared to known preset values 
     if (isValidPresetPair(currentPresetFrequency, currentPresetVoltage) == false)
     {
          ESP_LOGE("Preset", "Preset does not match");
          return;
     }
+    */
 
     
 // check current temp to see if it is within good operating conditions

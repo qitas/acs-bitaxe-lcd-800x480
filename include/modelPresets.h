@@ -22,6 +22,11 @@ extern uint16_t frequencyOffset;
 extern uint16_t voltageOffset;
 extern uint16_t fanSpeedOffset; 
 
+extern bool autoTuneEnabled;
+extern uint16_t autotuneTempLowTarget;
+extern uint16_t autotuneTempHighTarget;
+
+
 
 extern void setLowPowerPreset();
 extern void setNormalPowerPreset();

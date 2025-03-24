@@ -269,7 +269,7 @@ extern "C" void app_main()
     espTime();
 
     //main loop
-    while (true)
+while (true)
     {
         if (WiFi.status() == WL_CONNECTED)
         {

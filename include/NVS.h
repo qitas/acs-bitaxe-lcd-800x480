@@ -26,6 +26,8 @@
 #define NVS_KEY_ASIC_CURRENT_VOLTAGE "currentV"
 #define NVS_KEY_ASIC_CURRENT_FAN_SPEED "currentFSp"
 #define NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED "currentAFSp"
+#define NVS_KEY_ASIC_AUTOTUNE_ENABLED "AutoTuneEn"
+
 
 extern void initializeNVS(void);
 extern themePreset_t loadThemeFromNVS(void);
