@@ -78,6 +78,7 @@ void setLowPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
                 currentPresetFanSpeed = 27;
                 currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
 
                 // asic voltage
                  
@@ -118,6 +119,7 @@ void setLowPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
                 currentPresetFanSpeed = 27;
                 currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
 
 
                 // asic voltage
@@ -166,6 +168,7 @@ void setNormalPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
                 currentPresetFanSpeed = 35;
                 currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
 
                 // asic voltage
                 uint16_t voltageNumber = voltageNormalPower;  // Convert string to number
@@ -208,6 +211,8 @@ void setNormalPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
                 currentPresetFanSpeed = 35;
                 currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
+
 
                 // asic voltage
                 uint16_t voltageNumber = voltageNormalPower;  // Convert string to number
@@ -251,6 +256,7 @@ void setHighPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
                 currentPresetFanSpeed = 0;
                 currentPresetAutoFanMode = 1;
+                autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
                 uint16_t voltageNumber = voltageHighPower;  // Convert string to number
@@ -282,6 +288,7 @@ void setHighPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
                 currentPresetFanSpeed = 0;
                 currentPresetAutoFanMode = 1;
+                autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
                 uint16_t voltageNumber = voltageHighPower;  // Convert string to number
