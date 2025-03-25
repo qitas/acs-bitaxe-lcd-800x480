@@ -77,6 +77,7 @@ static lv_obj_t* targetFanSpeedVariableLabel;
 static lv_obj_t* offsetVoltageVariableLabel;
 static lv_obj_t* offsetFrequencyVariableLabel;
 static lv_obj_t* offsetFanSpeedVariableLabel;
+static lv_obj_t* autotuneSwitchLabel;
 
 
 
@@ -519,6 +520,16 @@ static void autotuneSwitchEventHandler(lv_event_t* e)
         bool isChecked = lv_obj_has_state(obj, LV_STATE_CHECKED);
         autoTuneEnabled = isChecked;
         ESP_LOGI("Autotune", "Switch state changed to: %s", isChecked ? "On" : "Off");
+        if(isChecked)
+        {
+            ESP_LOGI("Autotune", "Autotune Enabled");
+            lv_label_set_text(autotuneSwitchLabel, "Autotune\nEnabled");
+        }
+        else
+        {
+            ESP_LOGI("Autotune", "Autotune Disabled");
+            lv_label_set_text(autotuneSwitchLabel, "Autotune\nDisabled");
+        }
     }
 }
 
@@ -2457,15 +2468,34 @@ lv_obj_set_style_text_font(offsetFanSpeedVariableLabel, theme->fontMedium24, LV_
 lv_obj_set_style_text_color(offsetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(offsetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
 
-// create a switch to toggle autotune
+// Create switch
 lv_obj_t* autotuneSwitch = lv_switch_create(autoTuneSettingsContainer);
-lv_obj_align(autotuneSwitch, LV_ALIGN_BOTTOM_RIGHT, 0, 16); 
+lv_obj_set_size(autotuneSwitch, 80, 40);  // Set width=60px, height=32px
+lv_obj_align(autotuneSwitch, LV_ALIGN_BOTTOM_RIGHT, -16, 16);
 
-// Apply theme styling
+// Create label for the switch
+autotuneSwitchLabel = lv_label_create(autoTuneSettingsContainer);
+lv_obj_align_to(autotuneSwitchLabel, autotuneSwitch, LV_ALIGN_OUT_LEFT_MID, -64, -17);
+
+// Apply theme styling to label
+lv_obj_set_style_text_color(autotuneSwitchLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_set_style_text_font(autotuneSwitchLabel, theme->fontMedium16, LV_PART_MAIN);
+
+// Apply theme styling to switch
 lv_obj_set_style_bg_color(autotuneSwitch, theme->primaryColor, LV_PART_INDICATOR | LV_STATE_CHECKED);
 lv_obj_set_style_bg_color(autotuneSwitch, theme->backgroundColor, LV_PART_MAIN);
 lv_obj_set_style_border_color(autotuneSwitch, theme->borderColor, LV_PART_MAIN);
 lv_obj_set_style_border_width(autotuneSwitch, 2, LV_PART_MAIN);
+
+// Set initial switch state based on autoTuneEnabled flag
+lv_obj_add_state(autotuneSwitch, autoTuneEnabled ? LV_STATE_CHECKED : 0);
+
+// Set label text based on autoTuneEnabled flag
+if(autoTuneEnabled) {
+    lv_label_set_text(autotuneSwitchLabel, "Autotune\nEnabled");
+} else {
+    lv_label_set_text(autotuneSwitchLabel, "Autotune\nDisabled");
+}
 
 lv_obj_add_event_cb(autotuneSwitch, autotuneSwitchEventHandler, LV_EVENT_ALL, NULL);
 lv_obj_add_flag(autotuneSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
