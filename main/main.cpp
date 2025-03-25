@@ -247,9 +247,10 @@ extern "C" void app_main()
         switchToScreen(activeScreenHome);
     }
     */
+   readCurrentPresetSettingsFromNVS();
    initalizeOneScreen();
    switchToScreen(activeScreenHome);
-   readCurrentPresetSettingsFromNVS();
+   
     
     Serial0.println("LVGL porting example end");
 

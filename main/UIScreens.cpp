@@ -524,11 +524,13 @@ static void autotuneSwitchEventHandler(lv_event_t* e)
         {
             ESP_LOGI("Autotune", "Autotune Enabled");
             lv_label_set_text(autotuneSwitchLabel, "Autotune\nEnabled");
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, 1);
         }
         else
         {
             ESP_LOGI("Autotune", "Autotune Disabled");
             lv_label_set_text(autotuneSwitchLabel, "Autotune\nDisabled");
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, 0);
         }
     }
 }
