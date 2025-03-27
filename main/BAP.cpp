@@ -417,12 +417,6 @@ void handleDeviceStatusSerial(uint8_t* buffer, uint8_t len)
     
     switch(reg)
     {
-        case LVGL_REG_FLAGS:
-        {
-            memset(&IncomingData.status.flags, 0, MAX_UINT32_SIZE);
-            memcpy(&IncomingData.status.flags, &buffer[2], __min(dataLen, MAX_UINT32_SIZE));
-            break;
-        }
         case LVGL_REG_DEVICE_INFO:
         {
             memset(IncomingData.status.deviceInfo, 0, MAX_INFO_LENGTH);
