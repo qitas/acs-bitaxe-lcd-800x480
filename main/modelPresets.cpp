@@ -254,7 +254,7 @@ void setHighPowerPreset()
 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
-                currentPresetFanSpeed = 0;
+                currentPresetFanSpeed = 75;
                 currentPresetAutoFanMode = 1;
                 autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
@@ -286,7 +286,7 @@ void setHighPowerPreset()
 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
-                currentPresetFanSpeed = 0;
+                currentPresetFanSpeed = 75;
                 currentPresetAutoFanMode = 1;
                 autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
