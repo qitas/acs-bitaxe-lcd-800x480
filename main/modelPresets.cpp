@@ -7,10 +7,14 @@
 #define minPresetTemp  60
 #define maxPresetTemp  65 
 
+bool autoTuneEnabled = true;
 uint16_t currentPresetFrequency = 0;
 uint16_t currentPresetVoltage = 0;
 uint8_t currentPresetFanSpeed = 0;
 bool currentPresetAutoFanMode = false;
+uint16_t autotuneTempLowTarget = 0;
+uint16_t autotuneTempHighTarget = 0;
+
 
 
 #if (BitaxeGamma == 1)
@@ -24,11 +28,11 @@ const uint16_t freqHighPower = 700;
 
 const uint8_t fanSpeedLowPower = 27;
 const uint8_t fanSpeedNormalPower = 35;
-const uint8_t fanSpeedHighPower = 0;
+const uint8_t fanSpeedHighPower = 80;
 
 const uint8_t autoFanModeLowPower = 0;
 const uint8_t autoFanModeNormalPower = 0;
-const uint8_t autoFanModeHighPower = 1;
+const uint8_t autoFanModeHighPower = 0;
 #endif
 
 #if (BitaxeUltra == 1)
@@ -42,11 +46,11 @@ const uint16_t freqHighPower = 625;
 
 const uint8_t fanSpeedLowPower = 27;
 const uint8_t fanSpeedNormalPower = 35;
-const uint8_t fanSpeedHighPower = 0;
+const uint8_t fanSpeedHighPower = 80;
 
 const uint8_t autoFanModeLowPower = 0;
 const uint8_t autoFanModeNormalPower = 0;
-const uint8_t autoFanModeHighPower = 1;
+const uint8_t autoFanModeHighPower = 0;
 #endif
 
 // preset autotuning
@@ -54,7 +58,6 @@ uint16_t frequencyOffset = 0;
 uint16_t voltageOffset = 0;
 uint16_t fanSpeedOffset = 0; 
 
-bool autoTuneEndabled = false; 
 
 void setLowPowerPreset() 
 {
@@ -75,6 +78,8 @@ void setLowPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
                 currentPresetFanSpeed = 27;
                 currentPresetAutoFanMode = 0;
+                delay(10);
+                autoTuneEnabled = 1;
 
                 // asic voltage
                  
@@ -115,6 +120,7 @@ void setLowPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
                 currentPresetFanSpeed = 27;
                 currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
 
 
                 // asic voltage
@@ -161,8 +167,12 @@ void setNormalPowerPreset()
                 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
+                delay(10);
                 currentPresetFanSpeed = 35;
+                delay(10);
                 currentPresetAutoFanMode = 0;
+                delay(10);
+                autoTuneEnabled = 1;
 
                 // asic voltage
                 uint16_t voltageNumber = voltageNormalPower;  // Convert string to number
@@ -205,6 +215,8 @@ void setNormalPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
                 currentPresetFanSpeed = 35;
                 currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
+
 
                 // asic voltage
                 uint16_t voltageNumber = voltageNormalPower;  // Convert string to number
@@ -244,10 +256,16 @@ void setHighPowerPreset()
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 delay(10);
 
+                BAPFanSpeedBuffer[0] = 0x00;
+                BAPFanSpeedBuffer[1] = 75; // 75%
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
-                currentPresetFanSpeed = 0;
-                currentPresetAutoFanMode = 1;
+                delay(10);
+                currentPresetFanSpeed = 75;
+                delay(10);
+                currentPresetAutoFanMode = 0;
+                delay(10);
+                autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
                 uint16_t voltageNumber = voltageHighPower;  // Convert string to number
@@ -277,8 +295,9 @@ void setHighPowerPreset()
 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
-                currentPresetFanSpeed = 0;
-                currentPresetAutoFanMode = 1;
+                currentPresetFanSpeed = 75;
+                currentPresetAutoFanMode = 0;
+                autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
                 uint16_t voltageNumber = voltageHighPower;  // Convert string to number
@@ -315,6 +334,9 @@ void readCurrentPresetSettingsFromNVS() {
     currentPresetAutoFanMode = loadSettingsFromNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED);
     delay(10);
     ESP_LOGI("ASIC", "Current Preset Auto Fan Mode: %d", currentPresetAutoFanMode);
+    autoTuneEnabled = loadSettingsFromNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED);
+    delay(10);
+    ESP_LOGI("ASIC", "Current Preset Auto Tune Enabled: %d", autoTuneEnabled);
 }
 
 bool isValidPresetPair(uint16_t freq, uint16_t voltage) {
@@ -328,7 +350,11 @@ void presetAutoTune()
 {
 
     // check that autotuning is enabled
-
+    if(autoTuneEnabled == 0)
+    {
+        ESP_LOGI("ASIC", "Autotuning is disabled");
+        return;
+    }
 
     float domainVoltage = IncomingData.monitoring.powerStats.domainVoltage;
     float power = IncomingData.monitoring.powerStats.power;
@@ -345,12 +371,15 @@ void presetAutoTune()
         return;
     }
     ESP_LOGI("Preset", "Target V %.2u Target F %.2lu", targetVoltage, asicFreq);
+
+    /*
     // check that the preset is set correctly in NVS compared to known preset values 
     if (isValidPresetPair(currentPresetFrequency, currentPresetVoltage) == false)
     {
          ESP_LOGE("Preset", "Preset does not match");
          return;
     }
+    */
 
     
 // check current temp to see if it is within good operating conditions

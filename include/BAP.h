@@ -122,7 +122,7 @@ extern uint8_t* BAPWifiSSIDBuffer;
 extern uint8_t* BAPWifiPassBuffer;
 // Stratum URL Main
 #define BAP_STRATUM_URL_MAIN_BUFFER_REG 0x93
-#define BAP_STRATUM_URL_MAIN_BUFFER_SIZE 64
+#define BAP_STRATUM_URL_MAIN_BUFFER_SIZE 128
 extern uint8_t* BAPStratumUrlMainBuffer;
 // Stratum Port Main
 #define BAP_STRATUM_PORT_MAIN_BUFFER_REG 0x94
@@ -130,7 +130,7 @@ extern uint8_t* BAPStratumUrlMainBuffer;
 extern uint8_t* BAPStratumPortMainBuffer;
 // Stratum User Main
 #define BAP_STRATUM_USER_MAIN_BUFFER_REG 0x95
-#define BAP_STRATUM_USER_MAIN_BUFFER_SIZE 64
+#define BAP_STRATUM_USER_MAIN_BUFFER_SIZE 128
 extern uint8_t* BAPStratumUserMainBuffer;  
 // Stratum Password Main
 #define BAP_STRATUM_PASS_MAIN_BUFFER_REG 0x96
@@ -138,7 +138,7 @@ extern uint8_t* BAPStratumUserMainBuffer;
 extern uint8_t* BAPStratumPassMainBuffer;
 // Stratum URL Fallback
 #define BAP_STRATUM_URL_FALLBACK_BUFFER_REG 0x97
-#define BAP_STRATUM_URL_FALLBACK_BUFFER_SIZE 64
+#define BAP_STRATUM_URL_FALLBACK_BUFFER_SIZE 128
 extern uint8_t* BAPStratumUrlFallbackBuffer;
 // Stratum Port Fallback
 #define BAP_STRATUM_PORT_FALLBACK_BUFFER_REG 0x98
@@ -146,7 +146,7 @@ extern uint8_t* BAPStratumUrlFallbackBuffer;
 extern uint8_t* BAPStratumPortFallbackBuffer;
 // Stratum User Fallback
 #define BAP_STRATUM_USER_FALLBACK_BUFFER_REG 0x99
-#define BAP_STRATUM_USER_FALLBACK_BUFFER_SIZE 64
+#define BAP_STRATUM_USER_FALLBACK_BUFFER_SIZE 128
 extern uint8_t* BAPStratumUserFallbackBuffer;
 // Stratum Password Fallback
 #define BAP_STRATUM_PASS_FALLBACK_BUFFER_REG 0x9A
@@ -251,6 +251,9 @@ struct IncomingDataContainer
     DeviceStatus status;
     APIData api;
 };
+
+extern bool confirmedOverheatMode;
+extern bool confirmedFoundBlock;
 
 // External declarations
 

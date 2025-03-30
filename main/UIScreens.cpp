@@ -77,6 +77,7 @@ static lv_obj_t* targetFanSpeedVariableLabel;
 static lv_obj_t* offsetVoltageVariableLabel;
 static lv_obj_t* offsetFrequencyVariableLabel;
 static lv_obj_t* offsetFanSpeedVariableLabel;
+static lv_obj_t* autotuneSwitchLabel;
 
 
 
@@ -479,14 +480,7 @@ static void saveButtonEventHandler(lv_event_t* e) {
             lvgl_port_unlock();
         }
         */
-       if (BAPAsicFreqBuffer != NULL && BAPAsicFreqBuffer[1] != 0)
-       {
-        ESP_LOGI("Power Mode", "Writing ASIC Frequency to BAP");
-        ESP_LOGI("Power Mode", "BAPAsicFreqBuffer: %d", BAPAsicFreqBuffer[1]);
-        writeDataToBAP(BAPAsicFreqBuffer, BAP_ASIC_FREQ_BUFFER_SIZE, BAP_ASIC_FREQ_BUFFER_REG);
-        saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
-        delay(10);
-       }
+
        // Fan Speed
        if (BAPFanSpeedBuffer != NULL && BAPFanSpeedBuffer[1] != 0)
        {
@@ -503,12 +497,45 @@ static void saveButtonEventHandler(lv_event_t* e) {
         writeDataToBAP(BAPAutoFanSpeedBuffer, BAP_AUTO_FAN_SPEED_BUFFER_SIZE, BAP_AUTO_FAN_SPEED_BUFFER_REG);
         saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, (uint16_t)((BAPAutoFanSpeedBuffer[0] << 8) | BAPAutoFanSpeedBuffer[1]));
        }
+    if (BAPAsicFreqBuffer != NULL && BAPAsicFreqBuffer[1] != 0)
+       {
+        ESP_LOGI("Power Mode", "Writing ASIC Frequency to BAP");
+        ESP_LOGI("Power Mode", "BAPAsicFreqBuffer: %d", BAPAsicFreqBuffer[1]);
+        writeDataToBAP(BAPAsicFreqBuffer, BAP_ASIC_FREQ_BUFFER_SIZE, BAP_ASIC_FREQ_BUFFER_REG);
+        saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
+        delay(10);
+       }
 
         // get and save theme to NVS
+        uint8_t autotuneEnabledSave = autoTuneEnabled;
+        saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, autotuneEnabledSave);
         saveThemeToNVS(getCurrentThemePreset());
         Serial.printf("Theme saved to NVS: %d\n", getCurrentThemePreset());
         specialRegisters.restart = 1;
         
+}
+
+static void autotuneSwitchEventHandler(lv_event_t* e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t* obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        bool isChecked = lv_obj_has_state(obj, LV_STATE_CHECKED);
+        autoTuneEnabled = isChecked;
+        ESP_LOGI("Autotune", "Switch state changed to: %s", isChecked ? "On" : "Off");
+        if(isChecked)
+        {
+            ESP_LOGI("Autotune", "Autotune Enabled");
+            lv_label_set_text(autotuneSwitchLabel, "Autotune\nEnabled");
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, 1);
+        }
+        else
+        {
+            ESP_LOGI("Autotune", "Autotune Disabled");
+            lv_label_set_text(autotuneSwitchLabel, "Autotune\nDisabled");
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, 0);
+        }
+    }
 }
 
 // This is used because Timelib day function is having issues
@@ -2446,7 +2473,37 @@ lv_obj_set_style_text_font(offsetFanSpeedVariableLabel, theme->fontMedium24, LV_
 lv_obj_set_style_text_color(offsetFanSpeedVariableLabel, theme->textColor, LV_PART_MAIN);
 lv_obj_align(offsetFanSpeedVariableLabel, LV_ALIGN_TOP_MID, 0, 16); 
 
+// Create switch
+lv_obj_t* autotuneSwitch = lv_switch_create(autoTuneSettingsContainer);
+lv_obj_set_size(autotuneSwitch, 80, 40);  // Set width=60px, height=32px
+lv_obj_align(autotuneSwitch, LV_ALIGN_BOTTOM_RIGHT, -16, 16);
 
+// Create label for the switch
+autotuneSwitchLabel = lv_label_create(autoTuneSettingsContainer);
+lv_obj_align_to(autotuneSwitchLabel, autotuneSwitch, LV_ALIGN_OUT_LEFT_MID, -64, -17);
+
+// Apply theme styling to label
+lv_obj_set_style_text_color(autotuneSwitchLabel, theme->textColor, LV_PART_MAIN);
+lv_obj_set_style_text_font(autotuneSwitchLabel, theme->fontMedium16, LV_PART_MAIN);
+
+// Apply theme styling to switch
+lv_obj_set_style_bg_color(autotuneSwitch, theme->primaryColor, LV_PART_INDICATOR | LV_STATE_CHECKED);
+lv_obj_set_style_bg_color(autotuneSwitch, theme->backgroundColor, LV_PART_MAIN);
+lv_obj_set_style_border_color(autotuneSwitch, theme->borderColor, LV_PART_MAIN);
+lv_obj_set_style_border_width(autotuneSwitch, 2, LV_PART_MAIN);
+
+// Set initial switch state based on autoTuneEnabled flag
+lv_obj_add_state(autotuneSwitch, autoTuneEnabled ? LV_STATE_CHECKED : 0);
+
+// Set label text based on autoTuneEnabled flag
+if(autoTuneEnabled) {
+    lv_label_set_text(autotuneSwitchLabel, "Autotune\nEnabled");
+} else {
+    lv_label_set_text(autotuneSwitchLabel, "Autotune\nDisabled");
+}
+
+lv_obj_add_event_cb(autotuneSwitch, autotuneSwitchEventHandler, LV_EVENT_ALL, NULL);
+lv_obj_add_flag(autotuneSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
 
 static lv_obj_t* autoTuneLabels[6];  // Array to hold all autotune labels
@@ -2879,7 +2936,7 @@ void showOverheatOverlay()
     uiTheme_t* theme = getCurrentTheme();
     static lv_obj_t* overheatOverlay = NULL;
     
-    if (specialRegisters.overheatMode && !overheatOverlay) {
+    if (confirmedOverheatMode && !overheatOverlay) {
         lvgl_port_lock(-1);
         Serial.println("Creating overlay");
         // Create semi-transparent overlay
@@ -2889,6 +2946,7 @@ void showOverheatOverlay()
         lv_obj_set_style_bg_color(overheatOverlay, theme->backgroundColor, LV_PART_MAIN);
         lv_obj_set_style_bg_opa(overheatOverlay, LV_OPA_50, LV_PART_MAIN);
         lv_obj_set_style_radius(overheatOverlay, 0, LV_PART_MAIN);
+        lv_obj_clear_flag(overheatOverlay, LV_OBJ_FLAG_SCROLLABLE);
         
         // Create confirmation container
         lv_obj_t* confirmContainer = lv_obj_create(overheatOverlay);
@@ -2898,6 +2956,7 @@ void showOverheatOverlay()
         lv_obj_set_style_border_color(confirmContainer, theme->borderColor, LV_PART_MAIN);
         lv_obj_set_style_border_width(confirmContainer, 2, LV_PART_MAIN);
         lv_obj_set_style_radius(confirmContainer, 16, LV_PART_MAIN);
+        lv_obj_clear_flag(confirmContainer, LV_OBJ_FLAG_SCROLLABLE);
         
         // Add message
         lv_obj_t* message = lv_label_create(confirmContainer);
@@ -2963,7 +3022,7 @@ void showOverheatOverlay()
         }
         
 
-    } else if (!specialRegisters.overheatMode && overheatOverlay) {
+    } else if (!confirmedOverheatMode && overheatOverlay) {
         Serial.println("Removing overlay");
         // Remove overlay when settings are no longer being changed
         lv_obj_del(overheatOverlay);
@@ -3077,7 +3136,16 @@ static void resetAsicSettingsButtonEventHandler(lv_event_t* e) {
         {
             // send data to BAP Voltage first then Frequency
             setNormalPowerPreset();
-            
+            uint8_t autotuneEnabledSave = autoTuneEnabled;
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, autotuneEnabledSave);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_VOLTAGE, (uint16_t)((BAPAsicVoltageBuffer[0] << 8) | BAPAsicVoltageBuffer[1]));
+            writeDataToBAP(BAPAsicVoltageBuffer, 2, BAP_ASIC_VOLTAGE_BUFFER_REG);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
+            writeDataToBAP(BAPAsicFreqBuffer, 2, BAP_ASIC_FREQ_BUFFER_REG);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FAN_SPEED, (uint16_t)((BAPFanSpeedBuffer[0] << 8) | BAPFanSpeedBuffer[1]));
+            writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, (uint16_t)((BAPAutoFanSpeedBuffer[0] << 8) | BAPAutoFanSpeedBuffer[1]));
+            writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
 
         }
         #endif
@@ -3506,12 +3574,14 @@ static void overheatModeButtonEventHandler(lv_event_t* e) {
     // Toggle Overheat mode
    specialRegisters.overheatMode = 1;                       
    ESP_LOGI("Overheat Mode", "Overheat mode enabled");
+   confirmedOverheatMode = true;
 }
 
 static void blockFoundButtonEventHandler(lv_event_t* e) {
     // Toggle Block Found
     specialRegisters.foundBlock = 1;
     ESP_LOGI("Block Found", "Block Found");
+    confirmedFoundBlock = true;
 }
 
 void showBlockFoundOverlay() {
@@ -3522,7 +3592,7 @@ void showBlockFoundOverlay() {
     static lv_obj_t* blockFoundOverlay = NULL;
 
    // create overlay
-    if (specialRegisters.foundBlock && !blockFoundOverlay) 
+    if (confirmedFoundBlock && !blockFoundOverlay) 
     {
         lvgl_port_lock(-1);
         Serial.println("Creating overlay");
@@ -3619,7 +3689,7 @@ void showBlockFoundOverlay() {
         lv_obj_set_style_text_align(mempoolAddressLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
         lvgl_port_unlock();
     }
-    else if (!specialRegisters.foundBlock && blockFoundOverlay) 
+    else if (!confirmedFoundBlock && blockFoundOverlay) 
     {
         Serial.println("Removing overlay");
         // Remove overlay when settings are no longer being changed
