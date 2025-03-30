@@ -480,14 +480,7 @@ static void saveButtonEventHandler(lv_event_t* e) {
             lvgl_port_unlock();
         }
         */
-       if (BAPAsicFreqBuffer != NULL && BAPAsicFreqBuffer[1] != 0)
-       {
-        ESP_LOGI("Power Mode", "Writing ASIC Frequency to BAP");
-        ESP_LOGI("Power Mode", "BAPAsicFreqBuffer: %d", BAPAsicFreqBuffer[1]);
-        writeDataToBAP(BAPAsicFreqBuffer, BAP_ASIC_FREQ_BUFFER_SIZE, BAP_ASIC_FREQ_BUFFER_REG);
-        saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
-        delay(10);
-       }
+
        // Fan Speed
        if (BAPFanSpeedBuffer != NULL && BAPFanSpeedBuffer[1] != 0)
        {
@@ -503,6 +496,14 @@ static void saveButtonEventHandler(lv_event_t* e) {
         ESP_LOGI("Power Mode", "BAPAutoFanSpeedBuffer[1]: %d", BAPAutoFanSpeedBuffer[1]);
         writeDataToBAP(BAPAutoFanSpeedBuffer, BAP_AUTO_FAN_SPEED_BUFFER_SIZE, BAP_AUTO_FAN_SPEED_BUFFER_REG);
         saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, (uint16_t)((BAPAutoFanSpeedBuffer[0] << 8) | BAPAutoFanSpeedBuffer[1]));
+       }
+    if (BAPAsicFreqBuffer != NULL && BAPAsicFreqBuffer[1] != 0)
+       {
+        ESP_LOGI("Power Mode", "Writing ASIC Frequency to BAP");
+        ESP_LOGI("Power Mode", "BAPAsicFreqBuffer: %d", BAPAsicFreqBuffer[1]);
+        writeDataToBAP(BAPAsicFreqBuffer, BAP_ASIC_FREQ_BUFFER_SIZE, BAP_ASIC_FREQ_BUFFER_REG);
+        saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
+        delay(10);
        }
 
         // get and save theme to NVS

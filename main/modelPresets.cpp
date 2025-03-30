@@ -252,10 +252,12 @@ void setHighPowerPreset()
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 delay(10);
 
+                BAPFanSpeedBuffer[0] = 0x00;
+                BAPFanSpeedBuffer[1] = 75; // 75%
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
                 currentPresetFanSpeed = 75;
-                currentPresetAutoFanMode = 1;
+                currentPresetAutoFanMode = 0;
                 autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
@@ -287,7 +289,7 @@ void setHighPowerPreset()
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
                 currentPresetFanSpeed = 75;
-                currentPresetAutoFanMode = 1;
+                currentPresetAutoFanMode = 0;
                 autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
