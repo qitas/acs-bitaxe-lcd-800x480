@@ -78,6 +78,7 @@ void setLowPowerPreset()
                 BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
                 currentPresetFanSpeed = 27;
                 currentPresetAutoFanMode = 0;
+                delay(10);
                 autoTuneEnabled = 1;
 
                 // asic voltage
@@ -166,8 +167,11 @@ void setNormalPowerPreset()
                 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
+                delay(10);
                 currentPresetFanSpeed = 35;
+                delay(10);
                 currentPresetAutoFanMode = 0;
+                delay(10);
                 autoTuneEnabled = 1;
 
                 // asic voltage
@@ -256,8 +260,11 @@ void setHighPowerPreset()
                 BAPFanSpeedBuffer[1] = 75; // 75%
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
+                delay(10);
                 currentPresetFanSpeed = 75;
+                delay(10);
                 currentPresetAutoFanMode = 0;
+                delay(10);
                 autoTuneEnabled = 1;
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
                 // asic voltage
