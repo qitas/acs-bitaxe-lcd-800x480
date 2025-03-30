@@ -507,6 +507,8 @@ static void saveButtonEventHandler(lv_event_t* e) {
        }
 
         // get and save theme to NVS
+        uint8_t autotuneEnabledSave = autoTuneEnabled;
+        saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, autotuneEnabledSave);
         saveThemeToNVS(getCurrentThemePreset());
         Serial.printf("Theme saved to NVS: %d\n", getCurrentThemePreset());
         specialRegisters.restart = 1;
@@ -3134,6 +3136,8 @@ static void resetAsicSettingsButtonEventHandler(lv_event_t* e) {
         {
             // send data to BAP Voltage first then Frequency
             setNormalPowerPreset();
+            uint8_t autotuneEnabledSave = autoTuneEnabled;
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, autotuneEnabledSave);
             saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_VOLTAGE, (uint16_t)((BAPAsicVoltageBuffer[0] << 8) | BAPAsicVoltageBuffer[1]));
             writeDataToBAP(BAPAsicVoltageBuffer, 2, BAP_ASIC_VOLTAGE_BUFFER_REG);
             saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
