@@ -3133,7 +3133,14 @@ static void resetAsicSettingsButtonEventHandler(lv_event_t* e) {
         {
             // send data to BAP Voltage first then Frequency
             setNormalPowerPreset();
-            
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_VOLTAGE, (uint16_t)((BAPAsicVoltageBuffer[0] << 8) | BAPAsicVoltageBuffer[1]));
+            writeDataToBAP(BAPAsicVoltageBuffer, 2, BAP_ASIC_VOLTAGE_BUFFER_REG);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
+            writeDataToBAP(BAPAsicFreqBuffer, 2, BAP_ASIC_FREQ_BUFFER_REG);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FAN_SPEED, (uint16_t)((BAPFanSpeedBuffer[0] << 8) | BAPFanSpeedBuffer[1]));
+            writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, (uint16_t)((BAPAutoFanSpeedBuffer[0] << 8) | BAPAutoFanSpeedBuffer[1]));
+            writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
 
         }
         #endif
