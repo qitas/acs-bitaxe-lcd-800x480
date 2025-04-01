@@ -157,6 +157,8 @@ static void finishSetup(const char* btcAddress)
             saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FREQ, (uint16_t)((BAPAsicFreqBuffer[0] << 8) | BAPAsicFreqBuffer[1]));
             saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_FAN_SPEED, (uint16_t)((BAPFanSpeedBuffer[0] << 8) | BAPFanSpeedBuffer[1]));
             saveSettingsToNVSasU16(NVS_KEY_ASIC_CURRENT_AUTO_FAN_SPEED, (uint16_t)((BAPAutoFanSpeedBuffer[0] << 8) | BAPAutoFanSpeedBuffer[1]));
+            uint8_t autotuneEnabledSave = autoTuneEnabled;
+            saveSettingsToNVSasU16(NVS_KEY_ASIC_AUTOTUNE_ENABLED, autotuneEnabledSave);
             writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
             writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
             writeDataToBAP(BAPAsicVoltageBuffer, 2, BAP_ASIC_VOLTAGE_BUFFER_REG);
