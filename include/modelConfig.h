@@ -16,15 +16,15 @@
 #define SoloSatoshi 1
 #define ALTAIR 0
 #define SoloMiningCo 0
-#define BTCMagazine 1
+#define BTCMagazine 0
 
 // Firmware version
 #define MajorVersion 0
 #define MinorVersion 2
-#define PatchVersion 1
-#define VersionNote "Pre-Release"
+#define PatchVersion 2
+#define VersionNote "Beta1"
 
 // Firmware build date
-#define BuildDate "02-19-2025"
+#define BuildDate "04-01-2025"
 
 
