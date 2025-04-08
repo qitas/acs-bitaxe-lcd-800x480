@@ -2575,6 +2575,9 @@ screenObjs.autoTuneSettingsTimer = lv_timer_create(updateAutoTuneLabels, 1000, a
     #if (BTCMagazine == 1)
     lv_dropdown_add_option(themeDropdown, "BTCMAGAZINE", LV_DROPDOWN_POS_LAST);
     #endif
+    #if (VoskCoin == 1)
+    lv_dropdown_add_option(themeDropdown, "VOSKCOIN", LV_DROPDOWN_POS_LAST);
+    #endif
     // Add spacing at the end of the list to make last option selectable
     lv_dropdown_add_option(themeDropdown, "", LV_DROPDOWN_POS_LAST);
 
@@ -3395,6 +3398,11 @@ static void themeDropdownEventHandler(lv_event_t* e) {
         else if (strcmp(themeBuffer, "BTCMAGAZINE") == 0) {
             #if (BTCMagazine == 1)
             initializeTheme(THEME_BTCMAGAZINE);
+            #endif
+        }
+        else if (strcmp(themeBuffer, "VOSKCOIN") == 0) {
+            #if (VoskCoin == 1)
+            initializeTheme(THEME_VOSKCOIN);
             #endif
         }
 
