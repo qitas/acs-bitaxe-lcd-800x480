@@ -87,7 +87,7 @@ void setLowPowerPreset()
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 delay(10);
                 BAPFanSpeedBuffer[0] = 0x00;
-                BAPFanSpeedBuffer[1] = 27; // 27%
+                BAPFanSpeedBuffer[1] = fanSpeedLowPower; // 27%
                 // auto fan speed
                 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
@@ -187,7 +187,7 @@ void setHighPowerPreset()
                 delay(10);
 
                 BAPFanSpeedBuffer[0] = 0x00;
-                BAPFanSpeedBuffer[1] = 75; // 75%
+                BAPFanSpeedBuffer[1] = fanSpeedHighPower; // 75%
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
                 delay(10);
