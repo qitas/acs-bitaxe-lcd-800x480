@@ -38,11 +38,11 @@ const uint8_t autoFanModeHighPower = 0;
 #if (BitaxeSupra == 1)
 const uint16_t voltageLowPower = 1100;
 const uint16_t voltageNormalPower = 1200;
-const uint16_t voltageHighPower = 1380;
+const uint16_t voltageHighPower = 1350;
 
 const uint16_t freqLowPower = 425;
 const uint16_t freqNormalPower = 575;
-const uint16_t freqHighPower = 800;
+const uint16_t freqHighPower = 750;
 
 const uint8_t fanSpeedLowPower = 19;
 const uint8_t fanSpeedNormalPower = 30;
