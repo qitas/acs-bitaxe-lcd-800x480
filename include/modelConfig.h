@@ -16,7 +16,8 @@
 #define SoloSatoshi 1
 #define ALTAIR 0
 #define SoloMiningCo 0
-#define BTCMagazine 0
+#define BTCMagazine 1
+#define VoskCoin 1
 
 // Firmware version
 #define MajorVersion 0
