@@ -40,7 +40,7 @@ const uint16_t voltageLowPower = 1100;
 const uint16_t voltageNormalPower = 1200;
 const uint16_t voltageHighPower = 1380;
 
-const uint16_t freqLowPower = 400;
+const uint16_t freqLowPower = 425;
 const uint16_t freqNormalPower = 575;
 const uint16_t freqHighPower = 800;
 

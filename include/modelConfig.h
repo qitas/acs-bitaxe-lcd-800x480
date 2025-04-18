@@ -28,4 +28,13 @@
 // Firmware build date
 #define BuildDate "04-01-2025"
 
+// Model Build Type
+#if (BitaxeUltra == 1)
+#define ModelType "BM1366"
+#elif (BitaxeSupra == 1)
+#define ModelType "BM1368"
+#elif (BitaxeGamma == 1)
+#define ModelType "BM1370"
+#endif
+
 
