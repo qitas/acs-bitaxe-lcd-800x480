@@ -322,7 +322,7 @@ while (true)
     static uint32_t lastAutoTuneCheck = 0;
     static bool firstAutoTune = true;
     float asicTemp = IncomingData.monitoring.temperatures[0];
-    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 120000 : 30000) || (asicTemp >= 68 && lastAutoTuneCheck > 500))  // 2 min for first check so bitaxe stabilizes, 30 sec after. Instantly if temp is too high
+    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 600000 : 30000) || (asicTemp >= 68 && lastAutoTuneCheck > 500))  // 10 min for first check so bitaxe stabilizes, 30 sec after. Instantly if temp is too high
     {
         presetAutoTune();
         lastAutoTuneCheck = millis();
