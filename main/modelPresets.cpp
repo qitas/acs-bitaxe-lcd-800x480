@@ -44,7 +44,7 @@ const uint16_t freqLowPower = 425;
 const uint16_t freqNormalPower = 575;
 const uint16_t freqHighPower = 750;
 
-const uint8_t fanSpeedLowPower = 19;
+const uint8_t fanSpeedLowPower = 22;
 const uint8_t fanSpeedNormalPower = 30;
 const uint8_t fanSpeedHighPower = 70;
 
