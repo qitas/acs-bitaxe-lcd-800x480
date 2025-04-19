@@ -71,6 +71,15 @@ void printMemoryInfo()
     Serial0.printf("Total Allocated: %u bytes\n", info.total_allocated_bytes);
 }
 
+void listSpiffsContents() {
+    File root = SPIFFS.open("/");
+    File file = root.openNextFile();
+    while(file) {
+        Serial0.printf("File: %s, size: %d\n", file.name(), file.size());
+        file = root.openNextFile();
+    }
+}
+
 
 void setBrightness(uint8_t value) {
     ESP_ERROR_CHECK(ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, value));
@@ -193,7 +202,8 @@ if (backlightPWM) {
     // Initialize PNG decoder
     lv_png_init();
     Serial0.println("PNG decoder initialized");
-    initSpiffsDriver(); 
+    initSpiffsDriver();
+    listSpiffsContents();
 
     initializeNVS();
     delay(20);
@@ -295,9 +305,10 @@ if (backlightPWM) {
         switchToScreen(activeScreenHome);
     }
     */
+   readCurrentPresetSettingsFromNVS();
    initalizeOneScreen();
    switchToScreen(activeScreenHome);
-   readCurrentPresetSettingsFromNVS();
+   
     
     Serial0.println("LVGL porting example end");
 
@@ -339,7 +350,7 @@ if (backlightPWM) {
     }
 
     //main loop
-    while (true)
+while (true)
     {
         if (WiFi.status() == WL_CONNECTED)
         {
@@ -396,7 +407,9 @@ if (backlightPWM) {
         lastAutoTuneCheck = millis();
         firstAutoTune = false;
     }
-
+    reconnectWifi();
     }
+
+   
 
 }
