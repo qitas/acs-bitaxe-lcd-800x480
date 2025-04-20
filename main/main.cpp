@@ -321,11 +321,20 @@ while (true)
         
     static uint32_t lastAutoTuneCheck = 0;
     static bool firstAutoTune = true;
-    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 120000 : 10000))  // 2 min for first check so bitaxe stabilizes, 10 sec after
+    float asicTemp = IncomingData.monitoring.temperatures[0];
+    
+    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 600000 : 120000))  // 10 min for first check so bitaxe stabilizes, 60 sec after.
     {
+        ESP_LOGI("AutoTune", "Autotune Timer Expired"); 
         presetAutoTune();
         lastAutoTuneCheck = millis();
         firstAutoTune = false;
+    }
+    if (asicTemp >= 67 && (millis() - lastAutoTuneCheck > 1000)) { //  Instantly if temp is too high
+        ESP_LOGI("AutoTune", "Asic Temp: %.2f", asicTemp);
+        ESP_LOGI("AutoTune", "Asic Temp Overhead. Tweaking Settings Temp: %.2f", asicTemp);
+        presetAutoTune(); 
+        lastAutoTuneCheck = millis();
     }
     reconnectWifi();
     }

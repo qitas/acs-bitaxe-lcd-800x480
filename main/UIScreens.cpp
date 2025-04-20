@@ -2766,7 +2766,7 @@ screenObjs.autoTuneSettingsTimer = lv_timer_create(updateAutoTuneLabels, 1000, a
 
     // Version Label
     char versionLabelText[100];
-    snprintf(versionLabelText, sizeof(versionLabelText), "Current Version: %d.%d.%d %s\nVersion Date: %s", MajorVersion, MinorVersion, PatchVersion, VersionNote, BuildDate);
+    snprintf(versionLabelText, sizeof(versionLabelText), "Version: %d.%d.%d %s %s\nVersion Date: %s", MajorVersion, MinorVersion, PatchVersion, VersionNote, ModelType, BuildDate);
     lv_obj_t* versionLabel = lv_label_create(saveTabContainer);
     lv_label_set_text(versionLabel, versionLabelText);
     lv_obj_set_style_text_font(versionLabel, theme->fontMedium16, LV_PART_MAIN);

@@ -3,8 +3,8 @@
 #define DEBUG_UI 0
 
 #define BitaxeUltra 0
-#define BitaxeSupra 0 
-#define BitaxeGamma 1
+#define BitaxeSupra 1 
+#define BitaxeGamma 0
 
 #define BAPPORT 1
 
@@ -27,5 +27,14 @@
 
 // Firmware build date
 #define BuildDate "04-01-2025"
+
+// Model Build Type
+#if (BitaxeUltra == 1)
+#define ModelType "BM1366"
+#elif (BitaxeSupra == 1)
+#define ModelType "BM1368"
+#elif (BitaxeGamma == 1)
+#define ModelType "BM1370"
+#endif
 
 
