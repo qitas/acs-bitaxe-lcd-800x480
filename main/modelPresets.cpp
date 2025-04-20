@@ -35,6 +35,24 @@ const uint8_t autoFanModeNormalPower = 0;
 const uint8_t autoFanModeHighPower = 0;
 #endif
 
+#if (BitaxeSupra == 1)
+const uint16_t voltageLowPower = 1100;
+const uint16_t voltageNormalPower = 1200;
+const uint16_t voltageHighPower = 1350;
+
+const uint16_t freqLowPower = 425;
+const uint16_t freqNormalPower = 575;
+const uint16_t freqHighPower = 750;
+
+const uint8_t fanSpeedLowPower = 20;
+const uint8_t fanSpeedNormalPower = 30;
+const uint8_t fanSpeedHighPower = 70;
+
+const uint8_t autoFanModeLowPower = 0;
+const uint8_t autoFanModeNormalPower = 0;
+const uint8_t autoFanModeHighPower = 0;
+#endif
+
 #if (BitaxeUltra == 1)
 const uint16_t voltageLowPower = 1130;
 const uint16_t voltageNormalPower = 1190;
@@ -62,51 +80,7 @@ uint16_t fanSpeedOffset = 0;
 void setLowPowerPreset() 
 {
  Serial.println("Low Power Mode Selected");
-
-    #if (BitaxeGamma == 1 && BAPPORT == 1)
                 // fan speed
-                memset(BAPFanSpeedBuffer, 0, BAP_FAN_SPEED_BUFFER_SIZE);
-                memset(BAPAutoFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
-                memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
-                delay(10);
-                BAPFanSpeedBuffer[0] = 0x00;
-                BAPFanSpeedBuffer[1] = 27; // 27%
-                // auto fan speed
-                
-                BAPAutoFanSpeedBuffer[0] = 0x00;
-                BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
-                currentPresetFanSpeed = 27;
-                currentPresetAutoFanMode = 0;
-                delay(10);
-                autoTuneEnabled = 1;
-
-                // asic voltage
-                 
-                uint16_t voltageNumber = voltageLowPower;  // Convert string to number
-                uint8_t voltageBytes[2] = {
-                    (uint8_t)(voltageNumber >> 8),    // High byte
-                    (uint8_t)(voltageNumber & 0xFF)   // Low byte
-                };
-                memcpy(BAPAsicVoltageBuffer, voltageBytes, 2);
-                currentPresetVoltage = voltageLowPower;
-                // asic freq
-                
-                uint16_t freqNumber = freqLowPower;  // Convert string to number
-                uint8_t freqBytes[2] = {
-                    (uint8_t)(freqNumber >> 8),    // High byte
-                    (uint8_t)(freqNumber & 0xFF)   // Low byte
-                };
-                memcpy(BAPAsicFreqBuffer, freqBytes, 2);
-                currentPresetFrequency = freqLowPower;
-                //writeDataToBAP(freqBytes, 2, BAP_ASIC_FREQ_BUFFER_REG);
-                delay(10);
-
-       
-                //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
-                //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
-    #elif (BitaxeUltra == 1 && BAPPORT == 1)
-// fan speed
                 memset(BAPFanSpeedBuffer, 0, BAP_FAN_SPEED_BUFFER_SIZE);
                 memset(BAPAutoFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
@@ -118,10 +92,10 @@ void setLowPowerPreset()
                 
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = 0x00; // Auto Fan Speed off
-                currentPresetFanSpeed = 27;
+                currentPresetFanSpeed = fanSpeedLowPower;
                 currentPresetAutoFanMode = 0;
+                delay(10);
                 autoTuneEnabled = 1;
-
 
                 // asic voltage
                  
@@ -147,13 +121,12 @@ void setLowPowerPreset()
        
                 //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
-    #endif
+                
 }
 
 
 void setNormalPowerPreset() 
 {
-    #if (BitaxeGamma == 1 && BAPPORT == 1)
      Serial.println("Normal Power Mode Selected");
                 // fan speed
                 memset(BAPFanSpeedBuffer, 0, BAP_FAN_SPEED_BUFFER_SIZE);
@@ -168,7 +141,7 @@ void setNormalPowerPreset()
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
                 delay(10);
-                currentPresetFanSpeed = 35;
+                currentPresetFanSpeed = fanSpeedNormalPower;
                 delay(10);
                 currentPresetAutoFanMode = 0;
                 delay(10);
@@ -199,55 +172,12 @@ void setNormalPowerPreset()
 
                 //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
                 //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
-    #elif (BitaxeUltra == 1 && BAPPORT == 1)
-     Serial.println("Normal Power Mode Selected");
-                // fan speed
-                memset(BAPFanSpeedBuffer, 0, BAP_FAN_SPEED_BUFFER_SIZE);
-                memset(BAPAutoFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
-                memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
-                memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                delay(10);
-                BAPFanSpeedBuffer[0] = 0x00;
-                BAPFanSpeedBuffer[1] = fanSpeedNormalPower; // 35%   
-                // auto fan speed
-                
-                BAPAutoFanSpeedBuffer[0] = 0x00;
-                BAPAutoFanSpeedBuffer[1] = autoFanModeNormalPower; // Auto Fan Speed off
-                currentPresetFanSpeed = 35;
-                currentPresetAutoFanMode = 0;
-                autoTuneEnabled = 1;
 
-
-                // asic voltage
-                uint16_t voltageNumber = voltageNormalPower;  // Convert string to number
-                uint8_t voltageBytes[2] = { 
-                    (uint8_t)(voltageNumber >> 8),    // High byte
-                    (uint8_t)(voltageNumber & 0xFF)   // Low byte
-                };
-                memcpy(BAPAsicVoltageBuffer, voltageBytes, 2);
-                currentPresetVoltage = voltageNormalPower;
-                // asic freq
-                
-                uint16_t freqNumber = freqNormalPower;  // Convert string to number
-                uint8_t freqBytes[2] = {
-                    (uint8_t)(freqNumber >> 8),    // High byte
-                    (uint8_t)(freqNumber & 0xFF)   // Low byte
-                };
-                memcpy(BAPAsicFreqBuffer, freqBytes, 2);
-                currentPresetFrequency = freqNormalPower;
-                //writeDataToBAP(freqBytes, 2, BAP_ASIC_FREQ_BUFFER_REG);
-                delay(10);
-
-
-                //writeDataToBAP(BAPFanSpeedBuffer, 2, BAP_FAN_SPEED_BUFFER_REG);
-                //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
-
-    #endif
 }
 
 void setHighPowerPreset() 
 {
-    #if (BitaxeGamma == 1 && BAPPORT == 1)
+    
     Serial.println("High Power Mode Selected");
                 // fan speed
                 memset(BAPFanSpeedBuffer, 0, BAP_FAN_SPEED_BUFFER_SIZE);
@@ -257,11 +187,11 @@ void setHighPowerPreset()
                 delay(10);
 
                 BAPFanSpeedBuffer[0] = 0x00;
-                BAPFanSpeedBuffer[1] = 75; // 75%
+                BAPFanSpeedBuffer[1] = fanSpeedHighPower; // 75%
                 BAPAutoFanSpeedBuffer[0] = 0x00;
                 BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
                 delay(10);
-                currentPresetFanSpeed = 75;
+                currentPresetFanSpeed = fanSpeedHighPower;
                 delay(10);
                 currentPresetAutoFanMode = 0;
                 delay(10);
@@ -284,45 +214,7 @@ void setHighPowerPreset()
                 };
                 memcpy(BAPAsicFreqBuffer, freqBytes, 2);
                 currentPresetFrequency = freqHighPower;
-    #elif (BitaxeUltra == 1 && BAPPORT == 1)
-    Serial.println("High Power Mode Selected");
-                // fan speed
-                memset(BAPFanSpeedBuffer, 0, BAP_FAN_SPEED_BUFFER_SIZE);
-                memset(BAPAutoFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
-                memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
-                delay(10);
-
-                BAPFanSpeedBuffer[0] = 0x00;
-                BAPFanSpeedBuffer[1] = 75; // 75%
-                BAPAutoFanSpeedBuffer[0] = 0x00;
-                BAPAutoFanSpeedBuffer[1] = autoFanModeHighPower; // Auto Fan Speed
-                delay(10);
-                currentPresetFanSpeed = 75;
-                delay(10);
-                currentPresetAutoFanMode = 0;
-                delay(10);
-                autoTuneEnabled = 1;
-                //writeDataToBAP(BAPAutoFanSpeedBuffer, 2, BAP_AUTO_FAN_SPEED_BUFFER_REG);
-                // asic voltage
-                uint16_t voltageNumber = voltageHighPower;  // Convert string to number
-                uint8_t voltageBytes[2] = {
-                    (uint8_t)(voltageNumber >> 8),    // High byte
-                    (uint8_t)(voltageNumber & 0xFF)   // Low byte
-                };
-                memcpy(BAPAsicVoltageBuffer, voltageBytes, 2);
-                currentPresetVoltage = voltageHighPower;
-                // asic freq
-                
-                uint16_t freqNumber = freqHighPower;  // Convert string to number
-                uint8_t freqBytes[2] = {
-                    (uint8_t)(freqNumber >> 8),    // High byte
-                    (uint8_t)(freqNumber & 0xFF)   // Low byte
-                };
-                memcpy(BAPAsicFreqBuffer, freqBytes, 2);
-                currentPresetFrequency = freqHighPower;
-
-    #endif
+   
 }
 
 void readCurrentPresetSettingsFromNVS() {
@@ -394,7 +286,7 @@ void presetAutoTune()
         return;
     }
 // set adjusted fan speed, voltage, and frequency based on current temps and power usage
-    #if (BitaxeGamma == 1 || BitaxeUltra == 1)
+    #if (BitaxeGamma == 1 || BitaxeUltra == 1 || BitaxeSupra == 1)
     
     if(asicTemp >= maxPresetTemp)
     {
@@ -429,8 +321,8 @@ void presetAutoTune()
         if (currentPresetVoltage *.95 <= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                // Reduce voltage by 0.5% (multiply by 0.995)
-                uint16_t newVoltage = (targetVoltage * 995) / 1000;  // Integer math to avoid floating point
+                // Reduce voltage by 0.2% (multiply by 0.998)
+                uint16_t newVoltage = (targetVoltage * 998) / 1000;  // Integer math to avoid floating point
                 uint8_t voltageBytes[2] = {
                     (uint8_t)(newVoltage >> 8),    // High byte
                     (uint8_t)(newVoltage & 0xFF)   // Low byte
@@ -450,7 +342,7 @@ void presetAutoTune()
       {
         // Try decreasing fan speed for noise first
         ESP_LOGI("Preset", "Asic Temp Overhead. Tweaking Settings Temp: %.2f", asicTemp);
-        if(fanSpeedPercent >= currentPresetFanSpeed - 5 && currentPresetAutoFanMode == 0)
+        if(fanSpeedPercent >= currentPresetFanSpeed - 3 && currentPresetAutoFanMode == 0 && currentPresetFanSpeed >= 18)
         {   
             memset(BAPFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
             BAPFanSpeedBuffer[0] = 0x00;
@@ -476,11 +368,11 @@ void presetAutoTune()
                 ESP_LOGI("Preset", "Increasing frequency to %u", freqNumber);
                 
         }
-        if (currentPresetVoltage *1.05 >= targetVoltage)
+        if (currentPresetVoltage *1.03 >= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                // Reduce voltage by 0.5% (multiply by 0.995)
-                uint16_t newVoltage = (targetVoltage * 1005) / 1000;  // Integer math to avoid floating point
+                // increase voltage by 0.2% (multiply by 1.002)
+                uint16_t newVoltage = (targetVoltage * 1002) / 1000;  // Integer math to avoid floating point
                 uint8_t voltageBytes[2] = {
                     (uint8_t)(newVoltage >> 8),    // High byte
                     (uint8_t)(newVoltage & 0xFF)   // Low byte
