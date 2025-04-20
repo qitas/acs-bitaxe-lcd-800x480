@@ -3,8 +3,8 @@
 #define DEBUG_UI 0
 
 #define BitaxeUltra 0
-#define BitaxeSupra 0 
-#define BitaxeGamma 1
+#define BitaxeSupra 1 
+#define BitaxeGamma 0
 
 #define BAPPORT 1
 

@@ -323,7 +323,7 @@ while (true)
     static bool firstAutoTune = true;
     float asicTemp = IncomingData.monitoring.temperatures[0];
     
-    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 600000 : 30000))  // 10 min for first check so bitaxe stabilizes, 60 sec after.
+    if (millis() - lastAutoTuneCheck > (firstAutoTune ? 600000 : 120000))  // 10 min for first check so bitaxe stabilizes, 60 sec after.
     {
         ESP_LOGI("AutoTune", "Autotune Timer Expired"); 
         presetAutoTune();
