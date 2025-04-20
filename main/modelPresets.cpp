@@ -321,8 +321,8 @@ void presetAutoTune()
         if (currentPresetVoltage *.95 <= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                // Reduce voltage by 0.5% (multiply by 0.995)
-                uint16_t newVoltage = (targetVoltage * 995) / 1000;  // Integer math to avoid floating point
+                // Reduce voltage by 0.2% (multiply by 0.998)
+                uint16_t newVoltage = (targetVoltage * 998) / 1000;  // Integer math to avoid floating point
                 uint8_t voltageBytes[2] = {
                     (uint8_t)(newVoltage >> 8),    // High byte
                     (uint8_t)(newVoltage & 0xFF)   // Low byte
@@ -353,7 +353,7 @@ void presetAutoTune()
             return;
         }
         
-        if(currentPresetFrequency * 1.05 >= asicFreq )
+        if(currentPresetFrequency * 1.1 >= asicFreq )
         {
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 uint16_t freqNumber = (asicFreq * 102) / 100;  // Integer math for 2% addition
@@ -368,11 +368,11 @@ void presetAutoTune()
                 ESP_LOGI("Preset", "Increasing frequency to %u", freqNumber);
                 
         }
-        if (currentPresetVoltage *1.02 >= targetVoltage)
+        if (currentPresetVoltage *1.03 >= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
-                // Reduce voltage by 0.5% (multiply by 0.995)
-                uint16_t newVoltage = (targetVoltage * 1005) / 1000;  // Integer math to avoid floating point
+                // increase voltage by 0.2% (multiply by 1.002)
+                uint16_t newVoltage = (targetVoltage * 1002) / 1000;  // Integer math to avoid floating point
                 uint8_t voltageBytes[2] = {
                     (uint8_t)(newVoltage >> 8),    // High byte
                     (uint8_t)(newVoltage & 0xFF)   // Low byte
