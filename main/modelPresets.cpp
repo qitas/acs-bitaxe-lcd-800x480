@@ -342,7 +342,7 @@ void presetAutoTune()
       {
         // Try decreasing fan speed for noise first
         ESP_LOGI("Preset", "Asic Temp Overhead. Tweaking Settings Temp: %.2f", asicTemp);
-        if(fanSpeedPercent >= currentPresetFanSpeed - 5 && currentPresetAutoFanMode == 0)
+        if(fanSpeedPercent >= currentPresetFanSpeed - 3 && currentPresetAutoFanMode == 0)
         {   
             memset(BAPFanSpeedBuffer, 0, BAP_AUTO_FAN_SPEED_BUFFER_SIZE);
             BAPFanSpeedBuffer[0] = 0x00;
@@ -353,7 +353,7 @@ void presetAutoTune()
             return;
         }
         
-        if(currentPresetFrequency * 1.1 >= asicFreq )
+        if(currentPresetFrequency * 1.05 >= asicFreq )
         {
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 uint16_t freqNumber = (asicFreq * 102) / 100;  // Integer math for 2% addition
@@ -368,7 +368,7 @@ void presetAutoTune()
                 ESP_LOGI("Preset", "Increasing frequency to %u", freqNumber);
                 
         }
-        if (currentPresetVoltage *1.05 >= targetVoltage)
+        if (currentPresetVoltage *1.02 >= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
                 // Reduce voltage by 0.5% (multiply by 0.995)
