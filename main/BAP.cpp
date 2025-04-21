@@ -325,22 +325,13 @@ void handleMonitoringDataSerial(uint8_t* buffer, uint8_t len)
     uint8_t dataLen = buffer[1];
     
     switch(reg) {
-        case LVGL_REG_TEMPS: 
+                        case LVGL_REG_TEMPS: 
         {
-            // Create union to safely handle the byte-to-float conversion
-            union {
-                uint8_t bytes[4];
-                float value;
-            } temp;
-
-            // Read bytes in correct order (assuming little-endian)
-            temp.bytes[0] = buffer[6];
-            temp.bytes[1] = buffer[7];
-            temp.bytes[2] = buffer[8];
-            temp.bytes[3] = buffer[9];
-
-            IncomingData.monitoring.temperatures[0] = temp.value;
-            Serial.printf("Temperature received: %.2f°C\n", IncomingData.monitoring.temperatures[0]);
+            float temperature;
+            memset(&temperature, 0, sizeof(float));
+            memcpy(&temperature, &buffer[2], sizeof(float));
+            IncomingData.monitoring.temperatures[0] = temperature;
+            ESP_LOGI("BAP", "Temperature received: %.2f°C", IncomingData.monitoring.temperatures[0]);
             break;
         }
         case LVGL_REG_ASIC_FREQ:
