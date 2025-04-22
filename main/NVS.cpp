@@ -33,6 +33,8 @@ themePreset_t loadThemeFromNVS(void) {
     uint8_t themeValue = 5; // Make default theme the ALTAIR Theme
     #elif (SoloMiningCo == 1)
     uint8_t themeValue = 6; // Make default theme the SoloMiningCo Theme
+    #elif (VoskCoin == 1)
+    uint8_t themeValue = 8; // Make default theme the VoskCoin Theme
     #else
     uint8_t themeValue = 0; // Make default theme the ACS Theme
     #endif

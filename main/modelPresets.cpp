@@ -262,7 +262,7 @@ void presetAutoTune()
     uint16_t targetVoltage = IncomingData.monitoring.targetDomainVoltage;
     
     // Check that temp, freq, and voltage are within spec (This tells us the bitaxe is running)
-    if (hashrate == 0 || asicFreq == 0 || domainVoltage == 0)
+    if ((hashrate == 0 || asicFreq == 0 || domainVoltage == 0) && asicTemp < 65)
     {
         ESP_LOGE("Preset", "Missing Autotune Variable V: %.2f Freq: %lu Hashrate: %.2f", domainVoltage, asicFreq, hashrate);
         return;
@@ -303,7 +303,7 @@ void presetAutoTune()
             return;
         }
         
-        if(currentPresetFrequency * .9 <= asicFreq )
+        if(currentPresetFrequency * .95 <= asicFreq )
         {
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 uint16_t freqNumber = (asicFreq * 98) / 100;  // Integer math for 2% reduction
@@ -318,7 +318,7 @@ void presetAutoTune()
                 ESP_LOGI("Preset", "Decreasing frequency to %u", freqNumber);
                 
         }
-        if (currentPresetVoltage *.95 <= targetVoltage)
+        if (currentPresetVoltage *.98 <= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
                 // Reduce voltage by 0.2% (multiply by 0.998)
@@ -353,7 +353,7 @@ void presetAutoTune()
             return;
         }
         
-        if(currentPresetFrequency * 1.1 >= asicFreq )
+        if(currentPresetFrequency * 1.05 >= asicFreq )
         {
                 memset(BAPAsicFreqBuffer, 0, BAP_ASIC_FREQ_BUFFER_SIZE);
                 uint16_t freqNumber = (asicFreq * 102) / 100;  // Integer math for 2% addition
@@ -368,7 +368,7 @@ void presetAutoTune()
                 ESP_LOGI("Preset", "Increasing frequency to %u", freqNumber);
                 
         }
-        if (currentPresetVoltage *1.03 >= targetVoltage)
+        if (currentPresetVoltage *1.02 >= targetVoltage)
         {
                 memset(BAPAsicVoltageBuffer, 0, BAP_ASIC_VOLTAGE_BUFFER_SIZE);
                 // increase voltage by 0.2% (multiply by 1.002)
