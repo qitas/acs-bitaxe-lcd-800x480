@@ -326,7 +326,7 @@ if (backlightPWM) {
     }
 
     espTime();
-
+/*
     // One-time sweep test (if that's what you want)
     if (backlightPWM) {
         // Sweep up
@@ -348,7 +348,7 @@ if (backlightPWM) {
         // Set final brightness
         setBrightness(25);  // Or whatever final brightness you want
     }
-
+*/
     //main loop
 while (true)
     {
