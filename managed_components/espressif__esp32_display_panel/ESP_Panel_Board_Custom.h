@@ -70,42 +70,7 @@
  * https://docs.espressif.com/projects/esp-iot-solution/en/latest/display/lcd/index.html for more details.
  *
  */
-#if ESP_PANEL_LCD_BUS_TYPE == ESP_PANEL_BUS_TYPE_SPI
-
-    #define ESP_PANEL_LCD_BUS_HOST_ID           (1)     // Typically set to 1
-    #define ESP_PANEL_LCD_SPI_IO_CS             (5)
-#if !ESP_PANEL_LCD_BUS_SKIP_INIT_HOST
-    #define ESP_PANEL_LCD_SPI_IO_SCK            (7)
-    #define ESP_PANEL_LCD_SPI_IO_MOSI           (6)
-    #define ESP_PANEL_LCD_SPI_IO_MISO           (-1)    // -1 if not used
-#endif
-    #define ESP_PANEL_LCD_SPI_IO_DC             (4)
-    #define ESP_PANEL_LCD_SPI_MODE              (0)     // 0/1/2/3, typically set to 0
-    #define ESP_PANEL_LCD_SPI_CLK_HZ            (40 * 1000 * 1000)
-                                                        // Should be an integer divisor of 80M, typically set to 40M
-    #define ESP_PANEL_LCD_SPI_TRANS_QUEUE_SZ    (10)    // Typically set to 10
-    #define ESP_PANEL_LCD_SPI_CMD_BITS          (8)     // Typically set to 8
-    #define ESP_PANEL_LCD_SPI_PARAM_BITS        (8)     // Typically set to 8
-
-#elif ESP_PANEL_LCD_BUS_TYPE == ESP_PANEL_BUS_TYPE_QSPI
-
-    #define ESP_PANEL_LCD_BUS_HOST_ID           (1)     // Typically set to 1
-    #define ESP_PANEL_LCD_SPI_IO_CS             (5)
-#if !ESP_PANEL_LCD_BUS_SKIP_INIT_HOST
-    #define ESP_PANEL_LCD_SPI_IO_SCK            (9)
-    #define ESP_PANEL_LCD_SPI_IO_DATA0          (10)
-    #define ESP_PANEL_LCD_SPI_IO_DATA1          (11)
-    #define ESP_PANEL_LCD_SPI_IO_DATA2          (12)
-    #define ESP_PANEL_LCD_SPI_IO_DATA3          (13)
-#endif
-    #define ESP_PANEL_LCD_SPI_MODE              (0)     // 0/1/2/3, typically set to 0
-    #define ESP_PANEL_LCD_SPI_CLK_HZ            (40 * 1000 * 1000)
-                                                        // Should be an integer divisor of 80M, typically set to 40M
-    #define ESP_PANEL_LCD_SPI_TRANS_QUEUE_SZ    (10)    // Typically set to 10
-    #define ESP_PANEL_LCD_SPI_CMD_BITS          (32)    // Typically set to 32
-    #define ESP_PANEL_LCD_SPI_PARAM_BITS        (8)     // Typically set to 8
-
-#elif ESP_PANEL_LCD_BUS_TYPE == ESP_PANEL_BUS_TYPE_RGB
+#if ESP_PANEL_LCD_BUS_TYPE == ESP_PANEL_BUS_TYPE_RGB
 
     #define ESP_PANEL_LCD_RGB_CLK_HZ            (16 * 1000 * 1000)
     #define ESP_PANEL_LCD_RGB_HPW               (4)
@@ -144,20 +109,6 @@
     #define ESP_PANEL_LCD_RGB_IO_DATA13         (42)
     #define ESP_PANEL_LCD_RGB_IO_DATA14         (41)
     #define ESP_PANEL_LCD_RGB_IO_DATA15         (40)
-#endif
-#if !ESP_PANEL_LCD_BUS_SKIP_INIT_HOST
-    #define ESP_PANEL_LCD_3WIRE_SPI_IO_CS               (0)
-    #define ESP_PANEL_LCD_3WIRE_SPI_IO_SCK              (1)
-    #define ESP_PANEL_LCD_3WIRE_SPI_IO_SDA              (2)
-    #define ESP_PANEL_LCD_3WIRE_SPI_CS_USE_EXPNADER     (0)     // 0/1
-    #define ESP_PANEL_LCD_3WIRE_SPI_SCL_USE_EXPNADER    (0)     // 0/1
-    #define ESP_PANEL_LCD_3WIRE_SPI_SDA_USE_EXPNADER    (0)     // 0/1
-    #define ESP_PANEL_LCD_3WIRE_SPI_SCL_ACTIVE_EDGE     (0)     // 0: rising edge, 1: falling edge
-    #define ESP_PANEL_LCD_FLAGS_AUTO_DEL_PANEL_IO       (0)     // Delete the panel IO instance automatically if set to 1.
-                                                                // If the 3-wire SPI pins are sharing other pins of the RGB interface to save GPIOs,
-                                                                // Please set it to 1 to release the panel IO and its pins (except CS signal).
-    #define ESP_PANEL_LCD_FLAGS_MIRROR_BY_CMD           (!ESP_PANEL_LCD_FLAGS_AUTO_DEL_PANEL_IO)
-                                                                // The `mirror()` function will be implemented by LCD command if set to 1.
 #endif
 
 #else
