@@ -80,7 +80,7 @@
 #define MAX_UINT16_SIZE    sizeof(uint16_t)
 #define MAX_TEMPS_COUNT    8
 
-#define PSRAM_ATTR __attribute__((section(".psram")))
+#define PSRAM_ATTR 
 
 #define MAX_DIFF_LENGTH 16
 #define I2C_BUFFER_SIZE 512

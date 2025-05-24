@@ -11,7 +11,7 @@
 
 #if BAPPORT == 1
 
-#define PSRAM_ATTR __attribute__((section(".psram")))
+#define PSRAM_ATTR 
 
 #define BAP_TX 16
 #define BAP_RX 15
